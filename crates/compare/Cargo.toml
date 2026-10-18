@@ -1,0 +1,18 @@
+[package]
+name = "lumen-compare"
+description = "Render-and-compare harness: Lumen against reference renders of the same presets"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "lumen-compare"
+path = "src/main.rs"
+
+[dependencies]
+hound = "3.5"
+lumen-engine.workspace = true
+lumen-preset.workspace = true
+realfft = "3.5"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"

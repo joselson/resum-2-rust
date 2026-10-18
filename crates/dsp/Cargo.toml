@@ -1,0 +1,9 @@
+[package]
+name = "lumen-dsp"
+description = "Oscillators, filters, envelopes and LFOs for Lumen"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+
+[dependencies]
+realfft = "3.5"

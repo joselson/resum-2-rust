@@ -1,0 +1,21 @@
+[workspace]
+resolver = "2"
+members = ["crates/preset", "crates/dsp", "crates/engine", "crates/render", "crates/plugin", "crates/compare"]
+
+[workspace.package]
+edition = "2021"
+version = "0.1.0"
+license = "MIT"
+
+[workspace.dependencies]
+lumen-preset = { path = "crates/preset" }
+lumen-dsp = { path = "crates/dsp" }
+lumen-engine = { path = "crates/engine" }
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+
+# DSP code is unusable at opt-level 0; keep tests and dev builds fast enough to listen to.
+[profile.dev]
+opt-level = 2

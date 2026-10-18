@@ -1,0 +1,15 @@
+[package]
+name = "lumen-render"
+description = "Offline renderer and preset survey tool for Lumen"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "lumen-render"
+path = "src/main.rs"
+
+[dependencies]
+hound = "3.5"
+lumen-engine.workspace = true
+lumen-preset.workspace = true

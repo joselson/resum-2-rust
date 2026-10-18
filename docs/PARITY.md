@@ -1,0 +1,55 @@
+# Feature parity with Serum 2 (2.0.22)
+
+Option lists come from the plugin binary's name tables and enums; usage counts
+are factory presets (of 626) that store the feature. "Approx." means Lumen maps
+the option onto a generic implementation; nothing is sound-matched yet.
+
+## Architecture
+
+| Serum 2 (class layout) | Lumen | Status |
+|---|---|---|
+| `SerumDSP` processor + `SerumController` (VST3 split) | single nih-plug plugin | kept; nih-plug owns the split |
+| `SerumParameter` + 26 scaled types | `params`: generated per-module tables (263 parameters) with measured curves, defaults, options | done |
+| 22 `XferModule` state objects, one per preset section | `params::Values` over every module instance; `Patch::set` edits one parameter live | done |
+| `XferLiveVoiceUser` per-voice runtime objects | `Voice` runtime state + per-voice `Offsets` | done |
+| `Oscillator` (Noise, Sub) / `WarpOscillator` (WT, Sample, MultiSample, Granular, Spectral) | `dsp::warp` stage (two slots) on the WT oscillator; sample and multisample engines | warp done for WT; sample warps, granular, spectral open |
+| `XferFilterBase`, 17 families, shared by voice and FX filters | `filters::model` maps all 107 types to models with fidelity | done (2 models) |
+| `XferModSource`, `ModMatrix` | routes to any module parameter; slot amount/flags are ModSlot parameters | done |
+| `Arp`, `ClipPlayer` as MIDI processors before voices | `notes::NoteProcessor` stage (passthrough) | stage done |
+| `NoteExpressionVoice` | none | open |
+| `FXRack` of `XferFX`; splits nest sub-chains; 3 racks | `fx`: 3 racks parsed into effect/split trees, ids rack×100+position, bus routing | done (first pass) |
+| thread pool + async tasks | single thread | measure first |
+
+## Options
+
+| Group | Serum 2 | Lumen |
+|---|---|---|
+| Oscillator types | WT, Sample, MultiSample, Granular, Spectral, Noise, Sub | WT, Sample, MultiSample (SFZ); noise (generated, mono); sub |
+| WT warp modes | 70 (sync, bend ×3, PWM, asym ×3, flip, mirror, remap ×4, quantize, odd/even, LPF/HPF, 14 distortions, FM/FME/FML/PD/AM/RM × 6 sources, self PD) | all 70, two slots + unison warp; calibrated by probes (mean score 1.9) |
+| Spectral warps | 88 | none |
+| Sub shapes | sine, round-rect, triangle, saw, square, pulse | all six (sine, saw match; others differ in probes) |
+| Noise | sample-based noise types | white with tilt |
+| Unison detune | Linear, Super, Exp, Inv, Random | all five (curves assumed) |
+| Unison stacks | none + 8 (octave, octave+fifth, centre 12/24) | none |
+| Granular windows / density modes | 10 / 3 | none |
+| Sample loop modes | forward, reverse, ping-pong, tailed | all, with crossfade |
+| Filter types | 110 (MG ladder, L/H/B/P/N 6–24, dual/triple combos, comb ×8, flange ×8, phase ×16, EQ, ring mod, S&H, formant, scream, dist-comb, diffuser…) | approx. ~25 via SVF/ladder |
+| Routing destinations | Filter, Master, Direct, None | Filter, Master, None |
+| Envelopes | 4 × AHDSR, 3 curves, start/end, beat sync, legato invert | 4 × AHDSR, 3 curves |
+| LFO types | Path, RandomSH, Lorenz, Rossler | Path, RandomSH |
+| LFO timing | sync with dotted/triplet/×10, delay, rise, smooth, anchored, direction | free Hz, approx. sync, delay, rise, smooth |
+| Mod sources | 58 | 26 |
+| Mod slot options | amount, aux, bipolar, curves in/out, smoothing, delay, bypass | amount, aux, bipolar, bypass |
+| Distortion modes | 17 | all, as generic waveshapers (level calibrated, character not) |
+| Reverb types | Hall, Vintage, Abyss, Space | one FDN reverb with per-type decay/modulation |
+| FX modules | Distortion, Flanger, Phaser, Chorus, Delay, Comp, Reverb, EQ, Filter, HyperDimension, Bode, Convolve, Utility + Split, Split3, SplitMS | all 16 (first implementations; multiband compression not modelled) |
+| Arp / Clip player | yes | none |
+| MPE / note expression | yes | none |
+| Oversampling | off / 2× / 4× (`kParamOversampling` 0–2) | none |
+
+## Behaviour verification
+
+See [CALIBRATION.md](CALIBRATION.md): Serum 2 renders headlessly and the
+comparison is automated. Probe set (41 single-change presets): mean score 0.77,
+loudness within 1.4 dB, spectral balance within 1.5 dB per band, pitch within
+10 cents on 38/38.

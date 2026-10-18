@@ -1,0 +1,11 @@
+[package]
+name = "lumen-engine"
+description = "Voice engine and Serum 2 preset mapping for Lumen"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+
+[dependencies]
+claxon = "0.4"
+lumen-dsp.workspace = true
+lumen-preset.workspace = true

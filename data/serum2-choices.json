@@ -1,0 +1,1382 @@
+{
+"Oscillator0.plainParams.kParamLoopMode": {
+"default_raw": 0.0,
+"options": [
+[
+0.0,
+null,
+"One-shot"
+],
+[
+0.0009765625,
+"kNone",
+"One-shot"
+],
+[
+0.2001953125,
+"kForward",
+"Fwd Loop"
+],
+[
+0.400390625,
+"kReverse",
+"Rev Loop"
+],
+[
+0.6005859375,
+"kPingPong",
+"Fwd/Rev Loop"
+],
+[
+0.80078125,
+"kTailed",
+"Tailed"
+]
+]
+},
+"Oscillator0.plainParams.kParamUnisonStack": {
+"default_raw": 0.0,
+"options": [
+[
+0.0,
+null,
+"off"
+],
+[
+0.0009765625,
+"kNoUnisonStack",
+"off"
+],
+[
+0.111328125,
+"kOctave1",
+"12 (1x)"
+],
+[
+0.22265625,
+"kOctave2",
+"12 (2x)"
+],
+[
+0.333984375,
+"kOctave3",
+"12 (3x)"
+],
+[
+0.4453125,
+"kOctaveFifth1",
+"12+7(1x)"
+],
+[
+0.5556640625,
+"kOctaveFifth2",
+"12+7(2x)"
+],
+[
+0.6669921875,
+"kOctaveFifth3",
+"12+7(3x)"
+],
+[
+0.7783203125,
+"kCenter12",
+"Center-12"
+],
+[
+0.8896484375,
+"kCenter24",
+"Center-24"
+]
+]
+},
+"Oscillator0.WTOsc0.plainParams.kParamWarpMenu": {
+"default_raw": 0.0,
+"options": [
+[
+0.0,
+null,
+"Off"
+],
+[
+0.0146484375,
+"kSync",
+"Sync"
+],
+[
+0.029296875,
+"kBendPos",
+"Bend +"
+],
+[
+0.04296875,
+"kBendNeg",
+"Bend -"
+],
+[
+0.0576171875,
+"kBendPosNeg",
+"Bend +/-"
+],
+[
+0.072265625,
+"kPWM",
+"PWM"
+],
+[
+0.0859375,
+"kASYMPos",
+"Asym +"
+],
+[
+0.1005859375,
+"kASYMNeg",
+"Asym -"
+],
+[
+0.115234375,
+"kASYMPosNeg",
+"Asym +/-"
+],
+[
+0.12890625,
+"kFlip",
+"Flip"
+],
+[
+0.1435546875,
+"kDLM",
+"Mirror"
+],
+[
+0.1572265625,
+"kRemap_1",
+"Remap 1"
+],
+[
+0.171875,
+"kRemap_2",
+"Remap 2"
+],
+[
+0.1865234375,
+"kRemap_3",
+"Remap 3"
+],
+[
+0.2001953125,
+"kRemap_4",
+"Remap 4"
+],
+[
+0.21484375,
+"kQuantize",
+"Quantize"
+],
+[
+0.2294921875,
+"kEvenOdd",
+"Odd/Even"
+],
+[
+0.2431640625,
+"kFilterLPF",
+"LPF"
+],
+[
+0.2578125,
+"kFilterHPF",
+"HPF"
+],
+[
+0.271484375,
+"kDistTube",
+"Tube"
+],
+[
+0.2861328125,
+"kDistSoftClip",
+"Soft Clip"
+],
+[
+0.30078125,
+"kDistHardClip",
+"Hard Clip"
+],
+[
+0.314453125,
+"kDistDiode1",
+"Diode 1"
+],
+[
+0.3291015625,
+"kDistDiode2",
+"Diode 2"
+],
+[
+0.34375,
+"kDistLinFold",
+"Linear Fold"
+],
+[
+0.357421875,
+"kDistSinFold",
+"Sine Fold"
+],
+[
+0.3720703125,
+"kDistZeroSquare",
+"Zero-Square"
+],
+[
+0.3857421875,
+"kDistAsym",
+"Asym"
+],
+[
+0.400390625,
+"kDistRectify",
+"Rectify"
+],
+[
+0.4150390625,
+"kDistSineShaper",
+"Sine Shaper"
+],
+[
+0.4287109375,
+"kDistStompBox",
+"Stomp Box"
+],
+[
+0.443359375,
+"kDistTapeSat",
+"Tape Sat."
+],
+[
+0.4580078125,
+"kDistSoftSat",
+"Soft Sat."
+],
+[
+0.4716796875,
+"kFM_OSC",
+"FM (B)"
+],
+[
+0.486328125,
+"kFM_OSC2",
+"FM (C)"
+],
+[
+0.5,
+"kFM_NOISE",
+"FM (Noise)"
+],
+[
+0.5146484375,
+"kFM_SUB",
+"FM (Sub)"
+],
+[
+0.529296875,
+"kFM_FILT1",
+"FM (Filter 1)"
+],
+[
+0.54296875,
+"kFM_FILT2",
+"FM (Filter 2)"
+],
+[
+0.5576171875,
+"kFMX_OSC",
+"FME (B)"
+],
+[
+0.572265625,
+"kFMX_OSC2",
+"FME (C)"
+],
+[
+0.5859375,
+"kFMX_NOISE",
+"FME (Noise)"
+],
+[
+0.6005859375,
+"kFMX_SUB",
+"FME (Sub)"
+],
+[
+0.615234375,
+"kFMX_FILT1",
+"FME (Filter 1)"
+],
+[
+0.62890625,
+"kFMX_FILT2",
+"FME (Filter 2)"
+],
+[
+0.6435546875,
+"kFMP_OSC",
+"FML (B)"
+],
+[
+0.6572265625,
+"kFMP_OSC2",
+"FML (C)"
+],
+[
+0.671875,
+"kFMP_NOISE",
+"FML (Noise)"
+],
+[
+0.6865234375,
+"kFMP_SUB",
+"FML (Sub)"
+],
+[
+0.7001953125,
+"kFMP_FILT1",
+"FML (Filter 1)"
+],
+[
+0.71484375,
+"kFMP_FILT2",
+"FML (Filter 2)"
+],
+[
+0.7294921875,
+"kPD_OSC",
+"PD (B)"
+],
+[
+0.7431640625,
+"kPD_OSC2",
+"PD (C)"
+],
+[
+0.7578125,
+"kPD_NOISE",
+"PD (Noise)"
+],
+[
+0.771484375,
+"kPD_SUB",
+"PD (Sub)"
+],
+[
+0.7861328125,
+"kPD_FILT1",
+"PD (Filter 1)"
+],
+[
+0.80078125,
+"kPD_FILT2",
+"PD (Filter 2)"
+],
+[
+0.814453125,
+"kSelfPD",
+"PD (Self)"
+],
+[
+0.8291015625,
+"kAM_OSC",
+"AM (B)"
+],
+[
+0.84375,
+"kAM_OSC2",
+"AM (C)"
+],
+[
+0.857421875,
+"kAM_NOISE",
+"AM (Noise)"
+],
+[
+0.8720703125,
+"kAM_SUB",
+"AM (Sub)"
+],
+[
+0.8857421875,
+"kAM_FILT1",
+"AM (Filter 1)"
+],
+[
+0.900390625,
+"kAM_FILT2",
+"AM (Filter 2)"
+],
+[
+0.9150390625,
+"kRM_OSC",
+"RM (B)"
+],
+[
+0.9287109375,
+"kRM_OSC2",
+"RM (C)"
+],
+[
+0.943359375,
+"kRM_NOISE",
+"RM (Noise)"
+],
+[
+0.9580078125,
+"kRM_SUB",
+"RM (Sub)"
+],
+[
+0.9716796875,
+"kRM_FILT1",
+"RM (Filter 1)"
+],
+[
+0.986328125,
+"kRM_FILT2",
+"RM (Filter 2)"
+]
+]
+},
+"Oscillator0.WTOsc0.plainParams.kParamWarpMenu2": {
+"default_raw": 0.0,
+"options": [
+[
+0.0,
+null,
+"Off"
+],
+[
+0.0146484375,
+"kSync",
+"Sync"
+],
+[
+0.029296875,
+"kBendPos",
+"Bend +"
+],
+[
+0.04296875,
+"kBendNeg",
+"Bend -"
+],
+[
+0.0576171875,
+"kBendPosNeg",
+"Bend +/-"
+],
+[
+0.072265625,
+"kPWM",
+"PWM"
+],
+[
+0.0859375,
+"kASYMPos",
+"Asym +"
+],
+[
+0.1005859375,
+"kASYMNeg",
+"Asym -"
+],
+[
+0.115234375,
+"kASYMPosNeg",
+"Asym +/-"
+],
+[
+0.12890625,
+"kFlip",
+"Flip"
+],
+[
+0.1435546875,
+"kDLM",
+"Mirror"
+],
+[
+0.1572265625,
+"kRemap_1",
+"Remap 1"
+],
+[
+0.171875,
+"kRemap_2",
+"Remap 2"
+],
+[
+0.1865234375,
+"kRemap_3",
+"Remap 3"
+],
+[
+0.2001953125,
+"kRemap_4",
+"Remap 4"
+],
+[
+0.21484375,
+"kQuantize",
+"Quantize"
+],
+[
+0.2294921875,
+"kEvenOdd",
+"Odd/Even"
+],
+[
+0.2431640625,
+"kFilterLPF",
+"LPF"
+],
+[
+0.2578125,
+"kFilterHPF",
+"HPF"
+],
+[
+0.271484375,
+"kDistTube",
+"Tube"
+],
+[
+0.2861328125,
+"kDistSoftClip",
+"Soft Clip"
+],
+[
+0.30078125,
+"kDistHardClip",
+"Hard Clip"
+],
+[
+0.314453125,
+"kDistDiode1",
+"Diode 1"
+],
+[
+0.3291015625,
+"kDistDiode2",
+"Diode 2"
+],
+[
+0.34375,
+"kDistLinFold",
+"Linear Fold"
+],
+[
+0.357421875,
+"kDistSinFold",
+"Sine Fold"
+],
+[
+0.3720703125,
+"kDistZeroSquare",
+"Zero-Square"
+],
+[
+0.3857421875,
+"kDistAsym",
+"Asym"
+],
+[
+0.400390625,
+"kDistRectify",
+"Rectify"
+],
+[
+0.4150390625,
+"kDistSineShaper",
+"Sine Shaper"
+],
+[
+0.4287109375,
+"kDistStompBox",
+"Stomp Box"
+],
+[
+0.443359375,
+"kDistTapeSat",
+"Tape Sat."
+],
+[
+0.4580078125,
+"kDistSoftSat",
+"Soft Sat."
+],
+[
+0.4716796875,
+"kFM_OSC",
+"FM (B)"
+],
+[
+0.486328125,
+"kFM_OSC2",
+"FM (C)"
+],
+[
+0.5,
+"kFM_NOISE",
+"FM (Noise)"
+],
+[
+0.5146484375,
+"kFM_SUB",
+"FM (Sub)"
+],
+[
+0.529296875,
+"kFM_FILT1",
+"FM (Filter 1)"
+],
+[
+0.54296875,
+"kFM_FILT2",
+"FM (Filter 2)"
+],
+[
+0.5576171875,
+"kFMX_OSC",
+"FME (B)"
+],
+[
+0.572265625,
+"kFMX_OSC2",
+"FME (C)"
+],
+[
+0.5859375,
+"kFMX_NOISE",
+"FME (Noise)"
+],
+[
+0.6005859375,
+"kFMX_SUB",
+"FME (Sub)"
+],
+[
+0.615234375,
+"kFMX_FILT1",
+"FME (Filter 1)"
+],
+[
+0.62890625,
+"kFMX_FILT2",
+"FME (Filter 2)"
+],
+[
+0.6435546875,
+"kFMP_OSC",
+"FML (B)"
+],
+[
+0.6572265625,
+"kFMP_OSC2",
+"FML (C)"
+],
+[
+0.671875,
+"kFMP_NOISE",
+"FML (Noise)"
+],
+[
+0.6865234375,
+"kFMP_SUB",
+"FML (Sub)"
+],
+[
+0.7001953125,
+"kFMP_FILT1",
+"FML (Filter 1)"
+],
+[
+0.71484375,
+"kFMP_FILT2",
+"FML (Filter 2)"
+],
+[
+0.7294921875,
+"kPD_OSC",
+"PD (B)"
+],
+[
+0.7431640625,
+"kPD_OSC2",
+"PD (C)"
+],
+[
+0.7578125,
+"kPD_NOISE",
+"PD (Noise)"
+],
+[
+0.771484375,
+"kPD_SUB",
+"PD (Sub)"
+],
+[
+0.7861328125,
+"kPD_FILT1",
+"PD (Filter 1)"
+],
+[
+0.80078125,
+"kPD_FILT2",
+"PD (Filter 2)"
+],
+[
+0.814453125,
+"kSelfPD",
+"PD (Self)"
+],
+[
+0.8291015625,
+"kAM_OSC",
+"AM (B)"
+],
+[
+0.84375,
+"kAM_OSC2",
+"AM (C)"
+],
+[
+0.857421875,
+"kAM_NOISE",
+"AM (Noise)"
+],
+[
+0.8720703125,
+"kAM_SUB",
+"AM (Sub)"
+],
+[
+0.8857421875,
+"kAM_FILT1",
+"AM (Filter 1)"
+],
+[
+0.900390625,
+"kAM_FILT2",
+"AM (Filter 2)"
+],
+[
+0.9150390625,
+"kRM_OSC",
+"RM (B)"
+],
+[
+0.9287109375,
+"kRM_OSC2",
+"RM (C)"
+],
+[
+0.943359375,
+"kRM_NOISE",
+"RM (Noise)"
+],
+[
+0.9580078125,
+"kRM_SUB",
+"RM (Sub)"
+],
+[
+0.9716796875,
+"kRM_FILT1",
+"RM (Filter 1)"
+],
+[
+0.986328125,
+"kRM_FILT2",
+"RM (Filter 2)"
+]
+]
+},
+"Oscillator4.SubOsc4.plainParams.kParamShape": {
+"default_raw": 0.0,
+"options": [
+[
+0.0,
+null,
+"Sine"
+],
+[
+0.0009765625,
+"kSine",
+"Sine"
+],
+[
+0.1669921875,
+"kRoundRect",
+"RoundRect"
+],
+[
+0.333984375,
+"kTriangle",
+"Triangle"
+],
+[
+0.5,
+"kSaw",
+"Saw"
+],
+[
+0.6669921875,
+"kSquare",
+"Square"
+],
+[
+0.833984375,
+"kPulse",
+"Pulse"
+]
+]
+},
+"VoiceFilter0.plainParams.kParamType": {
+"default_raw": 0.009433962404727936,
+"options": [
+[
+0.0,
+"MgL6",
+"MG Low 6"
+],
+[
+0.009765625,
+"MgL12",
+"MG Low 12"
+],
+[
+0.01953125,
+"MgL18",
+"MG Low 18"
+],
+[
+0.0283203125,
+"MgL24",
+"MG Low 24"
+],
+[
+0.0380859375,
+"L6",
+"Low 6"
+],
+[
+0.046875,
+"L12",
+"Low 12"
+],
+[
+0.056640625,
+"L18",
+"Low 18"
+],
+[
+0.0654296875,
+"L24",
+"Low 24"
+],
+[
+0.0751953125,
+"H6",
+"High 6"
+],
+[
+0.0849609375,
+"H12",
+"High 12"
+],
+[
+0.09375,
+"H18",
+"High 18"
+],
+[
+0.103515625,
+"H24",
+"High 24"
+],
+[
+0.1123046875,
+"B12",
+"Band 12"
+],
+[
+0.1220703125,
+"B24",
+"Band 24"
+],
+[
+0.130859375,
+"P12",
+"Peak 12"
+],
+[
+0.140625,
+"P24",
+"Peak 24"
+],
+[
+0.150390625,
+"N12",
+"Notch 12"
+],
+[
+0.1591796875,
+"N24",
+"Notch 24"
+],
+[
+0.1689453125,
+"LH6",
+"LH 6"
+],
+[
+0.177734375,
+"LH12",
+"LH 12"
+],
+[
+0.1875,
+"LB12",
+"LB 12"
+],
+[
+0.1962890625,
+"LP12",
+"LP 12"
+],
+[
+0.2060546875,
+"LN12",
+"LN 12"
+],
+[
+0.2158203125,
+"HB12",
+"HB 12"
+],
+[
+0.224609375,
+"HP12",
+"HP 12"
+],
+[
+0.234375,
+"HN12",
+"HN 12"
+],
+[
+0.2431640625,
+"BP12",
+"BP 12"
+],
+[
+0.2529296875,
+"BN12",
+"BN 12"
+],
+[
+0.26171875,
+"PP12",
+"PP 12"
+],
+[
+0.271484375,
+"PN12",
+"PN 12"
+],
+[
+0.28125,
+"NN12",
+"NN 12"
+],
+[
+0.2900390625,
+"LBH12",
+"L/B/H 12"
+],
+[
+0.2998046875,
+"LBH24",
+"L/B/H 24"
+],
+[
+0.30859375,
+"LPH12",
+"L/P/H 12"
+],
+[
+0.318359375,
+"LPH24",
+"L/P/H 24"
+],
+[
+0.3271484375,
+"LNH12",
+"L/N/H 12"
+],
+[
+0.3369140625,
+"LNH24",
+"L/N/H 24"
+],
+[
+0.3466796875,
+"BPN12",
+"B/P/N 12"
+],
+[
+0.35546875,
+"BPN24",
+"B/P/N 24"
+],
+[
+0.365234375,
+"CombP",
+"Cmb +"
+],
+[
+0.3740234375,
+"CombN",
+"Cmb -"
+],
+[
+0.3837890625,
+"CombL6P",
+"Cmb L6+"
+],
+[
+0.392578125,
+"CombL6N",
+"Cmb L6-"
+],
+[
+0.40234375,
+"CombH6P",
+"Cmb H6+"
+],
+[
+0.412109375,
+"CombH6N",
+"Cmb H6-"
+],
+[
+0.4208984375,
+"CombHL6P",
+"Cmb HL6+"
+],
+[
+0.4306640625,
+"CombHL6N",
+"Cmb HL6-"
+],
+[
+0.439453125,
+"FlangeP",
+"Flg +"
+],
+[
+0.44921875,
+"FlangeN",
+"Flg -"
+],
+[
+0.4580078125,
+"FlangeL6P",
+"Flg L6+"
+],
+[
+0.4677734375,
+"FlangeL6N",
+"Flg L6-"
+],
+[
+0.4775390625,
+"FlangeH6P",
+"Flg H6+"
+],
+[
+0.486328125,
+"FlangeH6N",
+"Flg H6-"
+],
+[
+0.49609375,
+"FlangeHL6P",
+"Flg HL6+"
+],
+[
+0.5048828125,
+"FlangeHL6N",
+"Flg HL6-"
+],
+[
+0.5146484375,
+"Phase12P",
+"Phs 12+"
+],
+[
+0.5234375,
+"Phase12N",
+"Phs 12-"
+],
+[
+0.533203125,
+"Phase24P",
+"Phs 24+"
+],
+[
+0.54296875,
+"Phase24N",
+"Phs 24-"
+],
+[
+0.5517578125,
+"Phase36P",
+"Phs 36+"
+],
+[
+0.5615234375,
+"Phase36N",
+"Phs 36-"
+],
+[
+0.5703125,
+"Phase48P",
+"Phs 48+"
+],
+[
+0.580078125,
+"Phase48N",
+"Phs 48-"
+],
+[
+0.5888671875,
+"Phase48L6P",
+"Phs 48L6+"
+],
+[
+0.5986328125,
+"Phase48L6N",
+"Phs 48L6-"
+],
+[
+0.6083984375,
+"Phase48H6P",
+"Phs 48H6+"
+],
+[
+0.6171875,
+"Phase48H6N",
+"Phs 48H6-"
+],
+[
+0.626953125,
+"Phase48HL6P",
+"Phs 48HL6+"
+],
+[
+0.6357421875,
+"Phase48HL6N",
+"Phs 48HL6-"
+],
+[
+0.6455078125,
+"FlangePhase12HL6P",
+"FPhs 12HL6+"
+],
+[
+0.654296875,
+"FlangePhase12HL6N",
+"FPhs 12HL6-"
+],
+[
+0.6640625,
+"LEQ6",
+"Low EQ 6"
+],
+[
+0.673828125,
+"LEQ12",
+"Low EQ 12"
+],
+[
+0.6826171875,
+"BEQ12",
+"Band EQ 12"
+],
+[
+0.6923828125,
+"HEQ6",
+"High EQ 6"
+],
+[
+0.701171875,
+"HEQ12",
+"High EQ 12"
+],
+[
+0.7109375,
+"RM",
+"Ring Mod"
+],
+[
+0.7197265625,
+"RMT",
+"Ring Modx2"
+],
+[
+0.7294921875,
+"SNH1",
+"SampHold"
+],
+[
+0.7392578125,
+"SNH2",
+"SampHold-"
+],
+[
+0.748046875,
+"Combs",
+"Combs"
+],
+[
+0.7578125,
+"Allpasses",
+"Allpasses"
+],
+[
+0.7666015625,
+"Reverb1",
+"Reverb"
+],
+[
+0.7763671875,
+"Scream",
+"French LP"
+],
+[
+0.78515625,
+"ZDF_A",
+"German LP"
+],
+[
+0.794921875,
+"ADD_BASS",
+"Add Bass"
+],
+[
+0.8046875,
+"FormantONE",
+"Formant-I"
+],
+[
+0.8134765625,
+"FormantTWO",
+"Formant-II"
+],
+[
+0.8232421875,
+"FormantTWB",
+"Formant-III"
+],
+[
+0.83203125,
+"BandReject",
+"Bandreject"
+],
+[
+0.841796875,
+"DistComb1LP",
+"Dist.Comb 1 LP"
+],
+[
+0.8505859375,
+"DistComb1BP",
+"Dist.Comb 1 BP"
+],
+[
+0.8603515625,
+"DistComb2LP",
+"Dist.Comb 2 LP"
+],
+[
+0.8701171875,
+"DistComb2BP",
+"Dist.Comb 2 BP"
+],
+[
+0.87890625,
+"Scream3LP",
+"Scream LP"
+],
+[
+0.888671875,
+"Scream3BP",
+"Scream BP"
+],
+[
+0.8974609375,
+"Wsp",
+"Wsp"
+],
+[
+0.9072265625,
+"DJMixer",
+"DJ Mixer"
+],
+[
+0.916015625,
+"Diffuser",
+"Diffusor"
+],
+[
+0.92578125,
+"LadderMg",
+"MG Ladder"
+],
+[
+0.935546875,
+"LadderAcid",
+"Acid Ladder"
+],
+[
+0.9443359375,
+"LadderEMS",
+"EMS Ladder"
+],
+[
+0.9541015625,
+"DirtyMg",
+"MG Dirty"
+],
+[
+0.962890625,
+"PZ_SVF",
+"PZ SVF"
+],
+[
+0.97265625,
+"Comb2",
+"Comb 2"
+],
+[
+0.9814453125,
+"Exp",
+"Exp MM"
+],
+[
+0.9912109375,
+"ExpBPF",
+"Exp BPF"
+]
+]
+}
+}

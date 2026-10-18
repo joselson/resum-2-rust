@@ -1,0 +1,11 @@
+[package]
+name = "lumen-preset"
+description = "Read and write the XferJson container used by .SerumPreset files"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+
+[dependencies]
+md-5 = "0.11"
+serde_json = { version = "1", features = ["preserve_order"] }
+zstd = "0.14"

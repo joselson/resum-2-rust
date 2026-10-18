@@ -1,0 +1,6849 @@
+[
+ {
+  "field": "Arp0.plainParams.kParamChance",
+  "host": "arp_chance",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "0.0",
+  "units": "%",
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "Arp0.plainParams.kParamEnabled",
+  "host": "arp_enable",
+  "default": 0.0,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "toggle"
+ },
+ {
+  "field": "Arp0.plainParams.kParamGate",
+  "host": "arp_gate",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "0.0",
+  "units": "%",
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "Arp0.plainParams.kParamOffset",
+  "host": "arp_offset",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "0.0",
+  "units": "%",
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "Arp0.plainParams.kParamRate",
+  "host": "arp_rate",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "0.0",
+  "units": "%",
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "Arp0.plainParams.kParamRepeats",
+  "host": "arp_repeats",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "0.0",
+  "units": "%",
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "Arp0.plainParams.kParamRetrigRate",
+  "host": "arp_retrig_rate",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "0.0",
+  "units": "%",
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "Arp0.plainParams.kParamTranspose",
+  "host": "arp_transpose",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "0.0",
+  "units": "%",
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "Arp0.plainParams.kParamTransposeRange",
+  "host": "arp_range",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "0.0",
+  "units": "%",
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "Arp0.plainParams.kParamTransposeShift",
+  "host": "arp_shift",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "0.0",
+  "units": "%",
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "Arp0.plainParams.kParamVeloDecay",
+  "host": "arp_velo_decay",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "0.0",
+  "units": "%",
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "Arp0.plainParams.kParamVeloTarget",
+  "host": "arp_velo_target",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "0.0",
+  "units": "%",
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "Arp0.plainParams.kParamWrapPhantomNote",
+  "host": "arp_wrap_phantom_note",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "0.0",
+  "units": "%",
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "Arp0.plainParams.kParamWrapRange",
+  "host": "arp_wrap_range",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "0.0",
+  "units": "%",
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "Arp0.plainParams.kParamWrapTranspose",
+  "host": "arp_wrap_transpose",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "0.0",
+  "units": "%",
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ClipPlayer0.plainParams.kParamEnabled",
+  "host": "clip_player_enable",
+  "default": 0.0,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "toggle"
+ },
+ {
+  "field": "ClipPlayer0.plainParams.kParamRate",
+  "host": "clip_player_rate",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "0.0",
+  "units": "%",
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ClipPlayer0.plainParams.kParamRegionOffset",
+  "host": "clip_player_offset",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "0.0",
+  "units": "%",
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ClipPlayer0.plainParams.kParamTranspose",
+  "host": "clip_player_transpose",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "0.0",
+  "units": "%",
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "Env0.plainParams.kParamAttack",
+  "host": "env_1_attack",
+  "default": 0.00100006,
+  "default_raw": 0.12559431791305542,
+  "default_text": "1.0 ms",
+  "units": null,
+  "kind": "power",
+  "min": 6.1e-08,
+  "max": 31.999999262,
+  "k": 5.0
+ },
+ {
+  "field": "Env0.plainParams.kParamCurve1",
+  "host": "env_1_atk_curve",
+  "default": 50.0,
+  "default_raw": 0.5,
+  "default_text": "50",
+  "units": "%",
+  "kind": "linear",
+  "min": 3.48e-07,
+  "max": 99.999999758
+ },
+ {
+  "field": "Env0.plainParams.kParamCurve2",
+  "host": "env_1_dec_curve",
+  "default": 66.60000000000001,
+  "default_raw": 0.6660000085830688,
+  "default_text": "67",
+  "units": "%",
+  "kind": "linear",
+  "min": 3.48e-07,
+  "max": 99.999999758
+ },
+ {
+  "field": "Env0.plainParams.kParamCurve3",
+  "host": "env_1_rel_curve",
+  "default": 66.60000000000001,
+  "default_raw": 0.6660000085830688,
+  "default_text": "67",
+  "units": "%",
+  "kind": "linear",
+  "min": 3.48e-07,
+  "max": 99.999999758
+ },
+ {
+  "field": "Env0.plainParams.kParamDecay",
+  "host": "env_1_decay",
+  "default": 1.000000038,
+  "default_raw": 0.5,
+  "default_text": "1.00 s",
+  "units": null,
+  "kind": "power",
+  "min": 6.3e-08,
+  "max": 31.999999261,
+  "k": 5.0
+ },
+ {
+  "field": "Env0.plainParams.kParamHold",
+  "host": "env_1_hold",
+  "default": 6.5e-08,
+  "default_raw": 0.0,
+  "default_text": "0.0 ms",
+  "units": null,
+  "kind": "power",
+  "min": 6.5e-08,
+  "max": 31.999999259,
+  "k": 5.0
+ },
+ {
+  "field": "Env0.plainParams.kParamRelease",
+  "host": "env_1_release",
+  "default": 0.014700906,
+  "default_raw": 0.2150000035762787,
+  "default_text": "15 ms",
+  "units": null,
+  "kind": "power",
+  "min": 6.1e-08,
+  "max": 31.999999262,
+  "k": 5.0
+ },
+ {
+  "field": "Env0.plainParams.kParamSustain",
+  "host": "env_1_sustain",
+  "default": 0.999999997,
+  "default_raw": 1.0,
+  "default_text": "0.0 dB",
+  "units": null,
+  "kind": "linear",
+  "min": 4e-09,
+  "max": 0.999999997
+ },
+ {
+  "field": "Env1.plainParams.kParamAttack",
+  "host": "env_2_attack",
+  "default": 0.000515424,
+  "default_raw": 0.10999999940395355,
+  "default_text": "0.5 ms",
+  "units": null,
+  "kind": "power",
+  "min": 6.1e-08,
+  "max": 31.999999262,
+  "k": 5.0
+ },
+ {
+  "field": "Env1.plainParams.kParamCurve1",
+  "host": "env_2_atk_curve",
+  "default": 50.0,
+  "default_raw": 0.5,
+  "default_text": "50",
+  "units": "%",
+  "kind": "linear",
+  "min": 3.48e-07,
+  "max": 99.999999758
+ },
+ {
+  "field": "Env1.plainParams.kParamCurve2",
+  "host": "env_2_dec_curve",
+  "default": 66.60000000000001,
+  "default_raw": 0.6660000085830688,
+  "default_text": "67",
+  "units": "%",
+  "kind": "linear",
+  "min": 3.48e-07,
+  "max": 99.999999758
+ },
+ {
+  "field": "Env1.plainParams.kParamCurve3",
+  "host": "env_2_rel_curve",
+  "default": 66.60000000000001,
+  "default_raw": 0.6660000085830688,
+  "default_text": "67",
+  "units": "%",
+  "kind": "linear",
+  "min": 3.48e-07,
+  "max": 99.999999758
+ },
+ {
+  "field": "Env1.plainParams.kParamDecay",
+  "host": "env_2_decay",
+  "default": 1.000000038,
+  "default_raw": 0.5,
+  "default_text": "1.00 s",
+  "units": null,
+  "kind": "power",
+  "min": 6.3e-08,
+  "max": 31.999999261,
+  "k": 5.0
+ },
+ {
+  "field": "Env1.plainParams.kParamEnd",
+  "host": "env_2_end",
+  "default": 4e-09,
+  "default_raw": 0.0,
+  "default_text": "-\u221e dB",
+  "units": null,
+  "kind": "linear",
+  "min": 4e-09,
+  "max": 0.999999997
+ },
+ {
+  "field": "Env1.plainParams.kParamHold",
+  "host": "env_2_hold",
+  "default": 6.5e-08,
+  "default_raw": 0.0,
+  "default_text": "0.0 ms",
+  "units": null,
+  "kind": "power",
+  "min": 6.5e-08,
+  "max": 31.999999259,
+  "k": 5.0
+ },
+ {
+  "field": "Env1.plainParams.kParamRelease",
+  "host": "env_2_release",
+  "default": 0.014700906,
+  "default_raw": 0.2150000035762787,
+  "default_text": "15 ms",
+  "units": null,
+  "kind": "power",
+  "min": 6.1e-08,
+  "max": 31.999999262,
+  "k": 5.0
+ },
+ {
+  "field": "Env1.plainParams.kParamStart",
+  "host": "env_2_start",
+  "default": 4e-09,
+  "default_raw": 0.0,
+  "default_text": "-\u221e dB",
+  "units": null,
+  "kind": "linear",
+  "min": 4e-09,
+  "max": 0.999999997
+ },
+ {
+  "field": "Env1.plainParams.kParamSustain",
+  "host": "env_2_sustain",
+  "default": 0.999999997,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 4e-09,
+  "max": 0.999999997
+ },
+ {
+  "field": "Env2.plainParams.kParamAttack",
+  "host": "env_3_attack",
+  "default": 0.000515424,
+  "default_raw": 0.10999999940395355,
+  "default_text": "0.5 ms",
+  "units": null,
+  "kind": "power",
+  "min": 6.1e-08,
+  "max": 31.999999262,
+  "k": 5.0
+ },
+ {
+  "field": "Env2.plainParams.kParamCurve1",
+  "host": "env_3_atk_curve",
+  "default": 50.0,
+  "default_raw": 0.5,
+  "default_text": "50",
+  "units": "%",
+  "kind": "linear",
+  "min": 3.48e-07,
+  "max": 99.999999758
+ },
+ {
+  "field": "Env2.plainParams.kParamCurve2",
+  "host": "env_3_dec_curve",
+  "default": 66.60000000000001,
+  "default_raw": 0.6660000085830688,
+  "default_text": "67",
+  "units": "%",
+  "kind": "linear",
+  "min": 3.48e-07,
+  "max": 99.999999758
+ },
+ {
+  "field": "Env2.plainParams.kParamCurve3",
+  "host": "env_3_rel_curve",
+  "default": 66.60000000000001,
+  "default_raw": 0.6660000085830688,
+  "default_text": "67",
+  "units": "%",
+  "kind": "linear",
+  "min": 3.48e-07,
+  "max": 99.999999758
+ },
+ {
+  "field": "Env2.plainParams.kParamDecay",
+  "host": "env_3_decay",
+  "default": 1.000000038,
+  "default_raw": 0.5,
+  "default_text": "1.00 s",
+  "units": null,
+  "kind": "power",
+  "min": 6.3e-08,
+  "max": 31.999999261,
+  "k": 5.0
+ },
+ {
+  "field": "Env2.plainParams.kParamEnd",
+  "host": "env_3_end",
+  "default": 4e-09,
+  "default_raw": 0.0,
+  "default_text": "-\u221e dB",
+  "units": null,
+  "kind": "linear",
+  "min": 4e-09,
+  "max": 0.999999997
+ },
+ {
+  "field": "Env2.plainParams.kParamHold",
+  "host": "env_3_hold",
+  "default": 6.5e-08,
+  "default_raw": 0.0,
+  "default_text": "0.0 ms",
+  "units": null,
+  "kind": "power",
+  "min": 6.5e-08,
+  "max": 31.999999259,
+  "k": 5.0
+ },
+ {
+  "field": "Env2.plainParams.kParamRelease",
+  "host": "env_3_release",
+  "default": 0.014700906,
+  "default_raw": 0.2150000035762787,
+  "default_text": "15 ms",
+  "units": null,
+  "kind": "power",
+  "min": 6.1e-08,
+  "max": 31.999999262,
+  "k": 5.0
+ },
+ {
+  "field": "Env2.plainParams.kParamStart",
+  "host": "env_3_start",
+  "default": 4e-09,
+  "default_raw": 0.0,
+  "default_text": "-\u221e dB",
+  "units": null,
+  "kind": "linear",
+  "min": 4e-09,
+  "max": 0.999999997
+ },
+ {
+  "field": "Env2.plainParams.kParamSustain",
+  "host": "env_3_sustain",
+  "default": 0.999999997,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 4e-09,
+  "max": 0.999999997
+ },
+ {
+  "field": "Env3.plainParams.kParamAttack",
+  "host": "env_4_attack",
+  "default": 0.000515424,
+  "default_raw": 0.10999999940395355,
+  "default_text": "0.5 ms",
+  "units": null,
+  "kind": "power",
+  "min": 6.1e-08,
+  "max": 31.999999262,
+  "k": 5.0
+ },
+ {
+  "field": "Env3.plainParams.kParamCurve1",
+  "host": "env_4_atk_curve",
+  "default": 50.0,
+  "default_raw": 0.5,
+  "default_text": "50",
+  "units": "%",
+  "kind": "linear",
+  "min": 3.48e-07,
+  "max": 99.999999758
+ },
+ {
+  "field": "Env3.plainParams.kParamCurve2",
+  "host": "env_4_dec_curve",
+  "default": 66.60000000000001,
+  "default_raw": 0.6660000085830688,
+  "default_text": "67",
+  "units": "%",
+  "kind": "linear",
+  "min": 3.48e-07,
+  "max": 99.999999758
+ },
+ {
+  "field": "Env3.plainParams.kParamCurve3",
+  "host": "env_4_rel_curve",
+  "default": 66.60000000000001,
+  "default_raw": 0.6660000085830688,
+  "default_text": "67",
+  "units": "%",
+  "kind": "linear",
+  "min": 3.48e-07,
+  "max": 99.999999758
+ },
+ {
+  "field": "Env3.plainParams.kParamDecay",
+  "host": "env_4_decay",
+  "default": 1.000000038,
+  "default_raw": 0.5,
+  "default_text": "1.00 s",
+  "units": null,
+  "kind": "power",
+  "min": 6.3e-08,
+  "max": 31.999999261,
+  "k": 5.0
+ },
+ {
+  "field": "Env3.plainParams.kParamEnd",
+  "host": "env_4_end",
+  "default": 4e-09,
+  "default_raw": 0.0,
+  "default_text": "-\u221e dB",
+  "units": null,
+  "kind": "linear",
+  "min": 4e-09,
+  "max": 0.999999997
+ },
+ {
+  "field": "Env3.plainParams.kParamHold",
+  "host": "env_4_hold",
+  "default": 6.5e-08,
+  "default_raw": 0.0,
+  "default_text": "0.0 ms",
+  "units": null,
+  "kind": "power",
+  "min": 6.5e-08,
+  "max": 31.999999259,
+  "k": 5.0
+ },
+ {
+  "field": "Env3.plainParams.kParamRelease",
+  "host": "env_4_release",
+  "default": 0.014700906,
+  "default_raw": 0.2150000035762787,
+  "default_text": "15 ms",
+  "units": null,
+  "kind": "power",
+  "min": 6.1e-08,
+  "max": 31.999999262,
+  "k": 5.0
+ },
+ {
+  "field": "Env3.plainParams.kParamStart",
+  "host": "env_4_start",
+  "default": 4e-09,
+  "default_raw": 0.0,
+  "default_text": "-\u221e dB",
+  "units": null,
+  "kind": "linear",
+  "min": 4e-09,
+  "max": 0.999999997
+ },
+ {
+  "field": "Env3.plainParams.kParamSustain",
+  "host": "env_4_sustain",
+  "default": 0.999999997,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 4e-09,
+  "max": 0.999999997
+ },
+ {
+  "field": "Global0.plainParams.kParamBendRangeDn",
+  "host": "bend_down_semitones",
+  "default": null,
+  "default_raw": 0.4583333432674408,
+  "default_text": "-2",
+  "units": "semitones",
+  "kind": "table",
+  "points": [
+   [
+    0.0,
+    -24.0
+   ],
+   [
+    0.05,
+    -22.0
+   ],
+   [
+    0.1,
+    -20.0
+   ],
+   [
+    0.15,
+    -17.0
+   ],
+   [
+    0.2,
+    -15.0
+   ],
+   [
+    0.25,
+    -12.0
+   ],
+   [
+    0.3,
+    -10.0
+   ],
+   [
+    0.35,
+    -7.0
+   ],
+   [
+    0.4,
+    -5.0
+   ],
+   [
+    0.45,
+    -2.0
+   ],
+   [
+    0.5,
+    0.0
+   ],
+   [
+    0.55,
+    2.0
+   ],
+   [
+    0.6,
+    5.0
+   ],
+   [
+    0.65,
+    7.0
+   ],
+   [
+    0.7,
+    10.0
+   ],
+   [
+    0.75,
+    12.0
+   ],
+   [
+    0.8,
+    15.0
+   ],
+   [
+    0.85,
+    17.0
+   ],
+   [
+    0.9,
+    20.0
+   ],
+   [
+    0.95,
+    22.0
+   ],
+   [
+    1.0,
+    24.0
+   ]
+  ],
+  "fit_error": 0.0096
+ },
+ {
+  "field": "Global0.plainParams.kParamBendRangeUp",
+  "host": "bend_up_semitones",
+  "default": null,
+  "default_raw": 0.5416666865348816,
+  "default_text": "2",
+  "units": "semitones",
+  "kind": "table",
+  "points": [
+   [
+    0.0,
+    -24.0
+   ],
+   [
+    0.05,
+    -22.0
+   ],
+   [
+    0.1,
+    -20.0
+   ],
+   [
+    0.15,
+    -17.0
+   ],
+   [
+    0.2,
+    -15.0
+   ],
+   [
+    0.25,
+    -12.0
+   ],
+   [
+    0.3,
+    -10.0
+   ],
+   [
+    0.35,
+    -7.0
+   ],
+   [
+    0.4,
+    -5.0
+   ],
+   [
+    0.45,
+    -2.0
+   ],
+   [
+    0.5,
+    0.0
+   ],
+   [
+    0.55,
+    2.0
+   ],
+   [
+    0.6,
+    5.0
+   ],
+   [
+    0.65,
+    7.0
+   ],
+   [
+    0.7,
+    10.0
+   ],
+   [
+    0.75,
+    12.0
+   ],
+   [
+    0.8,
+    15.0
+   ],
+   [
+    0.85,
+    17.0
+   ],
+   [
+    0.9,
+    20.0
+   ],
+   [
+    0.95,
+    22.0
+   ],
+   [
+    1.0,
+    24.0
+   ]
+  ],
+  "fit_error": 0.0096
+ },
+ {
+  "field": "Global0.plainParams.kParamBypass",
+  "host": "bypass",
+  "default": 0.0,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "toggle"
+ },
+ {
+  "field": "Global0.plainParams.kParamDirectVol",
+  "host": "direct_vol",
+  "default": 0.500000001,
+  "default_raw": 0.5,
+  "default_text": "50% [0.0 dB]",
+  "units": null,
+  "kind": "power",
+  "min": 5e-09,
+  "max": 1.999999987,
+  "k": 2.0
+ },
+ {
+  "field": "Global0.plainParams.kParamFXBus1Vol",
+  "host": "bus_1_vol",
+  "default": 0.500000001,
+  "default_raw": 0.5,
+  "default_text": "50% [0.0 dB]",
+  "units": null,
+  "kind": "power",
+  "min": 5e-09,
+  "max": 1.999999987,
+  "k": 2.0
+ },
+ {
+  "field": "Global0.plainParams.kParamFXBus2Vol",
+  "host": "bus_2_vol",
+  "default": 0.500000001,
+  "default_raw": 0.5,
+  "default_text": "50% [0.0 dB]",
+  "units": null,
+  "kind": "power",
+  "min": 5e-09,
+  "max": 1.999999987,
+  "k": 2.0
+ },
+ {
+  "field": "Global0.plainParams.kParamLegato",
+  "host": "legato",
+  "default": 0.0,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "toggle"
+ },
+ {
+  "field": "Global0.plainParams.kParamMasterTuning",
+  "host": "main_tuning",
+  "default": 0.500000001,
+  "default_raw": 0.5,
+  "default_text": "0.5000",
+  "units": null,
+  "kind": "linear",
+  "min": 4e-09,
+  "max": 0.999999998
+ },
+ {
+  "field": "Global0.plainParams.kParamMasterVolume",
+  "host": "main_vol",
+  "default": 0.25,
+  "default_raw": 0.5,
+  "default_text": "50% [-9.0 dB]",
+  "units": null,
+  "kind": "power",
+  "min": 2e-09,
+  "max": 0.999999994,
+  "k": 2.0
+ },
+ {
+  "field": "Global0.plainParams.kParamModWheel",
+  "host": "mod_wheel",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "0",
+  "units": "%",
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "Global0.plainParams.kParamMonoToggle",
+  "host": "mono_toggle",
+  "default": 0.0,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "toggle"
+ },
+ {
+  "field": "Global0.plainParams.kParamPortaAlways",
+  "host": "porta_always",
+  "default": 0.0,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "toggle"
+ },
+ {
+  "field": "Global0.plainParams.kParamPortaScaled",
+  "host": "porta_scaled",
+  "default": 0.0,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "toggle"
+ },
+ {
+  "field": "Global0.plainParams.kParamPortamentoCurve",
+  "host": "porta_curve",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "0",
+  "units": "%",
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "Global0.plainParams.kParamPortamentoTime",
+  "host": "porta_time",
+  "default": 1.6e-08,
+  "default_raw": 0.0,
+  "default_text": "0.0 ms",
+  "units": null,
+  "kind": "power",
+  "min": 1.6e-08,
+  "max": 7.999999815,
+  "k": 5.0
+ },
+ {
+  "field": "Global0.plainParams.kParamProgram",
+  "host": "bank",
+  "default": null,
+  "default_raw": 0.0,
+  "default_text": "Prog 1",
+  "units": null,
+  "kind": "table",
+  "points": [
+   [
+    0.05,
+    6.0
+   ],
+   [
+    0.1,
+    12.0
+   ],
+   [
+    0.15,
+    19.0
+   ],
+   [
+    0.2,
+    25.0
+   ],
+   [
+    0.25,
+    32.0
+   ],
+   [
+    0.3,
+    38.0
+   ],
+   [
+    0.35,
+    44.0
+   ],
+   [
+    0.4,
+    51.0
+   ],
+   [
+    0.45,
+    57.0
+   ],
+   [
+    0.5,
+    64.0
+   ],
+   [
+    0.55,
+    70.0
+   ],
+   [
+    0.6,
+    76.0
+   ],
+   [
+    0.65,
+    83.0
+   ],
+   [
+    0.7,
+    89.0
+   ],
+   [
+    0.75,
+    96.0
+   ],
+   [
+    0.8,
+    102.0
+   ],
+   [
+    0.85,
+    108.0
+   ],
+   [
+    0.9,
+    115.0
+   ],
+   [
+    0.95,
+    121.0
+   ],
+   [
+    1.0,
+    127.0
+   ]
+  ],
+  "fit_error": 0.0038
+ },
+ {
+  "field": "Global0.plainParams.kParamSwing",
+  "host": "swing",
+  "default": 50.000000042,
+  "default_raw": 0.5,
+  "default_text": "OFF",
+  "units": null,
+  "kind": "linear",
+  "min": 12.500000263,
+  "max": 87.499999821
+ },
+ {
+  "field": "Global0.plainParams.kParamSwingDiv",
+  "host": "swing_div",
+  "default": null,
+  "default_raw": 0.5,
+  "default_text": "1/16",
+  "units": null,
+  "kind": "steps",
+  "points": [
+   [
+    0.0,
+    0.0
+   ],
+   [
+    0.05,
+    0.0
+   ],
+   [
+    0.1,
+    0.0
+   ],
+   [
+    0.15,
+    1.0
+   ],
+   [
+    0.2,
+    1.0
+   ],
+   [
+    0.25,
+    1.0
+   ],
+   [
+    0.3,
+    2.0
+   ],
+   [
+    0.35,
+    2.0
+   ],
+   [
+    0.4,
+    2.0
+   ],
+   [
+    0.45,
+    3.0
+   ],
+   [
+    0.55,
+    3.0
+   ],
+   [
+    0.6,
+    4.0
+   ],
+   [
+    0.65,
+    4.0
+   ],
+   [
+    0.7,
+    4.0
+   ],
+   [
+    0.75,
+    5.0
+   ],
+   [
+    0.8,
+    5.0
+   ],
+   [
+    0.85,
+    5.0
+   ],
+   [
+    0.9,
+    6.0
+   ],
+   [
+    0.95,
+    6.0
+   ],
+   [
+    1.0,
+    6.0
+   ]
+  ],
+  "min": 0.0,
+  "max": 6.0
+ },
+ {
+  "field": "Global0.plainParams.kParamTranspose",
+  "host": "transpose_semitones",
+  "default": null,
+  "default_raw": 0.5,
+  "default_text": "0",
+  "units": "semitones",
+  "kind": "table",
+  "points": [
+   [
+    0.0,
+    -24.0
+   ],
+   [
+    0.05,
+    -22.0
+   ],
+   [
+    0.1,
+    -20.0
+   ],
+   [
+    0.15,
+    -17.0
+   ],
+   [
+    0.2,
+    -15.0
+   ],
+   [
+    0.25,
+    -12.0
+   ],
+   [
+    0.3,
+    -10.0
+   ],
+   [
+    0.35,
+    -7.0
+   ],
+   [
+    0.4,
+    -5.0
+   ],
+   [
+    0.45,
+    -2.0
+   ],
+   [
+    0.55,
+    2.0
+   ],
+   [
+    0.6,
+    5.0
+   ],
+   [
+    0.65,
+    7.0
+   ],
+   [
+    0.7,
+    10.0
+   ],
+   [
+    0.75,
+    12.0
+   ],
+   [
+    0.8,
+    15.0
+   ],
+   [
+    0.85,
+    17.0
+   ],
+   [
+    0.9,
+    20.0
+   ],
+   [
+    0.95,
+    22.0
+   ],
+   [
+    1.0,
+    24.0
+   ]
+  ],
+  "fit_error": 0.0096
+ },
+ {
+  "field": "Global0.plainParams.kParamVoiceAmp",
+  "host": "amp",
+  "default": 0.500000001,
+  "default_raw": 0.5,
+  "default_text": "0.5000",
+  "units": null,
+  "kind": "linear",
+  "min": 4e-09,
+  "max": 0.999999998
+ },
+ {
+  "field": "LFO0.plainParams.kParamDelay",
+  "host": "lfo_1_delay",
+  "default": 1.7e-08,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "linear",
+  "min": 1.7e-08,
+  "max": 3.999999989
+ },
+ {
+  "field": "LFO0.plainParams.kParamPhase",
+  "host": "lfo_1_phase",
+  "default": 1.525e-06,
+  "default_raw": 0.0,
+  "default_text": "0\u00b0",
+  "units": null,
+  "kind": "linear",
+  "min": 1.525e-06,
+  "max": 359.999999004
+ },
+ {
+  "field": "LFO0.plainParams.kParamRate",
+  "host": "lfo_1_rate",
+  "default": 6.25000009,
+  "default_raw": 0.5,
+  "default_text": "1/4",
+  "units": null,
+  "kind": "power",
+  "min": 2.1e-07,
+  "max": 99.999998282,
+  "k": 4.0
+ },
+ {
+  "field": "LFO0.plainParams.kParamRise",
+  "host": "lfo_1_rise",
+  "default": 1.7e-08,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "linear",
+  "min": 1.7e-08,
+  "max": 3.999999989
+ },
+ {
+  "field": "LFO0.plainParams.kParamSmooth",
+  "host": "lfo_1_smooth",
+  "default": 31.722980255,
+  "default_raw": 0.0,
+  "default_text": "0.0",
+  "units": null,
+  "kind": "power",
+  "min": 31.722980255,
+  "max": 100.0,
+  "k": 1.8
+ },
+ {
+  "field": "LFO1.plainParams.kParamDelay",
+  "host": "lfo_2_delay",
+  "default": 1.7e-08,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "linear",
+  "min": 1.7e-08,
+  "max": 3.999999989
+ },
+ {
+  "field": "LFO1.plainParams.kParamPhase",
+  "host": "lfo_2_phase",
+  "default": 1.525e-06,
+  "default_raw": 0.0,
+  "default_text": "0\u00b0",
+  "units": null,
+  "kind": "linear",
+  "min": 1.525e-06,
+  "max": 359.999999004
+ },
+ {
+  "field": "LFO1.plainParams.kParamRate",
+  "host": "lfo_2_rate",
+  "default": 6.25000009,
+  "default_raw": 0.5,
+  "default_text": "1/4",
+  "units": null,
+  "kind": "power",
+  "min": 2.1e-07,
+  "max": 99.999998282,
+  "k": 4.0
+ },
+ {
+  "field": "LFO1.plainParams.kParamRise",
+  "host": "lfo_2_rise",
+  "default": 1.7e-08,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "linear",
+  "min": 1.7e-08,
+  "max": 3.999999989
+ },
+ {
+  "field": "LFO1.plainParams.kParamSmooth",
+  "host": "lfo_2_smooth",
+  "default": 31.722980255,
+  "default_raw": 0.0,
+  "default_text": "0.0",
+  "units": null,
+  "kind": "power",
+  "min": 31.722980255,
+  "max": 100.0,
+  "k": 1.8
+ },
+ {
+  "field": "LFO2.plainParams.kParamDelay",
+  "host": "lfo_3_delay",
+  "default": 1.7e-08,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "linear",
+  "min": 1.7e-08,
+  "max": 3.999999989
+ },
+ {
+  "field": "LFO2.plainParams.kParamPhase",
+  "host": "lfo_3_phase",
+  "default": 1.525e-06,
+  "default_raw": 0.0,
+  "default_text": "0\u00b0",
+  "units": null,
+  "kind": "linear",
+  "min": 1.525e-06,
+  "max": 359.999999004
+ },
+ {
+  "field": "LFO2.plainParams.kParamRate",
+  "host": "lfo_3_rate",
+  "default": 6.25000009,
+  "default_raw": 0.5,
+  "default_text": "1/4",
+  "units": null,
+  "kind": "power",
+  "min": 2.1e-07,
+  "max": 99.999998282,
+  "k": 4.0
+ },
+ {
+  "field": "LFO2.plainParams.kParamRise",
+  "host": "lfo_3_rise",
+  "default": 1.7e-08,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "linear",
+  "min": 1.7e-08,
+  "max": 3.999999989
+ },
+ {
+  "field": "LFO2.plainParams.kParamSmooth",
+  "host": "lfo_3_smooth",
+  "default": 31.722980255,
+  "default_raw": 0.0,
+  "default_text": "0.0",
+  "units": null,
+  "kind": "power",
+  "min": 31.722980255,
+  "max": 100.0,
+  "k": 1.8
+ },
+ {
+  "field": "LFO3.plainParams.kParamDelay",
+  "host": "lfo_4_delay",
+  "default": 1.7e-08,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "linear",
+  "min": 1.7e-08,
+  "max": 3.999999989
+ },
+ {
+  "field": "LFO3.plainParams.kParamPhase",
+  "host": "lfo_4_phase",
+  "default": 1.525e-06,
+  "default_raw": 0.0,
+  "default_text": "0\u00b0",
+  "units": null,
+  "kind": "linear",
+  "min": 1.525e-06,
+  "max": 359.999999004
+ },
+ {
+  "field": "LFO3.plainParams.kParamRate",
+  "host": "lfo_4_rate",
+  "default": 6.25000009,
+  "default_raw": 0.5,
+  "default_text": "1/4",
+  "units": null,
+  "kind": "power",
+  "min": 2.1e-07,
+  "max": 99.999998282,
+  "k": 4.0
+ },
+ {
+  "field": "LFO3.plainParams.kParamRise",
+  "host": "lfo_4_rise",
+  "default": 1.7e-08,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "linear",
+  "min": 1.7e-08,
+  "max": 3.999999989
+ },
+ {
+  "field": "LFO3.plainParams.kParamSmooth",
+  "host": "lfo_4_smooth",
+  "default": 31.722980255,
+  "default_raw": 0.0,
+  "default_text": "0.0",
+  "units": null,
+  "kind": "power",
+  "min": 31.722980255,
+  "max": 100.0,
+  "k": 1.8
+ },
+ {
+  "field": "LFO4.plainParams.kParamDelay",
+  "host": "lfo_5_delay",
+  "default": 1.7e-08,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "linear",
+  "min": 1.7e-08,
+  "max": 3.999999989
+ },
+ {
+  "field": "LFO4.plainParams.kParamPhase",
+  "host": "lfo_5_phase",
+  "default": 1.525e-06,
+  "default_raw": 0.0,
+  "default_text": "0\u00b0",
+  "units": null,
+  "kind": "linear",
+  "min": 1.525e-06,
+  "max": 359.999999004
+ },
+ {
+  "field": "LFO4.plainParams.kParamRate",
+  "host": "lfo_5_rate",
+  "default": 6.25000009,
+  "default_raw": 0.5,
+  "default_text": "1/4",
+  "units": null,
+  "kind": "power",
+  "min": 2.1e-07,
+  "max": 99.999998282,
+  "k": 4.0
+ },
+ {
+  "field": "LFO4.plainParams.kParamRise",
+  "host": "lfo_5_rise",
+  "default": 1.7e-08,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "linear",
+  "min": 1.7e-08,
+  "max": 3.999999989
+ },
+ {
+  "field": "LFO4.plainParams.kParamSmooth",
+  "host": "lfo_5_smooth",
+  "default": 31.722980255,
+  "default_raw": 0.0,
+  "default_text": "0.0",
+  "units": null,
+  "kind": "power",
+  "min": 31.722980255,
+  "max": 100.0,
+  "k": 1.8
+ },
+ {
+  "field": "LFO5.plainParams.kParamDelay",
+  "host": "lfo_6_delay",
+  "default": 1.7e-08,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "linear",
+  "min": 1.7e-08,
+  "max": 3.999999989
+ },
+ {
+  "field": "LFO5.plainParams.kParamPhase",
+  "host": "lfo_6_phase",
+  "default": 1.525e-06,
+  "default_raw": 0.0,
+  "default_text": "0\u00b0",
+  "units": null,
+  "kind": "linear",
+  "min": 1.525e-06,
+  "max": 359.999999004
+ },
+ {
+  "field": "LFO5.plainParams.kParamRate",
+  "host": "lfo_6_rate",
+  "default": 6.25000009,
+  "default_raw": 0.5,
+  "default_text": "1/4",
+  "units": null,
+  "kind": "power",
+  "min": 2.1e-07,
+  "max": 99.999998282,
+  "k": 4.0
+ },
+ {
+  "field": "LFO5.plainParams.kParamRise",
+  "host": "lfo_6_rise",
+  "default": 1.7e-08,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "linear",
+  "min": 1.7e-08,
+  "max": 3.999999989
+ },
+ {
+  "field": "LFO5.plainParams.kParamSmooth",
+  "host": "lfo_6_smooth",
+  "default": 31.722980255,
+  "default_raw": 0.0,
+  "default_text": "0.0",
+  "units": null,
+  "kind": "power",
+  "min": 31.722980255,
+  "max": 100.0,
+  "k": 1.8
+ },
+ {
+  "field": "LFO6.plainParams.kParamDelay",
+  "host": "lfo_7_delay",
+  "default": 1.7e-08,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "linear",
+  "min": 1.7e-08,
+  "max": 3.999999989
+ },
+ {
+  "field": "LFO6.plainParams.kParamPhase",
+  "host": "lfo_7_phase",
+  "default": 1.525e-06,
+  "default_raw": 0.0,
+  "default_text": "0\u00b0",
+  "units": null,
+  "kind": "linear",
+  "min": 1.525e-06,
+  "max": 359.999999004
+ },
+ {
+  "field": "LFO6.plainParams.kParamRate",
+  "host": "lfo_7_rate",
+  "default": 6.25000009,
+  "default_raw": 0.5,
+  "default_text": "1/4",
+  "units": null,
+  "kind": "power",
+  "min": 2.1e-07,
+  "max": 99.999998282,
+  "k": 4.0
+ },
+ {
+  "field": "LFO6.plainParams.kParamRise",
+  "host": "lfo_7_rise",
+  "default": 1.7e-08,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "linear",
+  "min": 1.7e-08,
+  "max": 3.999999989
+ },
+ {
+  "field": "LFO6.plainParams.kParamSmooth",
+  "host": "lfo_7_smooth",
+  "default": 31.722980255,
+  "default_raw": 0.0,
+  "default_text": "0.0",
+  "units": null,
+  "kind": "power",
+  "min": 31.722980255,
+  "max": 100.0,
+  "k": 1.8
+ },
+ {
+  "field": "LFO7.plainParams.kParamDelay",
+  "host": "lfo_8_delay",
+  "default": 1.7e-08,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "linear",
+  "min": 1.7e-08,
+  "max": 3.999999989
+ },
+ {
+  "field": "LFO7.plainParams.kParamPhase",
+  "host": "lfo_8_phase",
+  "default": 1.525e-06,
+  "default_raw": 0.0,
+  "default_text": "0\u00b0",
+  "units": null,
+  "kind": "linear",
+  "min": 1.525e-06,
+  "max": 359.999999004
+ },
+ {
+  "field": "LFO7.plainParams.kParamRate",
+  "host": "lfo_8_rate",
+  "default": 6.25000009,
+  "default_raw": 0.5,
+  "default_text": "1/4",
+  "units": null,
+  "kind": "power",
+  "min": 2.1e-07,
+  "max": 99.999998282,
+  "k": 4.0
+ },
+ {
+  "field": "LFO7.plainParams.kParamRise",
+  "host": "lfo_8_rise",
+  "default": 1.7e-08,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "linear",
+  "min": 1.7e-08,
+  "max": 3.999999989
+ },
+ {
+  "field": "LFO7.plainParams.kParamSmooth",
+  "host": "lfo_8_smooth",
+  "default": 31.722980255,
+  "default_raw": 0.0,
+  "default_text": "0.0",
+  "units": null,
+  "kind": "power",
+  "min": 31.722980255,
+  "max": 100.0,
+  "k": 1.8
+ },
+ {
+  "field": "LFO8.plainParams.kParamDelay",
+  "host": "lfo_9_delay",
+  "default": 1.7e-08,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "linear",
+  "min": 1.7e-08,
+  "max": 3.999999989
+ },
+ {
+  "field": "LFO8.plainParams.kParamPhase",
+  "host": "lfo_9_phase",
+  "default": 1.525e-06,
+  "default_raw": 0.0,
+  "default_text": "0\u00b0",
+  "units": null,
+  "kind": "linear",
+  "min": 1.525e-06,
+  "max": 359.999999004
+ },
+ {
+  "field": "LFO8.plainParams.kParamRate",
+  "host": "lfo_9_rate",
+  "default": 6.25000009,
+  "default_raw": 0.5,
+  "default_text": "1/4",
+  "units": null,
+  "kind": "power",
+  "min": 2.1e-07,
+  "max": 99.999998282,
+  "k": 4.0
+ },
+ {
+  "field": "LFO8.plainParams.kParamRise",
+  "host": "lfo_9_rise",
+  "default": 1.7e-08,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "linear",
+  "min": 1.7e-08,
+  "max": 3.999999989
+ },
+ {
+  "field": "LFO8.plainParams.kParamSmooth",
+  "host": "lfo_9_smooth",
+  "default": 31.722980255,
+  "default_raw": 0.0,
+  "default_text": "0.0",
+  "units": null,
+  "kind": "power",
+  "min": 31.722980255,
+  "max": 100.0,
+  "k": 1.8
+ },
+ {
+  "field": "LFO9.plainParams.kParamDelay",
+  "host": "lfo_10_delay",
+  "default": 1.7e-08,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "linear",
+  "min": 1.7e-08,
+  "max": 3.999999989
+ },
+ {
+  "field": "LFO9.plainParams.kParamPhase",
+  "host": "lfo_10_phase",
+  "default": 1.525e-06,
+  "default_raw": 0.0,
+  "default_text": "0\u00b0",
+  "units": null,
+  "kind": "linear",
+  "min": 1.525e-06,
+  "max": 359.999999004
+ },
+ {
+  "field": "LFO9.plainParams.kParamRate",
+  "host": "lfo_10_rate",
+  "default": 6.25000009,
+  "default_raw": 0.5,
+  "default_text": "1/4",
+  "units": null,
+  "kind": "power",
+  "min": 2.1e-07,
+  "max": 99.999998282,
+  "k": 4.0
+ },
+ {
+  "field": "LFO9.plainParams.kParamRise",
+  "host": "lfo_10_rise",
+  "default": 1.7e-08,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "linear",
+  "min": 1.7e-08,
+  "max": 3.999999989
+ },
+ {
+  "field": "LFO9.plainParams.kParamSmooth",
+  "host": "lfo_10_smooth",
+  "default": 31.722980255,
+  "default_raw": 0.0,
+  "default_text": "0.0",
+  "units": null,
+  "kind": "power",
+  "min": 31.722980255,
+  "max": 100.0,
+  "k": 1.8
+ },
+ {
+  "field": "Macro0.plainParams.kParamValue",
+  "host": "macro_1",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "0",
+  "units": null,
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "Macro1.plainParams.kParamValue",
+  "host": "macro_2",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "0",
+  "units": null,
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "Macro2.plainParams.kParamValue",
+  "host": "macro_3",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "0",
+  "units": null,
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "Macro3.plainParams.kParamValue",
+  "host": "macro_4",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "0",
+  "units": null,
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "Macro4.plainParams.kParamValue",
+  "host": "macro_5",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "0",
+  "units": null,
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "Macro5.plainParams.kParamValue",
+  "host": "macro_6",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "0",
+  "units": null,
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "Macro6.plainParams.kParamValue",
+  "host": "macro_7",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "0",
+  "units": null,
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "Macro7.plainParams.kParamValue",
+  "host": "macro_8",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "0",
+  "units": null,
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "ModSlot0.plainParams.kParamAmount",
+  "host": "mod_1_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot0.plainParams.kParamOut",
+  "host": "mod_1_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot1.plainParams.kParamAmount",
+  "host": "mod_2_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot1.plainParams.kParamOut",
+  "host": "mod_2_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot10.plainParams.kParamAmount",
+  "host": "mod_11_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot10.plainParams.kParamOut",
+  "host": "mod_11_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot11.plainParams.kParamAmount",
+  "host": "mod_12_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot11.plainParams.kParamOut",
+  "host": "mod_12_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot12.plainParams.kParamAmount",
+  "host": "mod_13_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot12.plainParams.kParamOut",
+  "host": "mod_13_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot13.plainParams.kParamAmount",
+  "host": "mod_14_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot13.plainParams.kParamOut",
+  "host": "mod_14_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot14.plainParams.kParamAmount",
+  "host": "mod_15_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot14.plainParams.kParamOut",
+  "host": "mod_15_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot15.plainParams.kParamAmount",
+  "host": "mod_16_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot15.plainParams.kParamOut",
+  "host": "mod_16_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot16.plainParams.kParamAmount",
+  "host": "mod_17_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot16.plainParams.kParamOut",
+  "host": "mod_17_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot17.plainParams.kParamAmount",
+  "host": "mod_18_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot17.plainParams.kParamOut",
+  "host": "mod_18_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot18.plainParams.kParamAmount",
+  "host": "mod_19_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot18.plainParams.kParamOut",
+  "host": "mod_19_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot19.plainParams.kParamAmount",
+  "host": "mod_20_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot19.plainParams.kParamOut",
+  "host": "mod_20_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot2.plainParams.kParamAmount",
+  "host": "mod_3_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot2.plainParams.kParamOut",
+  "host": "mod_3_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot20.plainParams.kParamAmount",
+  "host": "mod_21_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot20.plainParams.kParamOut",
+  "host": "mod_21_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot21.plainParams.kParamAmount",
+  "host": "mod_22_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot21.plainParams.kParamOut",
+  "host": "mod_22_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot22.plainParams.kParamAmount",
+  "host": "mod_23_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot22.plainParams.kParamOut",
+  "host": "mod_23_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot23.plainParams.kParamAmount",
+  "host": "mod_24_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot23.plainParams.kParamOut",
+  "host": "mod_24_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot24.plainParams.kParamAmount",
+  "host": "mod_25_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot24.plainParams.kParamOut",
+  "host": "mod_25_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot25.plainParams.kParamAmount",
+  "host": "mod_26_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot25.plainParams.kParamOut",
+  "host": "mod_26_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot26.plainParams.kParamAmount",
+  "host": "mod_27_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot26.plainParams.kParamOut",
+  "host": "mod_27_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot27.plainParams.kParamAmount",
+  "host": "mod_28_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot27.plainParams.kParamOut",
+  "host": "mod_28_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot28.plainParams.kParamAmount",
+  "host": "mod_29_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot28.plainParams.kParamOut",
+  "host": "mod_29_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot29.plainParams.kParamAmount",
+  "host": "mod_30_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot29.plainParams.kParamOut",
+  "host": "mod_30_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot3.plainParams.kParamAmount",
+  "host": "mod_4_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot3.plainParams.kParamOut",
+  "host": "mod_4_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot30.plainParams.kParamAmount",
+  "host": "mod_31_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot30.plainParams.kParamOut",
+  "host": "mod_31_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot31.plainParams.kParamAmount",
+  "host": "mod_32_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot31.plainParams.kParamOut",
+  "host": "mod_32_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot32.plainParams.kParamAmount",
+  "host": "mod_33_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot32.plainParams.kParamOut",
+  "host": "mod_33_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot33.plainParams.kParamAmount",
+  "host": "mod_34_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot33.plainParams.kParamOut",
+  "host": "mod_34_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot34.plainParams.kParamAmount",
+  "host": "mod_35_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot34.plainParams.kParamOut",
+  "host": "mod_35_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot35.plainParams.kParamAmount",
+  "host": "mod_36_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot35.plainParams.kParamOut",
+  "host": "mod_36_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot36.plainParams.kParamAmount",
+  "host": "mod_37_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot36.plainParams.kParamOut",
+  "host": "mod_37_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot37.plainParams.kParamAmount",
+  "host": "mod_38_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot37.plainParams.kParamOut",
+  "host": "mod_38_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot38.plainParams.kParamAmount",
+  "host": "mod_39_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot38.plainParams.kParamOut",
+  "host": "mod_39_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot39.plainParams.kParamAmount",
+  "host": "mod_40_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot39.plainParams.kParamOut",
+  "host": "mod_40_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot4.plainParams.kParamAmount",
+  "host": "mod_5_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot4.plainParams.kParamOut",
+  "host": "mod_5_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot40.plainParams.kParamAmount",
+  "host": "mod_41_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot40.plainParams.kParamOut",
+  "host": "mod_41_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot41.plainParams.kParamAmount",
+  "host": "mod_42_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot41.plainParams.kParamOut",
+  "host": "mod_42_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot42.plainParams.kParamAmount",
+  "host": "mod_43_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot42.plainParams.kParamOut",
+  "host": "mod_43_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot43.plainParams.kParamAmount",
+  "host": "mod_44_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot43.plainParams.kParamOut",
+  "host": "mod_44_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot44.plainParams.kParamAmount",
+  "host": "mod_45_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot44.plainParams.kParamOut",
+  "host": "mod_45_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot45.plainParams.kParamAmount",
+  "host": "mod_46_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot45.plainParams.kParamOut",
+  "host": "mod_46_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot46.plainParams.kParamAmount",
+  "host": "mod_47_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot46.plainParams.kParamOut",
+  "host": "mod_47_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot47.plainParams.kParamAmount",
+  "host": "mod_48_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot47.plainParams.kParamOut",
+  "host": "mod_48_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot48.plainParams.kParamAmount",
+  "host": "mod_49_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot48.plainParams.kParamOut",
+  "host": "mod_49_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot49.plainParams.kParamAmount",
+  "host": "mod_50_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot49.plainParams.kParamOut",
+  "host": "mod_50_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot5.plainParams.kParamAmount",
+  "host": "mod_6_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot5.plainParams.kParamOut",
+  "host": "mod_6_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot50.plainParams.kParamAmount",
+  "host": "mod_51_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot50.plainParams.kParamOut",
+  "host": "mod_51_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot51.plainParams.kParamAmount",
+  "host": "mod_52_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot51.plainParams.kParamOut",
+  "host": "mod_52_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot52.plainParams.kParamAmount",
+  "host": "mod_53_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot52.plainParams.kParamOut",
+  "host": "mod_53_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot53.plainParams.kParamAmount",
+  "host": "mod_54_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot53.plainParams.kParamOut",
+  "host": "mod_54_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot54.plainParams.kParamAmount",
+  "host": "mod_55_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot54.plainParams.kParamOut",
+  "host": "mod_55_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot55.plainParams.kParamAmount",
+  "host": "mod_56_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot55.plainParams.kParamOut",
+  "host": "mod_56_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot56.plainParams.kParamAmount",
+  "host": "mod_57_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot56.plainParams.kParamOut",
+  "host": "mod_57_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot57.plainParams.kParamAmount",
+  "host": "mod_58_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot57.plainParams.kParamOut",
+  "host": "mod_58_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot58.plainParams.kParamAmount",
+  "host": "mod_59_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot58.plainParams.kParamOut",
+  "host": "mod_59_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot59.plainParams.kParamAmount",
+  "host": "mod_60_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot59.plainParams.kParamOut",
+  "host": "mod_60_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot6.plainParams.kParamAmount",
+  "host": "mod_7_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot6.plainParams.kParamOut",
+  "host": "mod_7_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot60.plainParams.kParamAmount",
+  "host": "mod_61_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot60.plainParams.kParamOut",
+  "host": "mod_61_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot61.plainParams.kParamAmount",
+  "host": "mod_62_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot61.plainParams.kParamOut",
+  "host": "mod_62_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot62.plainParams.kParamAmount",
+  "host": "mod_63_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot62.plainParams.kParamOut",
+  "host": "mod_63_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot63.plainParams.kParamAmount",
+  "host": "mod_64_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot63.plainParams.kParamOut",
+  "host": "mod_64_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot7.plainParams.kParamAmount",
+  "host": "mod_8_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot7.plainParams.kParamOut",
+  "host": "mod_8_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot8.plainParams.kParamAmount",
+  "host": "mod_9_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot8.plainParams.kParamOut",
+  "host": "mod_9_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "ModSlot9.plainParams.kParamAmount",
+  "host": "mod_10_amount",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "ModSlot9.plainParams.kParamOut",
+  "host": "mod_10_out",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100%",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "Oscillator0.WTOsc0.plainParams.kParamInitialPhase",
+  "host": "a_phase",
+  "default": 180.000000201,
+  "default_raw": 0.5,
+  "default_text": "180\u00b0",
+  "units": null,
+  "kind": "linear",
+  "min": 1.264e-06,
+  "max": 359.999999139
+ },
+ {
+  "field": "Oscillator0.WTOsc0.plainParams.kParamRandomPhase",
+  "host": "a_rand_phase",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "Oscillator0.WTOsc0.plainParams.kParamTablePos",
+  "host": "a_wt_pos",
+  "default": 1.00000108,
+  "default_raw": 0.0,
+  "default_text": "1",
+  "units": null,
+  "kind": "linear",
+  "min": 1.00000108,
+  "max": 255.999999294
+ },
+ {
+  "field": "Oscillator0.WTOsc0.plainParams.kParamUnisonWTPos",
+  "host": "a_uni_wt_pos",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "0",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "Oscillator0.WTOsc0.plainParams.kParamWarp",
+  "host": "a_warp",
+  "default": 4e-09,
+  "default_raw": 0.0,
+  "default_text": "No Warp Type",
+  "units": null,
+  "kind": "linear",
+  "min": 4e-09,
+  "max": 0.999999997
+ },
+ {
+  "field": "Oscillator0.WTOsc0.plainParams.kParamWarp2",
+  "host": "a_warp_2",
+  "default": 4e-09,
+  "default_raw": 0.0,
+  "default_text": "No Warp Type",
+  "units": null,
+  "kind": "linear",
+  "min": 4e-09,
+  "max": 0.999999997
+ },
+ {
+  "field": "Oscillator0.WTOsc0.plainParams.kParamWarpMenu",
+  "host": "a_warp_mode",
+  "default": null,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "choice",
+  "options": [
+   "kBendNeg",
+   "kASYMNeg",
+   "kDLM",
+   "kRemap_4",
+   "kFilterLPF",
+   "kDistHardClip",
+   "kDistLinFold",
+   "kDistRectify",
+   "kDistTapeSat",
+   "kFM_NOISE",
+   "kFM_FILT2",
+   "kFMX_SUB",
+   "kFMP_OSC",
+   "kFMP_SUB",
+   "kPD_OSC2",
+   "kPD_FILT2",
+   "kAM_OSC2",
+   "kAM_FILT1",
+   "kRM_NOISE",
+   "kRM_FILT2"
+  ]
+ },
+ {
+  "field": "Oscillator0.WTOsc0.plainParams.kParamWarpMenu2",
+  "host": "a_warp_2_mode",
+  "default": null,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "choice",
+  "options": [
+   "kBendNeg",
+   "kASYMNeg",
+   "kDLM",
+   "kRemap_4",
+   "kFilterLPF",
+   "kDistHardClip",
+   "kDistLinFold",
+   "kDistRectify",
+   "kDistTapeSat",
+   "kFM_NOISE",
+   "kFM_FILT2",
+   "kFMX_SUB",
+   "kFMP_OSC",
+   "kFMP_SUB",
+   "kPD_OSC2",
+   "kPD_FILT2",
+   "kAM_OSC2",
+   "kAM_FILT1",
+   "kRM_NOISE",
+   "kRM_FILT2"
+  ]
+ },
+ {
+  "field": "Oscillator0.WTOsc0.plainParams.kParamWarpVar",
+  "host": "a_warp_var",
+  "default": 4e-09,
+  "default_raw": 0.0,
+  "default_text": "0.0000",
+  "units": null,
+  "kind": "linear",
+  "min": 4e-09,
+  "max": 0.999999997
+ },
+ {
+  "field": "Oscillator0.WTOsc0.plainParams.kParamWarpVar2",
+  "host": "a_warp_2_var",
+  "default": 4e-09,
+  "default_raw": 0.0,
+  "default_text": "0.0000",
+  "units": null,
+  "kind": "linear",
+  "min": 4e-09,
+  "max": 0.999999997
+ },
+ {
+  "field": "Oscillator0.plainParams.kParamCoarsePit",
+  "host": "a_coarse_pitch",
+  "default": 7.2e-08,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -63.999999551,
+  "max": 63.999999694
+ },
+ {
+  "field": "Oscillator0.plainParams.kParamDetune",
+  "host": "a_uni_detune",
+  "default": 0.25,
+  "default_raw": 0.5,
+  "default_text": "0.25",
+  "units": null,
+  "kind": "power",
+  "min": 2e-09,
+  "max": 0.999999994,
+  "k": 2.0
+ },
+ {
+  "field": "Oscillator0.plainParams.kParamDetuneWid",
+  "host": "a_uni_blend",
+  "default": 74.999999897,
+  "default_raw": 0.75,
+  "default_text": "75",
+  "units": null,
+  "kind": "linear",
+  "min": 3.5e-07,
+  "max": 99.999999747
+ },
+ {
+  "field": "Oscillator0.plainParams.kParamEnable",
+  "host": "a_enable",
+  "default": 1.0,
+  "default_raw": 1.0,
+  "default_text": "On",
+  "units": null,
+  "kind": "toggle"
+ },
+ {
+  "field": "Oscillator0.plainParams.kParamEnd",
+  "host": "a_end",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100",
+  "units": "%",
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "Oscillator0.plainParams.kParamFine",
+  "host": "a_fine_cents",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "0",
+  "units": "cents",
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "Oscillator0.plainParams.kParamHzOffset",
+  "host": "a_hz_offset_hz",
+  "default": 1.118e-06,
+  "default_raw": 0.5,
+  "default_text": "0.00",
+  "units": "Hz",
+  "kind": "linear",
+  "min": -999.99999298,
+  "max": 999.999995215
+ },
+ {
+  "field": "Oscillator0.plainParams.kParamLoopCrossfade",
+  "host": "a_loop_x_fade",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "0",
+  "units": "%",
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "Oscillator0.plainParams.kParamLoopEnd",
+  "host": "a_loop_end",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100",
+  "units": "%",
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "Oscillator0.plainParams.kParamLoopMode",
+  "host": "a_loop_mode",
+  "default": null,
+  "default_raw": 0.0,
+  "default_text": "One-shot",
+  "units": null,
+  "kind": "choice",
+  "options": [
+   "kNone",
+   "kForward",
+   "kReverse",
+   "kPingPong",
+   "kTailed"
+  ]
+ },
+ {
+  "field": "Oscillator0.plainParams.kParamLoopStart",
+  "host": "a_loop_start",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "0",
+  "units": "%",
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "Oscillator0.plainParams.kParamLoopStartLink",
+  "host": "a_relative_loop",
+  "default": 0.0,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "toggle"
+ },
+ {
+  "field": "Oscillator0.plainParams.kParamOctave",
+  "host": "a_octave_oct",
+  "default": null,
+  "default_raw": 0.5,
+  "default_text": "0",
+  "units": "oct",
+  "kind": "steps",
+  "points": [
+   [
+    0.0,
+    -4.0
+   ],
+   [
+    0.05,
+    -4.0
+   ],
+   [
+    0.1,
+    -4.0
+   ],
+   [
+    0.15,
+    -3.0
+   ],
+   [
+    0.2,
+    -3.0
+   ],
+   [
+    0.25,
+    -2.0
+   ],
+   [
+    0.3,
+    -2.0
+   ],
+   [
+    0.35,
+    -1.0
+   ],
+   [
+    0.4,
+    -1.0
+   ],
+   [
+    0.45,
+    0.0
+   ],
+   [
+    0.55,
+    0.0
+   ],
+   [
+    0.6,
+    1.0
+   ],
+   [
+    0.65,
+    1.0
+   ],
+   [
+    0.7,
+    2.0
+   ],
+   [
+    0.75,
+    2.0
+   ],
+   [
+    0.8,
+    3.0
+   ],
+   [
+    0.85,
+    3.0
+   ],
+   [
+    0.9,
+    4.0
+   ],
+   [
+    0.95,
+    4.0
+   ],
+   [
+    1.0,
+    4.0
+   ]
+  ],
+  "min": -4.0,
+  "max": 4.0
+ },
+ {
+  "field": "Oscillator0.plainParams.kParamPan",
+  "host": "a_pan",
+  "default": 5.6e-08,
+  "default_raw": 0.5,
+  "default_text": "0",
+  "units": null,
+  "kind": "linear",
+  "min": -49.999999649,
+  "max": 49.999999761
+ },
+ {
+  "field": "Oscillator0.plainParams.kParamPitch",
+  "host": "a_semi_semitones",
+  "default": 1.3e-08,
+  "default_raw": 0.5,
+  "default_text": "0",
+  "units": "semitones",
+  "kind": "linear",
+  "min": -11.999999916,
+  "max": 11.999999943
+ },
+ {
+  "field": "Oscillator0.plainParams.kParamPitchRatio",
+  "host": "a_ratio",
+  "default": 1.000000131,
+  "default_raw": 0.03076923079788685,
+  "default_text": "1.000",
+  "units": null,
+  "kind": "linear",
+  "min": -0.999999865,
+  "max": 63.999999963
+ },
+ {
+  "field": "Oscillator0.plainParams.kParamPitchTrack",
+  "host": "a_pitch_track",
+  "default": 1.0,
+  "default_raw": 1.0,
+  "default_text": "On",
+  "units": null,
+  "kind": "toggle"
+ },
+ {
+  "field": "Oscillator0.plainParams.kParamPosition",
+  "host": "a_position",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "0",
+  "units": "%",
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "Oscillator0.plainParams.kParamRandomStart",
+  "host": "a_uni_rand_start",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "0",
+  "units": null,
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "Oscillator0.plainParams.kParamReverse",
+  "host": "a_reverse",
+  "default": 0.0,
+  "default_raw": 0.0,
+  "default_text": "Forward",
+  "units": null,
+  "kind": "toggle"
+ },
+ {
+  "field": "Oscillator0.plainParams.kParamScanBPMRate",
+  "host": "a_scan_bpm_rate",
+  "default": null,
+  "default_raw": 0.5,
+  "default_text": "bar",
+  "units": null,
+  "kind": "steps",
+  "points": [
+   [
+    0.0,
+    0.0
+   ],
+   [
+    0.05,
+    0.0
+   ],
+   [
+    0.1,
+    0.0
+   ],
+   [
+    0.15,
+    1.0
+   ],
+   [
+    0.2,
+    1.0
+   ],
+   [
+    0.25,
+    1.0
+   ],
+   [
+    0.3,
+    2.0
+   ],
+   [
+    0.35,
+    2.0
+   ],
+   [
+    0.4,
+    2.0
+   ],
+   [
+    0.45,
+    3.0
+   ],
+   [
+    0.55,
+    3.0
+   ],
+   [
+    0.6,
+    4.0
+   ],
+   [
+    0.65,
+    4.0
+   ],
+   [
+    0.7,
+    4.0
+   ],
+   [
+    0.75,
+    5.0
+   ],
+   [
+    0.8,
+    5.0
+   ],
+   [
+    0.85,
+    5.0
+   ],
+   [
+    0.9,
+    6.0
+   ],
+   [
+    0.95,
+    6.0
+   ],
+   [
+    1.0,
+    6.0
+   ]
+  ],
+  "min": 0.0,
+  "max": 6.0
+ },
+ {
+  "field": "Oscillator0.plainParams.kParamScanKeyTrack",
+  "host": "a_scan_key_track",
+  "default": 0.0,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "toggle"
+ },
+ {
+  "field": "Oscillator0.plainParams.kParamScanRate",
+  "host": "a_scan_rate",
+  "default": 99.99999959,
+  "default_raw": 0.75,
+  "default_text": "100",
+  "units": "%",
+  "kind": "linear",
+  "min": -199.9999986,
+  "max": 199.999998986
+ },
+ {
+  "field": "Oscillator0.plainParams.kParamSlicingPlayToEnd",
+  "host": "a_slice_play_mode",
+  "default": 0.0,
+  "default_raw": 0.0,
+  "default_text": "To Next Marker",
+  "units": null,
+  "kind": "toggle"
+ },
+ {
+  "field": "Oscillator0.plainParams.kParamSlicingSingleSlice",
+  "host": "a_single_slice",
+  "default": null,
+  "default_raw": 0.0,
+  "default_text": "1",
+  "units": null,
+  "kind": "table",
+  "points": [
+   [
+    0.05,
+    6.0
+   ],
+   [
+    0.1,
+    11.0
+   ],
+   [
+    0.15,
+    16.0
+   ],
+   [
+    0.2,
+    21.0
+   ],
+   [
+    0.25,
+    26.0
+   ],
+   [
+    0.3,
+    31.0
+   ],
+   [
+    0.35,
+    35.0
+   ],
+   [
+    0.4,
+    41.0
+   ],
+   [
+    0.45,
+    45.0
+   ],
+   [
+    0.5,
+    51.0
+   ],
+   [
+    0.55,
+    56.0
+   ],
+   [
+    0.6,
+    61.0
+   ],
+   [
+    0.65,
+    65.0
+   ],
+   [
+    0.7,
+    70.0
+   ],
+   [
+    0.75,
+    76.0
+   ],
+   [
+    0.8,
+    81.0
+   ],
+   [
+    0.85,
+    86.0
+   ],
+   [
+    0.9,
+    90.0
+   ],
+   [
+    0.95,
+    95.0
+   ],
+   [
+    1.0,
+    100.0
+   ]
+  ],
+  "fit_error": 0.008
+ },
+ {
+  "field": "Oscillator0.plainParams.kParamStart",
+  "host": "a_start",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "0",
+  "units": "%",
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "Oscillator0.plainParams.kParamUnison",
+  "host": "a_unison",
+  "default": null,
+  "default_raw": 0.0,
+  "default_text": "1",
+  "units": null,
+  "kind": "steps",
+  "points": [
+   [
+    0.05,
+    1.0
+   ],
+   [
+    0.1,
+    2.0
+   ],
+   [
+    0.15,
+    3.0
+   ],
+   [
+    0.2,
+    4.0
+   ],
+   [
+    0.25,
+    5.0
+   ],
+   [
+    0.3,
+    5.0
+   ],
+   [
+    0.35,
+    6.0
+   ],
+   [
+    0.4,
+    7.0
+   ],
+   [
+    0.45,
+    8.0
+   ],
+   [
+    0.5,
+    9.0
+   ],
+   [
+    0.55,
+    9.0
+   ],
+   [
+    0.6,
+    10.0
+   ],
+   [
+    0.65,
+    11.0
+   ],
+   [
+    0.7,
+    12.0
+   ],
+   [
+    0.75,
+    13.0
+   ],
+   [
+    0.8,
+    13.0
+   ],
+   [
+    0.85,
+    14.0
+   ],
+   [
+    0.9,
+    15.0
+   ],
+   [
+    0.95,
+    16.0
+   ],
+   [
+    1.0,
+    16.0
+   ]
+  ],
+  "min": 1.0,
+  "max": 16.0
+ },
+ {
+  "field": "Oscillator0.plainParams.kParamUnisonSpan",
+  "host": "a_uni_span",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "0",
+  "units": "%",
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "Oscillator0.plainParams.kParamUnisonStack",
+  "host": "a_uni_stack",
+  "default": null,
+  "default_raw": 0.0,
+  "default_text": "off",
+  "units": null,
+  "kind": "choice",
+  "options": [
+   "kNoUnisonStack",
+   "kOctave1",
+   "kOctave2",
+   "kOctave3",
+   "kOctaveFifth1",
+   "kOctaveFifth2",
+   "kOctaveFifth3",
+   "kCenter12",
+   "kCenter24"
+  ]
+ },
+ {
+  "field": "Oscillator0.plainParams.kParamUnisonStereo",
+  "host": "a_uni_width",
+  "default": 99.999999412,
+  "default_raw": 1.0,
+  "default_text": "100",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999255,
+  "max": 99.999999412
+ },
+ {
+  "field": "Oscillator0.plainParams.kParamUnisonWarp",
+  "host": "a_uni_warp",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "0",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "Oscillator0.plainParams.kParamUnisonWarp2",
+  "host": "a_uni_warp_2",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "0",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "Oscillator0.plainParams.kParamVolume",
+  "host": "a_level",
+  "default": 0.562499997,
+  "default_raw": 0.75,
+  "default_text": "75% [-5.0 dB]",
+  "units": null,
+  "kind": "power",
+  "min": 2e-09,
+  "max": 0.999999993,
+  "k": 2.0
+ },
+ {
+  "field": "Oscillator1.WTOsc1.plainParams.kParamInitialPhase",
+  "host": "b_phase",
+  "default": 180.000000201,
+  "default_raw": 0.5,
+  "default_text": "180\u00b0",
+  "units": null,
+  "kind": "linear",
+  "min": 1.264e-06,
+  "max": 359.999999139
+ },
+ {
+  "field": "Oscillator1.WTOsc1.plainParams.kParamRandomPhase",
+  "host": "b_rand_phase",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "Oscillator1.WTOsc1.plainParams.kParamTablePos",
+  "host": "b_wt_pos",
+  "default": 1.00000108,
+  "default_raw": 0.0,
+  "default_text": "1",
+  "units": null,
+  "kind": "linear",
+  "min": 1.00000108,
+  "max": 255.999999294
+ },
+ {
+  "field": "Oscillator1.WTOsc1.plainParams.kParamUnisonWTPos",
+  "host": "b_uni_wt_pos",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "0",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "Oscillator1.WTOsc1.plainParams.kParamWarp",
+  "host": "b_warp",
+  "default": 4e-09,
+  "default_raw": 0.0,
+  "default_text": "No Warp Type",
+  "units": null,
+  "kind": "linear",
+  "min": 4e-09,
+  "max": 0.999999997
+ },
+ {
+  "field": "Oscillator1.WTOsc1.plainParams.kParamWarp2",
+  "host": "b_warp_2",
+  "default": 4e-09,
+  "default_raw": 0.0,
+  "default_text": "No Warp Type",
+  "units": null,
+  "kind": "linear",
+  "min": 4e-09,
+  "max": 0.999999997
+ },
+ {
+  "field": "Oscillator1.WTOsc1.plainParams.kParamWarpMenu",
+  "host": "b_warp_mode",
+  "default": null,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "choice",
+  "options": [
+   "kBendNeg",
+   "kASYMNeg",
+   "kDLM",
+   "kRemap_4",
+   "kFilterLPF",
+   "kDistHardClip",
+   "kDistLinFold",
+   "kDistRectify",
+   "kDistTapeSat",
+   "kFM_NOISE",
+   "kFM_FILT2",
+   "kFMX_SUB",
+   "kFMP_OSC",
+   "kFMP_SUB",
+   "kPD_OSC2",
+   "kPD_FILT2",
+   "kAM_OSC2",
+   "kAM_FILT1",
+   "kRM_NOISE",
+   "kRM_FILT2"
+  ]
+ },
+ {
+  "field": "Oscillator1.WTOsc1.plainParams.kParamWarpMenu2",
+  "host": "b_warp_2_mode",
+  "default": null,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "choice",
+  "options": [
+   "kBendNeg",
+   "kASYMNeg",
+   "kDLM",
+   "kRemap_4",
+   "kFilterLPF",
+   "kDistHardClip",
+   "kDistLinFold",
+   "kDistRectify",
+   "kDistTapeSat",
+   "kFM_NOISE",
+   "kFM_FILT2",
+   "kFMX_SUB",
+   "kFMP_OSC",
+   "kFMP_SUB",
+   "kPD_OSC2",
+   "kPD_FILT2",
+   "kAM_OSC2",
+   "kAM_FILT1",
+   "kRM_NOISE",
+   "kRM_FILT2"
+  ]
+ },
+ {
+  "field": "Oscillator1.WTOsc1.plainParams.kParamWarpVar",
+  "host": "b_warp_var",
+  "default": 4e-09,
+  "default_raw": 0.0,
+  "default_text": "0.0000",
+  "units": null,
+  "kind": "linear",
+  "min": 4e-09,
+  "max": 0.999999997
+ },
+ {
+  "field": "Oscillator1.WTOsc1.plainParams.kParamWarpVar2",
+  "host": "b_warp_2_var",
+  "default": 4e-09,
+  "default_raw": 0.0,
+  "default_text": "0.0000",
+  "units": null,
+  "kind": "linear",
+  "min": 4e-09,
+  "max": 0.999999997
+ },
+ {
+  "field": "Oscillator1.plainParams.kParamCoarsePit",
+  "host": "b_coarse_pitch",
+  "default": 7.2e-08,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -63.999999551,
+  "max": 63.999999694
+ },
+ {
+  "field": "Oscillator1.plainParams.kParamDetune",
+  "host": "b_uni_detune",
+  "default": 0.25,
+  "default_raw": 0.5,
+  "default_text": "0.25",
+  "units": null,
+  "kind": "power",
+  "min": 2e-09,
+  "max": 0.999999994,
+  "k": 2.0
+ },
+ {
+  "field": "Oscillator1.plainParams.kParamDetuneWid",
+  "host": "b_uni_blend",
+  "default": 74.999999897,
+  "default_raw": 0.75,
+  "default_text": "75",
+  "units": null,
+  "kind": "linear",
+  "min": 3.5e-07,
+  "max": 99.999999747
+ },
+ {
+  "field": "Oscillator1.plainParams.kParamEnable",
+  "host": "b_enable",
+  "default": 0.0,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "toggle"
+ },
+ {
+  "field": "Oscillator1.plainParams.kParamEnd",
+  "host": "b_end",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100",
+  "units": "%",
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "Oscillator1.plainParams.kParamFine",
+  "host": "b_fine_cents",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "0",
+  "units": "cents",
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "Oscillator1.plainParams.kParamHzOffset",
+  "host": "b_hz_offset_hz",
+  "default": 1.118e-06,
+  "default_raw": 0.5,
+  "default_text": "0.00",
+  "units": "Hz",
+  "kind": "linear",
+  "min": -999.99999298,
+  "max": 999.999995215
+ },
+ {
+  "field": "Oscillator1.plainParams.kParamLoopCrossfade",
+  "host": "b_loop_x_fade",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "0",
+  "units": "%",
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "Oscillator1.plainParams.kParamLoopEnd",
+  "host": "b_loop_end",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100",
+  "units": "%",
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "Oscillator1.plainParams.kParamLoopMode",
+  "host": "b_loop_mode",
+  "default": null,
+  "default_raw": 0.0,
+  "default_text": "One-shot",
+  "units": null,
+  "kind": "choice",
+  "options": [
+   "kNone",
+   "kForward",
+   "kReverse",
+   "kPingPong",
+   "kTailed"
+  ]
+ },
+ {
+  "field": "Oscillator1.plainParams.kParamLoopStart",
+  "host": "b_loop_start",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "0",
+  "units": "%",
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "Oscillator1.plainParams.kParamLoopStartLink",
+  "host": "b_relative_loop",
+  "default": 0.0,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "toggle"
+ },
+ {
+  "field": "Oscillator1.plainParams.kParamOctave",
+  "host": "b_octave_oct",
+  "default": null,
+  "default_raw": 0.5,
+  "default_text": "0",
+  "units": "oct",
+  "kind": "steps",
+  "points": [
+   [
+    0.0,
+    -4.0
+   ],
+   [
+    0.05,
+    -4.0
+   ],
+   [
+    0.1,
+    -4.0
+   ],
+   [
+    0.15,
+    -3.0
+   ],
+   [
+    0.2,
+    -3.0
+   ],
+   [
+    0.25,
+    -2.0
+   ],
+   [
+    0.3,
+    -2.0
+   ],
+   [
+    0.35,
+    -1.0
+   ],
+   [
+    0.4,
+    -1.0
+   ],
+   [
+    0.45,
+    0.0
+   ],
+   [
+    0.55,
+    0.0
+   ],
+   [
+    0.6,
+    1.0
+   ],
+   [
+    0.65,
+    1.0
+   ],
+   [
+    0.7,
+    2.0
+   ],
+   [
+    0.75,
+    2.0
+   ],
+   [
+    0.8,
+    3.0
+   ],
+   [
+    0.85,
+    3.0
+   ],
+   [
+    0.9,
+    4.0
+   ],
+   [
+    0.95,
+    4.0
+   ],
+   [
+    1.0,
+    4.0
+   ]
+  ],
+  "min": -4.0,
+  "max": 4.0
+ },
+ {
+  "field": "Oscillator1.plainParams.kParamPan",
+  "host": "b_pan",
+  "default": 5.6e-08,
+  "default_raw": 0.5,
+  "default_text": "0",
+  "units": null,
+  "kind": "linear",
+  "min": -49.999999649,
+  "max": 49.999999761
+ },
+ {
+  "field": "Oscillator1.plainParams.kParamPitch",
+  "host": "b_semi_semitones",
+  "default": 1.3e-08,
+  "default_raw": 0.5,
+  "default_text": "0",
+  "units": "semitones",
+  "kind": "linear",
+  "min": -11.999999916,
+  "max": 11.999999943
+ },
+ {
+  "field": "Oscillator1.plainParams.kParamPitchRatio",
+  "host": "b_ratio",
+  "default": 1.000000131,
+  "default_raw": 0.03076923079788685,
+  "default_text": "1.000",
+  "units": null,
+  "kind": "linear",
+  "min": -0.999999865,
+  "max": 63.999999963
+ },
+ {
+  "field": "Oscillator1.plainParams.kParamPitchTrack",
+  "host": "b_pitch_track",
+  "default": 1.0,
+  "default_raw": 1.0,
+  "default_text": "On",
+  "units": null,
+  "kind": "toggle"
+ },
+ {
+  "field": "Oscillator1.plainParams.kParamPosition",
+  "host": "b_position",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "0",
+  "units": "%",
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "Oscillator1.plainParams.kParamRandomStart",
+  "host": "b_uni_rand_start",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "0",
+  "units": null,
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "Oscillator1.plainParams.kParamReverse",
+  "host": "b_reverse",
+  "default": 0.0,
+  "default_raw": 0.0,
+  "default_text": "Forward",
+  "units": null,
+  "kind": "toggle"
+ },
+ {
+  "field": "Oscillator1.plainParams.kParamScanBPMRate",
+  "host": "b_scan_bpm_rate",
+  "default": null,
+  "default_raw": 0.5,
+  "default_text": "bar",
+  "units": null,
+  "kind": "steps",
+  "points": [
+   [
+    0.0,
+    0.0
+   ],
+   [
+    0.05,
+    0.0
+   ],
+   [
+    0.1,
+    0.0
+   ],
+   [
+    0.15,
+    1.0
+   ],
+   [
+    0.2,
+    1.0
+   ],
+   [
+    0.25,
+    1.0
+   ],
+   [
+    0.3,
+    2.0
+   ],
+   [
+    0.35,
+    2.0
+   ],
+   [
+    0.4,
+    2.0
+   ],
+   [
+    0.45,
+    3.0
+   ],
+   [
+    0.55,
+    3.0
+   ],
+   [
+    0.6,
+    4.0
+   ],
+   [
+    0.65,
+    4.0
+   ],
+   [
+    0.7,
+    4.0
+   ],
+   [
+    0.75,
+    5.0
+   ],
+   [
+    0.8,
+    5.0
+   ],
+   [
+    0.85,
+    5.0
+   ],
+   [
+    0.9,
+    6.0
+   ],
+   [
+    0.95,
+    6.0
+   ],
+   [
+    1.0,
+    6.0
+   ]
+  ],
+  "min": 0.0,
+  "max": 6.0
+ },
+ {
+  "field": "Oscillator1.plainParams.kParamScanKeyTrack",
+  "host": "b_scan_key_track",
+  "default": 0.0,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "toggle"
+ },
+ {
+  "field": "Oscillator1.plainParams.kParamScanRate",
+  "host": "b_scan_rate",
+  "default": 99.99999959,
+  "default_raw": 0.75,
+  "default_text": "100",
+  "units": "%",
+  "kind": "linear",
+  "min": -199.9999986,
+  "max": 199.999998986
+ },
+ {
+  "field": "Oscillator1.plainParams.kParamSlicingPlayToEnd",
+  "host": "b_slice_play_mode",
+  "default": 0.0,
+  "default_raw": 0.0,
+  "default_text": "To Next Marker",
+  "units": null,
+  "kind": "toggle"
+ },
+ {
+  "field": "Oscillator1.plainParams.kParamSlicingSingleSlice",
+  "host": "b_single_slice",
+  "default": null,
+  "default_raw": 0.0,
+  "default_text": "1",
+  "units": null,
+  "kind": "table",
+  "points": [
+   [
+    0.05,
+    6.0
+   ],
+   [
+    0.1,
+    11.0
+   ],
+   [
+    0.15,
+    16.0
+   ],
+   [
+    0.2,
+    21.0
+   ],
+   [
+    0.25,
+    26.0
+   ],
+   [
+    0.3,
+    31.0
+   ],
+   [
+    0.35,
+    35.0
+   ],
+   [
+    0.4,
+    41.0
+   ],
+   [
+    0.45,
+    45.0
+   ],
+   [
+    0.5,
+    51.0
+   ],
+   [
+    0.55,
+    56.0
+   ],
+   [
+    0.6,
+    61.0
+   ],
+   [
+    0.65,
+    65.0
+   ],
+   [
+    0.7,
+    70.0
+   ],
+   [
+    0.75,
+    76.0
+   ],
+   [
+    0.8,
+    81.0
+   ],
+   [
+    0.85,
+    86.0
+   ],
+   [
+    0.9,
+    90.0
+   ],
+   [
+    0.95,
+    95.0
+   ],
+   [
+    1.0,
+    100.0
+   ]
+  ],
+  "fit_error": 0.008
+ },
+ {
+  "field": "Oscillator1.plainParams.kParamStart",
+  "host": "b_start",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "0",
+  "units": "%",
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "Oscillator1.plainParams.kParamUnison",
+  "host": "b_unison",
+  "default": null,
+  "default_raw": 0.0,
+  "default_text": "1",
+  "units": null,
+  "kind": "steps",
+  "points": [
+   [
+    0.05,
+    1.0
+   ],
+   [
+    0.1,
+    2.0
+   ],
+   [
+    0.15,
+    3.0
+   ],
+   [
+    0.2,
+    4.0
+   ],
+   [
+    0.25,
+    5.0
+   ],
+   [
+    0.3,
+    5.0
+   ],
+   [
+    0.35,
+    6.0
+   ],
+   [
+    0.4,
+    7.0
+   ],
+   [
+    0.45,
+    8.0
+   ],
+   [
+    0.5,
+    9.0
+   ],
+   [
+    0.55,
+    9.0
+   ],
+   [
+    0.6,
+    10.0
+   ],
+   [
+    0.65,
+    11.0
+   ],
+   [
+    0.7,
+    12.0
+   ],
+   [
+    0.75,
+    13.0
+   ],
+   [
+    0.8,
+    13.0
+   ],
+   [
+    0.85,
+    14.0
+   ],
+   [
+    0.9,
+    15.0
+   ],
+   [
+    0.95,
+    16.0
+   ],
+   [
+    1.0,
+    16.0
+   ]
+  ],
+  "min": 1.0,
+  "max": 16.0
+ },
+ {
+  "field": "Oscillator1.plainParams.kParamUnisonSpan",
+  "host": "b_uni_span",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "0",
+  "units": "%",
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "Oscillator1.plainParams.kParamUnisonStack",
+  "host": "b_uni_stack",
+  "default": null,
+  "default_raw": 0.0,
+  "default_text": "off",
+  "units": null,
+  "kind": "choice",
+  "options": [
+   "kNoUnisonStack",
+   "kOctave1",
+   "kOctave2",
+   "kOctave3",
+   "kOctaveFifth1",
+   "kOctaveFifth2",
+   "kOctaveFifth3",
+   "kCenter12",
+   "kCenter24"
+  ]
+ },
+ {
+  "field": "Oscillator1.plainParams.kParamUnisonStereo",
+  "host": "b_uni_width",
+  "default": 99.999999412,
+  "default_raw": 1.0,
+  "default_text": "100",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999255,
+  "max": 99.999999412
+ },
+ {
+  "field": "Oscillator1.plainParams.kParamUnisonWarp",
+  "host": "b_uni_warp",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "0",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "Oscillator1.plainParams.kParamUnisonWarp2",
+  "host": "b_uni_warp_2",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "0",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "Oscillator1.plainParams.kParamVolume",
+  "host": "b_level",
+  "default": 0.562499997,
+  "default_raw": 0.75,
+  "default_text": "75% [-5.0 dB]",
+  "units": null,
+  "kind": "power",
+  "min": 2e-09,
+  "max": 0.999999993,
+  "k": 2.0
+ },
+ {
+  "field": "Oscillator2.WTOsc2.plainParams.kParamInitialPhase",
+  "host": "c_phase",
+  "default": 180.000000201,
+  "default_raw": 0.5,
+  "default_text": "180\u00b0",
+  "units": null,
+  "kind": "linear",
+  "min": 1.264e-06,
+  "max": 359.999999139
+ },
+ {
+  "field": "Oscillator2.WTOsc2.plainParams.kParamRandomPhase",
+  "host": "c_rand_phase",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100",
+  "units": null,
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "Oscillator2.WTOsc2.plainParams.kParamTablePos",
+  "host": "c_wt_pos",
+  "default": 1.00000108,
+  "default_raw": 0.0,
+  "default_text": "1",
+  "units": null,
+  "kind": "linear",
+  "min": 1.00000108,
+  "max": 255.999999294
+ },
+ {
+  "field": "Oscillator2.WTOsc2.plainParams.kParamUnisonWTPos",
+  "host": "c_uni_wt_pos",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "0",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "Oscillator2.WTOsc2.plainParams.kParamWarp",
+  "host": "c_warp",
+  "default": 4e-09,
+  "default_raw": 0.0,
+  "default_text": "No Warp Type",
+  "units": null,
+  "kind": "linear",
+  "min": 4e-09,
+  "max": 0.999999997
+ },
+ {
+  "field": "Oscillator2.WTOsc2.plainParams.kParamWarp2",
+  "host": "c_warp_2",
+  "default": 4e-09,
+  "default_raw": 0.0,
+  "default_text": "No Warp Type",
+  "units": null,
+  "kind": "linear",
+  "min": 4e-09,
+  "max": 0.999999997
+ },
+ {
+  "field": "Oscillator2.WTOsc2.plainParams.kParamWarpMenu",
+  "host": "c_warp_mode",
+  "default": null,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "choice",
+  "options": [
+   "kBendNeg",
+   "kASYMNeg",
+   "kDLM",
+   "kRemap_4",
+   "kFilterLPF",
+   "kDistHardClip",
+   "kDistLinFold",
+   "kDistRectify",
+   "kDistTapeSat",
+   "kFM_NOISE",
+   "kFM_FILT2",
+   "kFMX_SUB",
+   "kFMP_OSC",
+   "kFMP_SUB",
+   "kPD_OSC2",
+   "kPD_FILT2",
+   "kAM_OSC2",
+   "kAM_FILT1",
+   "kRM_NOISE",
+   "kRM_FILT2"
+  ]
+ },
+ {
+  "field": "Oscillator2.WTOsc2.plainParams.kParamWarpMenu2",
+  "host": "c_warp_2_mode",
+  "default": null,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "choice",
+  "options": [
+   "kBendNeg",
+   "kASYMNeg",
+   "kDLM",
+   "kRemap_4",
+   "kFilterLPF",
+   "kDistHardClip",
+   "kDistLinFold",
+   "kDistRectify",
+   "kDistTapeSat",
+   "kFM_NOISE",
+   "kFM_FILT2",
+   "kFMX_SUB",
+   "kFMP_OSC",
+   "kFMP_SUB",
+   "kPD_OSC2",
+   "kPD_FILT2",
+   "kAM_OSC2",
+   "kAM_FILT1",
+   "kRM_NOISE",
+   "kRM_FILT2"
+  ]
+ },
+ {
+  "field": "Oscillator2.WTOsc2.plainParams.kParamWarpVar",
+  "host": "c_warp_var",
+  "default": 4e-09,
+  "default_raw": 0.0,
+  "default_text": "0.0000",
+  "units": null,
+  "kind": "linear",
+  "min": 4e-09,
+  "max": 0.999999997
+ },
+ {
+  "field": "Oscillator2.WTOsc2.plainParams.kParamWarpVar2",
+  "host": "c_warp_2_var",
+  "default": 4e-09,
+  "default_raw": 0.0,
+  "default_text": "0.0000",
+  "units": null,
+  "kind": "linear",
+  "min": 4e-09,
+  "max": 0.999999997
+ },
+ {
+  "field": "Oscillator2.plainParams.kParamCoarsePit",
+  "host": "c_coarse_pitch",
+  "default": 7.2e-08,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -63.999999551,
+  "max": 63.999999694
+ },
+ {
+  "field": "Oscillator2.plainParams.kParamDetune",
+  "host": "c_uni_detune",
+  "default": 0.25,
+  "default_raw": 0.5,
+  "default_text": "0.25",
+  "units": null,
+  "kind": "power",
+  "min": 2e-09,
+  "max": 0.999999994,
+  "k": 2.0
+ },
+ {
+  "field": "Oscillator2.plainParams.kParamDetuneWid",
+  "host": "c_uni_blend",
+  "default": 74.999999897,
+  "default_raw": 0.75,
+  "default_text": "75",
+  "units": null,
+  "kind": "linear",
+  "min": 3.5e-07,
+  "max": 99.999999747
+ },
+ {
+  "field": "Oscillator2.plainParams.kParamEnable",
+  "host": "c_enable",
+  "default": 0.0,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "toggle"
+ },
+ {
+  "field": "Oscillator2.plainParams.kParamEnd",
+  "host": "c_end",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100",
+  "units": "%",
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "Oscillator2.plainParams.kParamFine",
+  "host": "c_fine_cents",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "0",
+  "units": "cents",
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "Oscillator2.plainParams.kParamHzOffset",
+  "host": "c_hz_offset_hz",
+  "default": 1.118e-06,
+  "default_raw": 0.5,
+  "default_text": "0.00",
+  "units": "Hz",
+  "kind": "linear",
+  "min": -999.99999298,
+  "max": 999.999995215
+ },
+ {
+  "field": "Oscillator2.plainParams.kParamLoopCrossfade",
+  "host": "c_loop_x_fade",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "0",
+  "units": "%",
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "Oscillator2.plainParams.kParamLoopEnd",
+  "host": "c_loop_end",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100",
+  "units": "%",
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "Oscillator2.plainParams.kParamLoopMode",
+  "host": "c_loop_mode",
+  "default": null,
+  "default_raw": 0.0,
+  "default_text": "One-shot",
+  "units": null,
+  "kind": "choice",
+  "options": [
+   "kNone",
+   "kForward",
+   "kReverse",
+   "kPingPong",
+   "kTailed"
+  ]
+ },
+ {
+  "field": "Oscillator2.plainParams.kParamLoopStart",
+  "host": "c_loop_start",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "0",
+  "units": "%",
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "Oscillator2.plainParams.kParamLoopStartLink",
+  "host": "c_relative_loop",
+  "default": 0.0,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "toggle"
+ },
+ {
+  "field": "Oscillator2.plainParams.kParamOctave",
+  "host": "c_octave_oct",
+  "default": null,
+  "default_raw": 0.5,
+  "default_text": "0",
+  "units": "oct",
+  "kind": "steps",
+  "points": [
+   [
+    0.0,
+    -4.0
+   ],
+   [
+    0.05,
+    -4.0
+   ],
+   [
+    0.1,
+    -4.0
+   ],
+   [
+    0.15,
+    -3.0
+   ],
+   [
+    0.2,
+    -3.0
+   ],
+   [
+    0.25,
+    -2.0
+   ],
+   [
+    0.3,
+    -2.0
+   ],
+   [
+    0.35,
+    -1.0
+   ],
+   [
+    0.4,
+    -1.0
+   ],
+   [
+    0.45,
+    0.0
+   ],
+   [
+    0.55,
+    0.0
+   ],
+   [
+    0.6,
+    1.0
+   ],
+   [
+    0.65,
+    1.0
+   ],
+   [
+    0.7,
+    2.0
+   ],
+   [
+    0.75,
+    2.0
+   ],
+   [
+    0.8,
+    3.0
+   ],
+   [
+    0.85,
+    3.0
+   ],
+   [
+    0.9,
+    4.0
+   ],
+   [
+    0.95,
+    4.0
+   ],
+   [
+    1.0,
+    4.0
+   ]
+  ],
+  "min": -4.0,
+  "max": 4.0
+ },
+ {
+  "field": "Oscillator2.plainParams.kParamPan",
+  "host": "c_pan",
+  "default": 5.6e-08,
+  "default_raw": 0.5,
+  "default_text": "0",
+  "units": null,
+  "kind": "linear",
+  "min": -49.999999649,
+  "max": 49.999999761
+ },
+ {
+  "field": "Oscillator2.plainParams.kParamPitch",
+  "host": "c_semi_semitones",
+  "default": 1.3e-08,
+  "default_raw": 0.5,
+  "default_text": "0",
+  "units": "semitones",
+  "kind": "linear",
+  "min": -11.999999916,
+  "max": 11.999999943
+ },
+ {
+  "field": "Oscillator2.plainParams.kParamPitchRatio",
+  "host": "c_ratio",
+  "default": 1.000000131,
+  "default_raw": 0.03076923079788685,
+  "default_text": "1.000",
+  "units": null,
+  "kind": "linear",
+  "min": -0.999999865,
+  "max": 63.999999963
+ },
+ {
+  "field": "Oscillator2.plainParams.kParamPitchTrack",
+  "host": "c_pitch_track",
+  "default": 1.0,
+  "default_raw": 1.0,
+  "default_text": "On",
+  "units": null,
+  "kind": "toggle"
+ },
+ {
+  "field": "Oscillator2.plainParams.kParamPosition",
+  "host": "c_position",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "0",
+  "units": "%",
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "Oscillator2.plainParams.kParamRandomStart",
+  "host": "c_uni_rand_start",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "0",
+  "units": null,
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "Oscillator2.plainParams.kParamReverse",
+  "host": "c_reverse",
+  "default": 0.0,
+  "default_raw": 0.0,
+  "default_text": "Forward",
+  "units": null,
+  "kind": "toggle"
+ },
+ {
+  "field": "Oscillator2.plainParams.kParamScanBPMRate",
+  "host": "c_scan_bpm_rate",
+  "default": null,
+  "default_raw": 0.5,
+  "default_text": "bar",
+  "units": null,
+  "kind": "steps",
+  "points": [
+   [
+    0.0,
+    0.0
+   ],
+   [
+    0.05,
+    0.0
+   ],
+   [
+    0.1,
+    0.0
+   ],
+   [
+    0.15,
+    1.0
+   ],
+   [
+    0.2,
+    1.0
+   ],
+   [
+    0.25,
+    1.0
+   ],
+   [
+    0.3,
+    2.0
+   ],
+   [
+    0.35,
+    2.0
+   ],
+   [
+    0.4,
+    2.0
+   ],
+   [
+    0.45,
+    3.0
+   ],
+   [
+    0.55,
+    3.0
+   ],
+   [
+    0.6,
+    4.0
+   ],
+   [
+    0.65,
+    4.0
+   ],
+   [
+    0.7,
+    4.0
+   ],
+   [
+    0.75,
+    5.0
+   ],
+   [
+    0.8,
+    5.0
+   ],
+   [
+    0.85,
+    5.0
+   ],
+   [
+    0.9,
+    6.0
+   ],
+   [
+    0.95,
+    6.0
+   ],
+   [
+    1.0,
+    6.0
+   ]
+  ],
+  "min": 0.0,
+  "max": 6.0
+ },
+ {
+  "field": "Oscillator2.plainParams.kParamScanKeyTrack",
+  "host": "c_scan_key_track",
+  "default": 0.0,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "toggle"
+ },
+ {
+  "field": "Oscillator2.plainParams.kParamScanRate",
+  "host": "c_scan_rate",
+  "default": 99.99999959,
+  "default_raw": 0.75,
+  "default_text": "100",
+  "units": "%",
+  "kind": "linear",
+  "min": -199.9999986,
+  "max": 199.999998986
+ },
+ {
+  "field": "Oscillator2.plainParams.kParamSlicingPlayToEnd",
+  "host": "c_slice_play_mode",
+  "default": 0.0,
+  "default_raw": 0.0,
+  "default_text": "To Next Marker",
+  "units": null,
+  "kind": "toggle"
+ },
+ {
+  "field": "Oscillator2.plainParams.kParamSlicingSingleSlice",
+  "host": "c_single_slice",
+  "default": null,
+  "default_raw": 0.0,
+  "default_text": "1",
+  "units": null,
+  "kind": "table",
+  "points": [
+   [
+    0.05,
+    6.0
+   ],
+   [
+    0.1,
+    11.0
+   ],
+   [
+    0.15,
+    16.0
+   ],
+   [
+    0.2,
+    21.0
+   ],
+   [
+    0.25,
+    26.0
+   ],
+   [
+    0.3,
+    31.0
+   ],
+   [
+    0.35,
+    35.0
+   ],
+   [
+    0.4,
+    41.0
+   ],
+   [
+    0.45,
+    45.0
+   ],
+   [
+    0.5,
+    51.0
+   ],
+   [
+    0.55,
+    56.0
+   ],
+   [
+    0.6,
+    61.0
+   ],
+   [
+    0.65,
+    65.0
+   ],
+   [
+    0.7,
+    70.0
+   ],
+   [
+    0.75,
+    76.0
+   ],
+   [
+    0.8,
+    81.0
+   ],
+   [
+    0.85,
+    86.0
+   ],
+   [
+    0.9,
+    90.0
+   ],
+   [
+    0.95,
+    95.0
+   ],
+   [
+    1.0,
+    100.0
+   ]
+  ],
+  "fit_error": 0.008
+ },
+ {
+  "field": "Oscillator2.plainParams.kParamStart",
+  "host": "c_start",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "0",
+  "units": "%",
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "Oscillator2.plainParams.kParamUnison",
+  "host": "c_unison",
+  "default": null,
+  "default_raw": 0.0,
+  "default_text": "1",
+  "units": null,
+  "kind": "steps",
+  "points": [
+   [
+    0.05,
+    1.0
+   ],
+   [
+    0.1,
+    2.0
+   ],
+   [
+    0.15,
+    3.0
+   ],
+   [
+    0.2,
+    4.0
+   ],
+   [
+    0.25,
+    5.0
+   ],
+   [
+    0.3,
+    5.0
+   ],
+   [
+    0.35,
+    6.0
+   ],
+   [
+    0.4,
+    7.0
+   ],
+   [
+    0.45,
+    8.0
+   ],
+   [
+    0.5,
+    9.0
+   ],
+   [
+    0.55,
+    9.0
+   ],
+   [
+    0.6,
+    10.0
+   ],
+   [
+    0.65,
+    11.0
+   ],
+   [
+    0.7,
+    12.0
+   ],
+   [
+    0.75,
+    13.0
+   ],
+   [
+    0.8,
+    13.0
+   ],
+   [
+    0.85,
+    14.0
+   ],
+   [
+    0.9,
+    15.0
+   ],
+   [
+    0.95,
+    16.0
+   ],
+   [
+    1.0,
+    16.0
+   ]
+  ],
+  "min": 1.0,
+  "max": 16.0
+ },
+ {
+  "field": "Oscillator2.plainParams.kParamUnisonSpan",
+  "host": "c_uni_span",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "0",
+  "units": "%",
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "Oscillator2.plainParams.kParamUnisonStack",
+  "host": "c_uni_stack",
+  "default": null,
+  "default_raw": 0.0,
+  "default_text": "off",
+  "units": null,
+  "kind": "choice",
+  "options": [
+   "kNoUnisonStack",
+   "kOctave1",
+   "kOctave2",
+   "kOctave3",
+   "kOctaveFifth1",
+   "kOctaveFifth2",
+   "kOctaveFifth3",
+   "kCenter12",
+   "kCenter24"
+  ]
+ },
+ {
+  "field": "Oscillator2.plainParams.kParamUnisonStereo",
+  "host": "c_uni_width",
+  "default": 99.999999412,
+  "default_raw": 1.0,
+  "default_text": "100",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999255,
+  "max": 99.999999412
+ },
+ {
+  "field": "Oscillator2.plainParams.kParamUnisonWarp",
+  "host": "c_uni_warp",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "0",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "Oscillator2.plainParams.kParamUnisonWarp2",
+  "host": "c_uni_warp_2",
+  "default": 1.12e-07,
+  "default_raw": 0.5,
+  "default_text": "0",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999298,
+  "max": 99.999999522
+ },
+ {
+  "field": "Oscillator2.plainParams.kParamVolume",
+  "host": "c_level",
+  "default": 0.562499997,
+  "default_raw": 0.75,
+  "default_text": "75% [-5.0 dB]",
+  "units": null,
+  "kind": "power",
+  "min": 2e-09,
+  "max": 0.999999993,
+  "k": 2.0
+ },
+ {
+  "field": "Oscillator3.NoiseOsc3.plainParams.kParamColor",
+  "host": "noise_pitch",
+  "default": 0.500000001,
+  "default_raw": 0.5,
+  "default_text": "50%",
+  "units": "%",
+  "kind": "linear",
+  "min": 4e-09,
+  "max": 0.999999998
+ },
+ {
+  "field": "Oscillator3.NoiseOsc3.plainParams.kParamFine",
+  "host": "noise_fine",
+  "default": -0.0,
+  "default_raw": 0.5,
+  "default_text": "0.00",
+  "units": "%",
+  "kind": "linear",
+  "min": -1.000000001,
+  "max": 1.000000001
+ },
+ {
+  "field": "Oscillator3.NoiseOsc3.plainParams.kParamInitialPhase",
+  "host": "noise_phase",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "0",
+  "units": "%",
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "Oscillator3.NoiseOsc3.plainParams.kParamRandomPhase",
+  "host": "noise_rand_phase",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "0",
+  "units": "%",
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "Oscillator3.plainParams.kParamEnable",
+  "host": "noise_enable",
+  "default": 0.0,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "toggle"
+ },
+ {
+  "field": "Oscillator3.plainParams.kParamPan",
+  "host": "noise_pan",
+  "default": 5.6e-08,
+  "default_raw": 0.5,
+  "default_text": "0",
+  "units": null,
+  "kind": "linear",
+  "min": -49.999999649,
+  "max": 49.999999761
+ },
+ {
+  "field": "Oscillator3.plainParams.kParamPitchTrack",
+  "host": "noise_pitch_track",
+  "default": 0.0,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "toggle"
+ },
+ {
+  "field": "Oscillator3.plainParams.kParamVolume",
+  "host": "noise_level",
+  "default": 0.062500002,
+  "default_raw": 0.25,
+  "default_text": "25% [-24.1 dB]",
+  "units": null,
+  "kind": "power",
+  "min": 3e-09,
+  "max": 0.999999994,
+  "k": 2.0
+ },
+ {
+  "field": "Oscillator4.SubOsc4.plainParams.kParamContiguousPhase",
+  "host": "sub_cont_phase",
+  "default": 0.0,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "toggle"
+ },
+ {
+  "field": "Oscillator4.SubOsc4.plainParams.kParamInitialPhase",
+  "host": "sub_phase",
+  "default": 1.525e-06,
+  "default_raw": 0.0,
+  "default_text": "0\u00b0",
+  "units": null,
+  "kind": "linear",
+  "min": 1.525e-06,
+  "max": 359.999999004
+ },
+ {
+  "field": "Oscillator4.SubOsc4.plainParams.kParamShape",
+  "host": "sub_shape",
+  "default": null,
+  "default_raw": 0.0,
+  "default_text": "Sine",
+  "units": null,
+  "kind": "choice",
+  "options": [
+   "kSine",
+   "kRoundRect",
+   "kTriangle",
+   "kSaw",
+   "kSquare",
+   "kPulse"
+  ]
+ },
+ {
+  "field": "Oscillator4.plainParams.kParamCoarsePit",
+  "host": "sub_coarse_pitch",
+  "default": 7.2e-08,
+  "default_raw": 0.5,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": -63.999999551,
+  "max": 63.999999694
+ },
+ {
+  "field": "Oscillator4.plainParams.kParamEnable",
+  "host": "sub_enable",
+  "default": 0.0,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "toggle"
+ },
+ {
+  "field": "Oscillator4.plainParams.kParamOctave",
+  "host": "sub_octave_oct",
+  "default": null,
+  "default_raw": 0.5,
+  "default_text": "0",
+  "units": "oct",
+  "kind": "steps",
+  "points": [
+   [
+    0.0,
+    -4.0
+   ],
+   [
+    0.05,
+    -4.0
+   ],
+   [
+    0.1,
+    -4.0
+   ],
+   [
+    0.15,
+    -3.0
+   ],
+   [
+    0.2,
+    -3.0
+   ],
+   [
+    0.25,
+    -2.0
+   ],
+   [
+    0.3,
+    -2.0
+   ],
+   [
+    0.35,
+    -1.0
+   ],
+   [
+    0.4,
+    -1.0
+   ],
+   [
+    0.45,
+    0.0
+   ],
+   [
+    0.55,
+    0.0
+   ],
+   [
+    0.6,
+    1.0
+   ],
+   [
+    0.65,
+    1.0
+   ],
+   [
+    0.7,
+    2.0
+   ],
+   [
+    0.75,
+    2.0
+   ],
+   [
+    0.8,
+    3.0
+   ],
+   [
+    0.85,
+    3.0
+   ],
+   [
+    0.9,
+    4.0
+   ],
+   [
+    0.95,
+    4.0
+   ],
+   [
+    1.0,
+    4.0
+   ]
+  ],
+  "min": -4.0,
+  "max": 4.0
+ },
+ {
+  "field": "Oscillator4.plainParams.kParamPan",
+  "host": "sub_pan",
+  "default": 5.6e-08,
+  "default_raw": 0.5,
+  "default_text": "0",
+  "units": null,
+  "kind": "linear",
+  "min": -49.999999649,
+  "max": 49.999999761
+ },
+ {
+  "field": "Oscillator4.plainParams.kParamPitchTrack",
+  "host": "sub_pitch_track",
+  "default": 1.0,
+  "default_raw": 1.0,
+  "default_text": "On",
+  "units": null,
+  "kind": "toggle"
+ },
+ {
+  "field": "Oscillator4.plainParams.kParamVolume",
+  "host": "sub_level",
+  "default": 0.562499998,
+  "default_raw": 0.75,
+  "default_text": "75% [-5.0 dB]",
+  "units": null,
+  "kind": "power",
+  "min": 2e-09,
+  "max": 0.999999994,
+  "k": 2.0
+ },
+ {
+  "field": "PitchQuantizer0.plainParams.kParamKey",
+  "host": "key",
+  "default": null,
+  "default_raw": 0.0,
+  "default_text": "--",
+  "units": null,
+  "kind": "steps",
+  "points": [
+   [
+    0.05,
+    0.0
+   ],
+   [
+    0.1,
+    1.0
+   ],
+   [
+    0.15,
+    1.0
+   ],
+   [
+    0.2,
+    2.0
+   ],
+   [
+    0.25,
+    3.0
+   ],
+   [
+    0.3,
+    3.0
+   ],
+   [
+    0.35,
+    4.0
+   ],
+   [
+    0.4,
+    5.0
+   ],
+   [
+    0.45,
+    5.0
+   ],
+   [
+    0.5,
+    6.0
+   ],
+   [
+    0.55,
+    7.0
+   ],
+   [
+    0.6,
+    7.0
+   ],
+   [
+    0.65,
+    8.0
+   ],
+   [
+    0.7,
+    9.0
+   ],
+   [
+    0.75,
+    9.0
+   ],
+   [
+    0.8,
+    10.0
+   ],
+   [
+    0.85,
+    11.0
+   ],
+   [
+    0.9,
+    11.0
+   ],
+   [
+    0.95,
+    12.0
+   ],
+   [
+    1.0,
+    12.0
+   ]
+  ],
+  "min": 0.0,
+  "max": 12.0
+ },
+ {
+  "field": "PitchQuantizer0.plainParams.kParamScale",
+  "host": "scale",
+  "default": null,
+  "default_raw": 0.0,
+  "default_text": "Major",
+  "units": null,
+  "kind": "table",
+  "points": [
+   [
+    0.05,
+    3.0
+   ],
+   [
+    0.1,
+    6.0
+   ],
+   [
+    0.15,
+    9.0
+   ],
+   [
+    0.2,
+    12.0
+   ],
+   [
+    0.25,
+    16.0
+   ],
+   [
+    0.3,
+    19.0
+   ],
+   [
+    0.35,
+    22.0
+   ],
+   [
+    0.4,
+    25.0
+   ],
+   [
+    0.45,
+    28.0
+   ],
+   [
+    0.5,
+    32.0
+   ],
+   [
+    0.55,
+    35.0
+   ],
+   [
+    0.6,
+    38.0
+   ],
+   [
+    0.65,
+    41.0
+   ],
+   [
+    0.7,
+    44.0
+   ],
+   [
+    0.75,
+    48.0
+   ],
+   [
+    0.8,
+    51.0
+   ],
+   [
+    0.85,
+    54.0
+   ],
+   [
+    0.9,
+    57.0
+   ],
+   [
+    0.95,
+    60.0
+   ],
+   [
+    1.0,
+    63.0
+   ]
+  ],
+  "fit_error": 0.0081
+ },
+ {
+  "field": "RoutingSlot0.plainParams.kParamFXBus1Level",
+  "host": "a_bus1",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "RoutingSlot0.plainParams.kParamFXBus2Level",
+  "host": "a_bus2",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "RoutingSlot0.plainParams.kParamFilterBalance",
+  "host": "a_filter_balance",
+  "default": -99.999999153,
+  "default_raw": 0.0,
+  "default_text": "-100",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999153,
+  "max": 99.999999447
+ },
+ {
+  "field": "RoutingSlot1.plainParams.kParamFXBus1Level",
+  "host": "b_bus1",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "RoutingSlot1.plainParams.kParamFXBus2Level",
+  "host": "b_bus2",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "RoutingSlot1.plainParams.kParamFilterBalance",
+  "host": "b_filter_balance",
+  "default": -99.999999153,
+  "default_raw": 0.0,
+  "default_text": "-100",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999153,
+  "max": 99.999999447
+ },
+ {
+  "field": "RoutingSlot2.plainParams.kParamFXBus1Level",
+  "host": "c_bus1",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "RoutingSlot2.plainParams.kParamFXBus2Level",
+  "host": "c_bus2",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "RoutingSlot2.plainParams.kParamFilterBalance",
+  "host": "c_filter_balance",
+  "default": -99.999999153,
+  "default_raw": 0.0,
+  "default_text": "-100",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999153,
+  "max": 99.999999447
+ },
+ {
+  "field": "RoutingSlot3.plainParams.kParamFXBus1Level",
+  "host": "noise_bus1",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "RoutingSlot3.plainParams.kParamFXBus2Level",
+  "host": "noise_bus2",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "RoutingSlot3.plainParams.kParamFilterBalance",
+  "host": "noise_filter_balance",
+  "default": -99.999999153,
+  "default_raw": 0.0,
+  "default_text": "-100",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999153,
+  "max": 99.999999447
+ },
+ {
+  "field": "RoutingSlot4.plainParams.kParamFXBus1Level",
+  "host": "sub_osc_bus1",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "RoutingSlot4.plainParams.kParamFXBus2Level",
+  "host": "sub_osc_bus2",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "RoutingSlot4.plainParams.kParamFilterBalance",
+  "host": "sub_osc_filter_balance",
+  "default": -99.999999153,
+  "default_raw": 0.0,
+  "default_text": "-100",
+  "units": null,
+  "kind": "linear",
+  "min": -99.999999153,
+  "max": 99.999999447
+ },
+ {
+  "field": "RoutingSlot5.plainParams.kParamFXBus1Level",
+  "host": "filter_1_bus1",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "RoutingSlot5.plainParams.kParamFXBus2Level",
+  "host": "filter_1_bus2",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "RoutingSlot6.plainParams.kParamFXBus1Level",
+  "host": "filter_2_bus1",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "RoutingSlot6.plainParams.kParamFXBus2Level",
+  "host": "filter_2_bus2",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "VoiceFilter0.plainParams.kParamDrive",
+  "host": "filter_1_drive",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "0",
+  "units": "%",
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "VoiceFilter0.plainParams.kParamEnable",
+  "host": "filter_1_on",
+  "default": 0.0,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "toggle"
+ },
+ {
+  "field": "VoiceFilter0.plainParams.kParamFreq",
+  "host": "filter_1_freq_hz",
+  "default": null,
+  "default_raw": 0.5,
+  "default_text": "425",
+  "units": "Hz",
+  "kind": "unknown"
+ },
+ {
+  "field": "VoiceFilter0.plainParams.kParamLevelOut",
+  "host": "filter_1_level",
+  "default": 0.500000001,
+  "default_raw": 0.5,
+  "default_text": "0.0 dB",
+  "units": null,
+  "kind": "linear",
+  "min": 4e-09,
+  "max": 0.999999998
+ },
+ {
+  "field": "VoiceFilter0.plainParams.kParamReso",
+  "host": "filter_1_res",
+  "default": 10.000000438,
+  "default_raw": 0.10000000149011612,
+  "default_text": "10",
+  "units": "%",
+  "kind": "linear",
+  "min": 3.48e-07,
+  "max": 99.999999758
+ },
+ {
+  "field": "VoiceFilter0.plainParams.kParamStereo",
+  "host": "filter_1_stereo",
+  "default": 50.000000056,
+  "default_raw": 0.5,
+  "default_text": "50",
+  "units": "%",
+  "kind": "linear",
+  "min": 3.51e-07,
+  "max": 99.999999761
+ },
+ {
+  "field": "VoiceFilter0.plainParams.kParamType",
+  "host": "filter_1_type",
+  "default": null,
+  "default_raw": 0.009433962404727936,
+  "default_text": "MG Low 12",
+  "units": null,
+  "kind": "choice",
+  "options": [
+   "MgL6",
+   "L12",
+   "H18",
+   "N12",
+   "LP12",
+   "BP12",
+   "LBH24",
+   "BPN12",
+   "CombL6N",
+   "FlangeN",
+   "FlangeHL6P",
+   "Phase24N",
+   "Phase48L6N",
+   "FlangePhase12HL6P",
+   "HEQ6",
+   "Combs",
+   "ADD_BASS",
+   "DistComb1LP",
+   "Wsp",
+   "LadderEMS",
+   "ExpBPF"
+  ]
+ },
+ {
+  "field": "VoiceFilter0.plainParams.kParamVar",
+  "host": "filter_1_var",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "0",
+  "units": "%",
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "VoiceFilter0.plainParams.kParamWet",
+  "host": "filter_1_wet",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100",
+  "units": "%",
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "VoiceFilter0.plainParams.kParamX",
+  "host": "filter_1_x",
+  "default": 4e-09,
+  "default_raw": 0.0,
+  "default_text": "0",
+  "units": null,
+  "kind": "linear",
+  "min": 4e-09,
+  "max": 0.999999997
+ },
+ {
+  "field": "VoiceFilter0.plainParams.kParamY",
+  "host": "filter_1_y",
+  "default": 4e-09,
+  "default_raw": 0.0,
+  "default_text": "0",
+  "units": null,
+  "kind": "linear",
+  "min": 4e-09,
+  "max": 0.999999997
+ },
+ {
+  "field": "VoiceFilter1.plainParams.kParamDrive",
+  "host": "filter_2_drive",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "0",
+  "units": "%",
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "VoiceFilter1.plainParams.kParamEnable",
+  "host": "filter_2_on",
+  "default": 0.0,
+  "default_raw": 0.0,
+  "default_text": "Off",
+  "units": null,
+  "kind": "toggle"
+ },
+ {
+  "field": "VoiceFilter1.plainParams.kParamFreq",
+  "host": "filter_2_freq_hz",
+  "default": null,
+  "default_raw": 0.5,
+  "default_text": "425",
+  "units": "Hz",
+  "kind": "unknown"
+ },
+ {
+  "field": "VoiceFilter1.plainParams.kParamLevelOut",
+  "host": "filter_2_level",
+  "default": 0.500000001,
+  "default_raw": 0.5,
+  "default_text": "0.0 dB",
+  "units": null,
+  "kind": "linear",
+  "min": 4e-09,
+  "max": 0.999999998
+ },
+ {
+  "field": "VoiceFilter1.plainParams.kParamReso",
+  "host": "filter_2_res",
+  "default": 10.000000438,
+  "default_raw": 0.10000000149011612,
+  "default_text": "10",
+  "units": "%",
+  "kind": "linear",
+  "min": 3.48e-07,
+  "max": 99.999999758
+ },
+ {
+  "field": "VoiceFilter1.plainParams.kParamStereo",
+  "host": "filter_2_stereo",
+  "default": 50.000000056,
+  "default_raw": 0.5,
+  "default_text": "50",
+  "units": "%",
+  "kind": "linear",
+  "min": 3.51e-07,
+  "max": 99.999999761
+ },
+ {
+  "field": "VoiceFilter1.plainParams.kParamType",
+  "host": "filter_2_type",
+  "default": null,
+  "default_raw": 0.009433962404727936,
+  "default_text": "MG Low 12",
+  "units": null,
+  "kind": "choice",
+  "options": [
+   "MgL6",
+   "L12",
+   "H18",
+   "N12",
+   "LP12",
+   "BP12",
+   "LBH24",
+   "BPN12",
+   "CombL6N",
+   "FlangeN",
+   "FlangeHL6P",
+   "Phase24N",
+   "Phase48L6N",
+   "FlangePhase12HL6P",
+   "HEQ6",
+   "Combs",
+   "ADD_BASS",
+   "DistComb1LP",
+   "Wsp",
+   "LadderEMS",
+   "ExpBPF"
+  ]
+ },
+ {
+  "field": "VoiceFilter1.plainParams.kParamVar",
+  "host": "filter_2_var",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "0",
+  "units": "%",
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "VoiceFilter1.plainParams.kParamWet",
+  "host": "filter_2_wet",
+  "default": 99.999999706,
+  "default_raw": 1.0,
+  "default_text": "100",
+  "units": "%",
+  "kind": "linear",
+  "min": 3.73e-07,
+  "max": 99.999999706
+ },
+ {
+  "field": "VoiceFilter1.plainParams.kParamX",
+  "host": "filter_2_x",
+  "default": 4e-09,
+  "default_raw": 0.0,
+  "default_text": "0",
+  "units": null,
+  "kind": "linear",
+  "min": 4e-09,
+  "max": 0.999999997
+ },
+ {
+  "field": "VoiceFilter1.plainParams.kParamY",
+  "host": "filter_2_y",
+  "default": 4e-09,
+  "default_raw": 0.0,
+  "default_text": "0",
+  "units": null,
+  "kind": "linear",
+  "min": 4e-09,
+  "max": 0.999999997
+ },
+ {
+  "field": "VoicePanel0.plainParams.kParamGlobalRandomEnvTime",
+  "host": "env_rand",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "VoicePanel0.plainParams.kParamGlobalRandomFilterCutoff",
+  "host": "cutoff_rand",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "VoicePanel0.plainParams.kParamGlobalRandomOscDetune",
+  "host": "osc_detune_rnd_cents",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "0.0",
+  "units": "cents",
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ },
+ {
+  "field": "VoicePanel0.plainParams.kParamGlobalRandomOscPan",
+  "host": "osc_pan_rand",
+  "default": 4.24e-07,
+  "default_raw": 0.0,
+  "default_text": "--",
+  "units": null,
+  "kind": "linear",
+  "min": 4.24e-07,
+  "max": 99.999999723
+ }
+]
