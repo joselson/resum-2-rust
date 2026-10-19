@@ -172,12 +172,11 @@ impl Effect for Eq {
 
 struct FxFilter {
     filter: Filter,
-    right: Filter,
 }
 
 impl Default for FxFilter {
     fn default() -> Self {
-        FxFilter { filter: Filter::new(FilterKind::Lowpass { poles: 2 }), right: Filter::new(FilterKind::Lowpass { poles: 2 }) }
+        FxFilter { filter: Filter::new(FilterKind::Lowpass { poles: 2 }) }
     }
 }
 
@@ -188,26 +187,22 @@ impl Effect for FxFilter {
         const RESO: usize = index("FXFilter", "kParamReso");
         const DRIVE: usize = index("FXFilter", "kParamDrive");
         const STEREO: usize = index("FXFilter", "kParamStereo");
+        const VAR: usize = index("FXFilter", "kParamVar");
         let Some(kind) = filters::model(p.choice(TYPE)).0 else { return };
         if self.filter.kind() != kind {
-            self.filter = Filter::new(kind);
-            self.right = Filter::new(kind);
+            self.filter.set_kind(kind);
         }
-        let hz = cutoff_hz(p.get(FREQ));
-        // Stereo 50 = same cutoff; otherwise channels spread ±1 octave (assumed).
-        let spread = ((p.get(STEREO) - 50.0) / 50.0).exp2();
-        let (reso, drive) = (p.get(RESO) / 100.0, p.get(DRIVE) / 100.0);
-        self.filter.set(hz / spread.sqrt(), reso, drive, ctx.sample_rate);
-        self.right.set(hz * spread.sqrt(), reso, drive, ctx.sample_rate);
+        // Stereo spread as measured on the voice filter (±2.65 octaves at 0/100), assumed here.
+        self.filter.set_spread((50.0 - p.get(STEREO)) / 50.0 * 2.65);
+        self.filter.set_var(p.get(VAR) / 100.0);
+        self.filter.set(cutoff_hz(p.get(FREQ)), p.get(RESO) / 100.0, p.get(DRIVE) / 100.0, ctx.sample_rate);
         for i in 0..l.len() {
-            l[i] = self.filter.process(l[i], 0.0).0;
-            r[i] = self.right.process(0.0, r[i]).1;
+            (l[i], r[i]) = self.filter.process(l[i], r[i]);
         }
     }
 
     fn reset(&mut self) {
         self.filter.reset();
-        self.right.reset();
     }
 }
 

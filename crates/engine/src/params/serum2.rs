@@ -330,7 +330,7 @@ pub const GLOBAL: ModuleSpec = ModuleSpec {
         ParamSpec { name: "kParamLimitSameNotePolyphony", host: None, curve: Curve::Toggle, defaults: &[0.0], options: &[], displays: &[], evidence: Evidence::Assumed },
         ParamSpec { name: "kParamMidiOut", host: None, curve: Curve::Choice, defaults: &[0.0], options: &["(unset)", "ClipPlayer", "Synth"], displays: &["(unset)", "ClipPlayer", "Synth"], evidence: Evidence::Presets },
         ParamSpec { name: "kParamNoteLatch", host: None, curve: Curve::Toggle, defaults: &[0.0], options: &[], displays: &[], evidence: Evidence::Presets },
-        ParamSpec { name: "kParamOversampling", host: None, curve: Curve::Linear { min: 0.0, max: 2.0, integer: true }, defaults: &[0.0], options: &[], displays: &[], evidence: Evidence::Assumed },
+        ParamSpec { name: "kParamOversampling", host: None, curve: Curve::Linear { min: 0.0, max: 2.0, integer: true }, defaults: &[1.0], options: &[], displays: &[], evidence: Evidence::Presets },
         ParamSpec { name: "kParamPolyCount", host: None, curve: Curve::Linear { min: 1.0, max: 32.0, integer: true }, defaults: &[8.0], options: &[], displays: &[], evidence: Evidence::Assumed },
         ParamSpec { name: "kParamUseUltraOnRender", host: None, curve: Curve::Toggle, defaults: &[0.0], options: &[], displays: &[], evidence: Evidence::Presets },
         ParamSpec { name: "kParamVoicePriority", host: None, curve: Curve::Choice, defaults: &[0.0], options: &["(unset)", "Low"], displays: &["(unset)", "Low"], evidence: Evidence::Presets },

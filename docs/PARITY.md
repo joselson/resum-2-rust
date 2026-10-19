@@ -13,7 +13,7 @@ the option onto a generic implementation; nothing is sound-matched yet.
 | 22 `XferModule` state objects, one per preset section | `params::Values` over every module instance; `Patch::set` edits one parameter live | done |
 | `XferLiveVoiceUser` per-voice runtime objects | `Voice` runtime state + per-voice `Offsets` | done |
 | `Oscillator` (Noise, Sub) / `WarpOscillator` (WT, Sample, MultiSample, Granular, Spectral) | `dsp::warp` stage (two slots) on the WT oscillator; sample and multisample engines | warp done for WT; sample warps, granular, spectral open |
-| `XferFilterBase`, 17 families, shared by voice and FX filters | `filters::model` maps all 107 types to models with fidelity | done (2 models) |
+| `XferFilterBase`, 17 families, shared by voice and FX filters | `filters::model` maps all 107 types to models with fidelity (26 matched, 51 approximate, 30 missing) | multimode, MG, delay and morph families measured; others open |
 | `XferModSource`, `ModMatrix` | routes to any module parameter; slot amount/flags are ModSlot parameters | done |
 | `Arp`, `ClipPlayer` as MIDI processors before voices | `notes::NoteProcessor` stage (passthrough) | stage done |
 | `NoteExpressionVoice` | none | open |
@@ -33,7 +33,7 @@ the option onto a generic implementation; nothing is sound-matched yet.
 | Unison stacks | none + 8 (octave, octave+fifth, centre 12/24) | none |
 | Granular windows / density modes | 10 / 3 | none |
 | Sample loop modes | forward, reverse, ping-pong, tailed | all, with crossfade |
-| Filter types | 110 (MG ladder, L/H/B/P/N 6–24, dual/triple combos, comb ×8, flange ×8, phase ×16, EQ, ring mod, S&H, formant, scream, dist-comb, diffuser…) | approx. ~25 via SVF/ladder |
+| Filter types | 107 (MG ladder, L/H/B/P/N 6–24, dual/triple combos, comb ×8, flange ×8, phase ×16, EQ, ring mod, S&H, formant, scream, dist-comb, diffuser…) | measured models (within ~1 dB) for L/H/B/N/P 6–24, MG Low 6–24, MG Ladder, comb/flange ±, phase P, morph duals and triples, Exp MM/BPF, Wsp, Scream; drive per type, level, stereo, Var; EMS/Acid/Dirty ladders, damped combs, negative phase, German LP, Scream LP/BP, Dist.Comb 1 approximate; formant, reverb, ring mod, S&H, EQ and other exotic types missing |
 | Routing destinations | Filter, Master, Direct, None | Filter, Master, None |
 | Envelopes | 4 × AHDSR, 3 curves, start/end, beat sync, legato invert | 4 × AHDSR, 3 curves |
 | LFO types | Path, RandomSH, Lorenz, Rossler | Path, RandomSH |
@@ -45,7 +45,7 @@ the option onto a generic implementation; nothing is sound-matched yet.
 | FX modules | Distortion, Flanger, Phaser, Chorus, Delay, Comp, Reverb, EQ, Filter, HyperDimension, Bode, Convolve, Utility + Split, Split3, SplitMS | all 16 (first implementations; multiband compression not modelled) |
 | Arp / Clip player | yes | none |
 | MPE / note expression | yes | none |
-| Oversampling | off / 2× / 4× (`kParamOversampling` 0–2) | none |
+| Oversampling | `kParamOversampling` 0–2; filters measure as 2× at 0 and 4× at 1–2 (default 1) | voice filters at 2×/4× with polyphase IIR half-band resamplers |
 
 ## Behaviour verification
 

@@ -1365,8 +1365,10 @@ dependencies = [
 name = "lumen-plugin"
 version = "0.1.0"
 dependencies = [
+ "cpal",
  "lumen-engine",
  "lumen-preset",
+ "midir",
  "nih_plug",
  "nih_plug_egui",
  "serde_json",

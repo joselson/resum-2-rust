@@ -51,8 +51,7 @@ levels, per-channel levels, envelope over time).
 |---|---|---|
 | Envelope times | 32·n⁵ s; Env 1 attack 1 ms, others 0.5 ms | parameter oracle |
 | Amp envelope | level applied squared (sustain 0.5 = −12 dB) | parameter display, decay probe |
-| Filter cutoff | 8.1758 Hz·(22050/8.1758)ⁿ | parameter display |
-| MG Low 6/12/18/24 | ladder tapped after 1–4 stages, no resonance gain compensation | filter probes |
+| Filter cutoff | 8.1758 Hz·2^(11.4·n) (to 22.1 kHz) | parameter display; comb delays pin the span within a cent |
 | Oscillator level | plain amplitude, default 0.5625 (−5 dB); frames play as stored, DC kept | init and table-position probes |
 | Master volume | plain amplitude +3 dB, default 0.25 | parameter display |
 | Pan | −4.5 dB law, unity at centre | pan probe |
@@ -107,11 +106,67 @@ Open: cross-mod warps (FM/FME/FML/PD/AM/RM), self-PD, sync at full, folds;
 multisample level (Serum 6–9 dB louder, not a constant) and velocity-layer
 selection; filter-sourced warps not probed; sample warps not rendered.
 
+## Filter findings
+
+Filter probes play C1 (32.7 Hz) so the harmonics sample |H(f)| every 32.7 Hz;
+`tools/filter_response.py RUN` divides each probe's harmonics by the `filt-off`
+render, separately for Serum and Lumen, and ranks the response error (RMS dB,
+40 Hz–16 kHz, within 50 dB of the peak). Prototypes were fitted to Serum's
+curves before implementing them.
+
+```bash
+node tools/make_probes.mjs <init state> <lumen-ref>/probes-filt '^filt-'
+lumen-compare jobs --presets <lumen-ref>/probes-filt --dir <run> --count 1000 --notes 24
+python3 tools/filter_response.py <run> [--plot out.png 'REGEX']
+```
+
+| Behaviour | Measured | Fit |
+|---|---|---|
+| Oversampling | filters run at 4× by default (`kParamOversampling` 1 or 2), 2× at 0; the default is 1 | top-octave response vs bilinear at 96/192 kHz |
+| Multimode L/H/B/N/P | one resonant 2-pole section; Q 0.5→97.8 over resonance (table); output × 1/(1 + 4r) except notch | 0.05–0.15 dB |
+| 24 dB types | second section Q 0.5 → 0.99 by r = 0.5 | 0.1–0.2 dB |
+| 18 / 6 dB types | resonant section × one-pole / one-pole alone | 0.1–0.2 dB |
+| Band | raw band output (peak gain Q) | 0.1 dB |
+| Peak | (s² + s + 1)/(s² + s/Q + 1): −6 dB dip at r = 0 | 0.1–1.4 dB |
+| MG Low 6–24 | linear ladder, feedback 4.04·r, tapped after 1–4 stages, no compensation | 0.1 dB |
+| MG Ladder | ladder with (1 + k)·−2 dB compensation, feedback 4·r, cutoff ×1.1 | 0.01–0.13 dB |
+| Ladder saturation | headroom 14.5 (internal level): self-oscillation at r = 1 within 3% of Serum | level probes |
+| Drive | input gain 0/7.8/13.9/20.2/23.9 dB at 0/25/50/80/100, cubic soft clip before the filter; bypassed at drive 0 | 0.37 dB mean |
+| Drive per type | MG Ladder and EMS linear (+24 dB at 100); Acid clips at 1.25× and Dirty at 0.25× the ceiling with half the gain | output-level sweeps, 0.6 dB |
+| Comb ± | delay one cutoff period; 0.5/(1 + r)·(1 ± r²z⁻ᵀ)/(1 ∓ r·z⁻ᵀ) | 0.14 dB mean (r ≤ 0.9) |
+| Flange ± | 0.5/(1 + r)·(1 ± z⁻ᵀ)/(1 ∓ r·z⁻ᵀ) | 0.5 / 0.75 dB |
+| Comb/flange damping | one-pole in the loop at cutoff·2^(21·(Var − 0.5)), 8 Hz–22 kHz | 3 cutoffs × 4 Var, 0.6 dB |
+| Phase nP | n first-order allpasses at cutoff·0.507, feedback r over 10 µs, 0.5/(1 + r)·(loop + allpass); negative types mix −A/(1 + r), feedback −r over 23 µs | 0.5 / 0.9 dB |
+| Morph duals (LH, HP, …) | first response at the cutoff, then the second at cutoff_hz(0.94·Var), resonance Q, no scaling | 0.2–0.5 dB at 3 cutoffs |
+| Morph triples (L/B/H, …) | Var crossfades the three outputs in amplitude; 24 dB types cascade a second section (second-section Q) | 0.1–0.5 dB |
+| Exp MM / Exp BPF | 2-pole low/raw band, own Q curve, cutoff ×1.15, −0.6/−0.85 dB | 0.2 dB |
+| Wsp | 2-pole lowpass, own Q curve, cutoff ×0.98, −1 dB | 0.5 dB |
+| Scream ("French LP") | 2-pole lowpass, shared Q curve saturating above r = 0.7, −12.1 dB | 0.7 dB |
+| Level | squared: 0.1 → −28 dB, 1.0 → +12 dB (display and render) | 0.2 dB |
+| Stereo | cutoff offset ±2.65 octaves at 0/100 (left up at 0), linear assumed | 0.3 dB |
+
+Response error after these changes: multimode 0.36–0.45 dB mean (worst under
+1 dB), MG family 0.19 dB, drive 0.37 dB, delay families 0.14–0.9 dB, morph types
+0.58 dB. Probe-set response error: 12.5 → 5.0 dB (filt), 13.2 → 5.3 dB (filt2),
+10.2 → 2.4 dB (filt3, delay families); the rest is types still missing or nonlinear.
+Factory set (60 presets, same day): 7.49 before the filter work, 7.33 after;
+21 presets better, 10 worse. The two large regressions are interactions, not filter
+errors: "LD - B-Organ" loses its 33 Hz component because the sub oscillator's
+level depends on unimplemented mod sources (the old lowpass-only LH12 hid it), and
+"BA - Funk Me Electric" now matches loudness and spectrum but its pitch is detected
+an octave off.
+
+Open: EMS, Acid and Dirty ladder responses (nonlinear; drive measured, response
+uses MG Low 24); formants, reverb, combs/allpasses/comb 2, ring mod, sample & hold,
+EQ types (shelves/peaks whose gain Var sets: 50 flat, 100 ≈ +19 dB), diffuser
+(magnitude flat, so pass-through matches the response but not the smearing),
+dist-comb 2, add-bass, PZ SVF and DJ mixer at non-default Var; full resonance
+(r = 1) of comb/phase types; the HL6 damping's Var mapping; FX filter drive and
+stereo (assumed equal to the voice filter); stereo spread between 0, 50 and 100.
+
 ## Open discrepancies (probe set, worst first)
 
-- Filter drive: Lumen −17.7 dB at drive 80.
 - Sub round-rect, triangle, square, pulse: spectra and levels differ.
 - Unison: about +2 dB and −4 dB width; blend 0 still differs.
 - Envelope curve parameter: Serum bends harder than the current mapping.
-- High-pass and notch: centroid +0.28 octave.
 - Pitch above the root: octave-spaced mip levels drop the top harmonics early.

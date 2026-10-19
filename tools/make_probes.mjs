@@ -63,6 +63,15 @@ const asOscA = (osc, index, params = {}) => {
   return [["__section", "Oscillator0", o]];
 };
 
+const FILTER_TYPES = JSON.parse(readFileSync(new URL("../data/serum2-choices.json", import.meta.url), "utf8"))["VoiceFilter0.plainParams.kParamType"].options.map((o) => o[1]);
+// Most used in the factory presets (voice + FX filters), and types whose Var control changes the response.
+const FILTER_TOP = ["MgL6", "MgL12", "MgL18", "MgL24", "LadderEMS", "LadderMg", "LadderAcid", "DirtyMg", "L12", "L18", "L24", "H12", "H18", "H24", "B12", "B24", "LH12", "HP12", "Diffuser", "CombP", "Reverb1", "Wsp", "PZ_SVF", "Exp", "ExpBPF", "BandReject", "Phase24P", "Combs", "Allpasses", "RM", "Comb2", "FormantONE"];
+const FILTER_VAR = ["LH12", "HP12", "LBH24", "LNH24", "BPN12", "CombP", "CombH6N", "FlangeP", "Phase24P", "Diffuser", "Reverb1", "Wsp", "RM", "FormantONE", "FormantTWO", "Exp", "ExpBPF", "LadderEMS", "DirtyMg", "PZ_SVF", "Comb2", "Combs", "Allpasses", "Scream", "DJMixer", "SNH1", "LEQ12", "BEQ12"];
+const FILTER_LADDERS = ["MgL6", "MgL12", "MgL18", "MgL24", "LadderMg", "LadderEMS", "LadderAcid", "DirtyMg", "ZDF_A", "Scream"];
+const FILTER_SWEEP = [...FILTER_LADDERS, "L12", "L24", "B12", "N12", "P12", "N24", "P24", "H12"];
+const FILTER_DELAY = ["CombP", "CombN", "CombL6P", "CombL6N", "CombH6P", "CombH6N", "CombHL6P", "CombHL6N", "FlangeP", "FlangeN", "FlangeL6P", "FlangeL6N", "FlangeH6P", "FlangeH6N", "FlangeHL6P", "FlangeHL6N", "Phase12P", "Phase12N", "Phase24P", "Phase24N", "Phase36P", "Phase36N", "Phase48P", "Phase48N", "Phase48L6P", "Phase48H6P", "Phase48HL6P", "FlangePhase12HL6P", "Comb2", "Combs", "Allpasses"];
+// Three oscillators at full volume with one phase: peaks well above a single oscillator.
+const LOUD = [0, 1, 2].flatMap((o) => [[`Oscillator${o}`, "kParamEnable", 1], [`Oscillator${o}`, "kParamVolume", 1], [`Oscillator${o}.WTOsc${o}`, "kParamRandomPhase", 0]]);
 const filter = (type, freq, reso = 10) => [["VoiceFilter0", "kParamEnable", 1], ["VoiceFilter0", "kParamType", type], ["VoiceFilter0", "kParamFreq", freq], ["VoiceFilter0", "kParamReso", reso]];
 const probes = {
   "init": [],
@@ -137,6 +146,32 @@ const probes = {
   "multi-plain": asOscA(multiOsc, "multi"),
   "multi-octave-down": asOscA(multiOsc, "multi", { kParamOctave: { $float: -1 } }),
   "multi-kalimba": asOscA(kalimbaOsc, "multi"),
+  // Filter responses (render at a low note so harmonics sample |H(f)| densely; `filt-off` is the reference).
+  "filt-off": [],
+  ...Object.fromEntries(FILTER_TYPES.map((t) => [`filt-${t}`, filter(t, 0.5)])),
+  ...Object.fromEntries(FILTER_TOP.flatMap((t) => [0, 50, 90].map((r) => [`filt-${t}-reso-${r}`, filter(t, 0.5, r)]))),
+  ...Object.fromEntries(["MgL12", "L12", "H12", "B12", "MgL24", "H24"].flatMap((t) => [0.25, 0.75].map((c) => [`filt-${t}-freq-${c}`, filter(t, c)]))),
+  ...Object.fromEntries([["MgL12", 0.5], ["L12", 0.5], ["H12", 0.5], ["LadderEMS", 0.5]].flatMap(([t, c]) => [25, 50, 80, 100].map((d) => [`filt-${t}-drive-${d}`, [...filter(t, c), ["VoiceFilter0", "kParamDrive", d]]]))),
+  ...Object.fromEntries(FILTER_VAR.flatMap((t) => [50, 100].map((v) => [`filt-${t}-var-${v}`, [...filter(t, 0.5), ["VoiceFilter0", "kParamVar", v]]]))),
+  ...Object.fromEntries([0, 100].map((v) => [`filt-MgL12-stereo-${v}`, [...filter("MgL12", 0.5), ["VoiceFilter0", "kParamStereo", v]]])),
+  "filt-MgL12-level-1": [...filter("MgL12", 0.5), ["VoiceFilter0", "kParamLevelOut", 1]],
+  "filt-MgL12-wet-50": [...filter("MgL12", 0.3), ["VoiceFilter0", "kParamWet", 50]],
+  // Finer sweeps: resonance curves, ladder cutoffs and drive, intermediate Var.
+  ...Object.fromEntries(FILTER_SWEEP.flatMap((t) => [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95, 100].map((r) => [`filt2-${t}-reso-${r}`, filter(t, 0.5, r)]))),
+  ...Object.fromEntries(FILTER_LADDERS.flatMap((t) => [0.25, 0.75].map((c) => [`filt2-${t}-freq-${c}`, filter(t, c)]))),
+  ...Object.fromEntries(FILTER_LADDERS.flatMap((t) => [25, 50, 100].map((d) => [`filt2-${t}-drive-${d}`, [...filter(t, 0.5), ["VoiceFilter0", "kParamDrive", d]]]))),
+  ...Object.fromEntries(FILTER_VAR.flatMap((t) => [25, 75].map((v) => [`filt2-${t}-var-${v}`, [...filter(t, 0.5), ["VoiceFilter0", "kParamVar", v]]]))),
+  ...Object.fromEntries([0, 1, 2].flatMap((o) => [[`filt2-os${o}-L12-freq-0.75`, [...filter("L12", 0.75), ["Global0", "kParamOversampling", o]]], [`filt2-os${o}-L12-reso-0`, [...filter("L12", 0.5, 0), ["Global0", "kParamOversampling", o]]]])),
+  // Delay-based families (comb, flange, phase), stereo spread and the drive-0 clipper.
+  ...Object.fromEntries(FILTER_DELAY.flatMap((t) => [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map((r) => [`filt3-${t}-reso-${r}`, filter(t, 0.5, r)]))),
+  ...Object.fromEntries(["CombP", "CombN", "FlangeP", "FlangeN", "Phase24P", "Phase48P", "CombL6P", "CombHL6P"].flatMap((t) => [0.3, 0.45, 0.7].map((c) => [`filt3-${t}-freq-${c}`, filter(t, c, 50)]))),
+  ...Object.fromEntries(["CombP", "CombL6P", "FlangeP", "Phase24P", "Comb2", "Combs", "Allpasses"].flatMap((t) => [0, 50, 100].map((v) => [`filt3-${t}-var-${v}-reso-70`, [...filter(t, 0.5, 70), ["VoiceFilter0", "kParamVar", v]]]))),
+  "filt3-MgL12-stereo-25": [...filter("MgL12", 0.5), ["VoiceFilter0", "kParamStereo", 25]],
+  "filt3-loud-off": LOUD,
+  "filt3-loud-L12-open": [...LOUD, ...filter("L12", 1, 0)],
+  "filt3-loud-L12-open-drive-10": [...LOUD, ...filter("L12", 1, 0), ["VoiceFilter0", "kParamDrive", 10]],
+  // Var against cutoff: is a Var-set frequency absolute or relative to the cutoff?
+  ...Object.fromEntries(["LH12", "CombL6P", "LBH24"].flatMap((t) => [0.3, 0.7].flatMap((c) => [25, 50, 75].map((v) => [`filt4-${t}-freq-${c}-var-${v}`, [...filter(t, c, t === "CombL6P" ? 70 : 10), ["VoiceFilter0", "kParamVar", v]]])))),
   "fx-split-dist-high": rack(fx("FXSplit", { kParamFreq: 1000, kParamModuleCount1: 0, kParamModuleCount2: 1 }), fx("FXDistortion", { kParamDrive: 80 })),
 };
 

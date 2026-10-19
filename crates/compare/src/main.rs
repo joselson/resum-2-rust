@@ -116,6 +116,7 @@ fn make_jobs(a: &Args) -> Result<(), String> {
     let dir = PathBuf::from(a.need("dir")?);
     std::fs::create_dir_all(dir.join("reference")).map_err(|e| e.to_string())?;
     let count: usize = a.num("count", 60)?;
+    let (hold, tail): (f32, f32) = (a.num("hold", 1.5)?, a.num("tail", 1.5)?);
     let notes: Vec<u8> = a.get("notes").unwrap_or("48").split(',').map(|n| n.trim().parse().map_err(|_| format!("bad note {n}"))).collect::<Result<_, _>>()?;
     // Even stride over the sorted list spreads picks across categories deterministically.
     let stride = (presets.len() as f32 / count.min(presets.len()) as f32).max(1.0);
@@ -130,8 +131,8 @@ fn make_jobs(a: &Args) -> Result<(), String> {
                 id,
                 notes: notes.clone(),
                 velocity: 0.8,
-                hold: 1.5,
-                tail: 1.5,
+                hold,
+                tail,
             }
         })
         .collect();

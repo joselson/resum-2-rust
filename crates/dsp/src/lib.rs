@@ -6,6 +6,7 @@ pub mod filter;
 pub mod hilbert;
 pub mod lfo;
 pub mod osc;
+pub mod oversample;
 pub mod reverb;
 pub mod sampler;
 pub mod shaper;

@@ -71,11 +71,15 @@ pitch bend, mod wheel, aftertouch.
 
 FX racks (main + two buses, nested splits, all 16 module types), all 70
 wavetable warp modes and the sample/multisample oscillators (SFZ) render with
-first-pass calibration. The plugin exposes 550 host parameters generated from
-the parameter tables. Not yet implemented: granular/spectral oscillators, chaos LFOs
-(Lorenz/Rossler), arpeggiator and clip player, filter `Var` and exotic filter
-types (comb, formant, phaser, flanger…), LFO note divisions, a Serum-style
-editor (the current one is a generic parameter page).
+first-pass calibration. Filters run oversampled like Serum's (4× by default) and
+the main families are measured within about 1 dB: multimode 6–24, MG ladders,
+comb/flange/phase, morph duals and triples, Exp, Wsp and Scream, with drive,
+level, stereo and Var (see docs/CALIBRATION.md). The plugin exposes 550 host
+parameters generated from the parameter tables. Not yet implemented:
+granular/spectral oscillators, chaos LFOs (Lorenz/Rossler), arpeggiator and clip
+player, the remaining exotic filter types (formant, reverb, ring mod, EQ…) and the
+EMS/Acid/Dirty ladder responses, LFO note divisions, a Serum-style editor (the
+current one is a generic parameter page).
 
 ## Parameter semantics
 

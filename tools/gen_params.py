@@ -81,7 +81,9 @@ EXTRA = [
     ("RoutingSlot", "kParamRoutingDest", ("choice", ["kRoutingDestFilter", "kRoutingDestMaster", "kRoutingDestDirect", "kRoutingDestNone"]), [0, 1, 1, 1, 1, 1, 1], "presets"),
     ("Global", "kParamPolyCount", ("linear", 1, 32, True), 8, "assumed"),
     ("Global", "kParamGlobalTuning", ("linear", 400, 480, False), 440, "presets"),
-    ("Global", "kParamOversampling", ("linear", 0, 2, True), 0, "assumed"),
+    # Factory presets store 0 and 2 explicitly, so the default is 1; renders show 0 runs
+    # filters at 2× and 1 (like 2) at 4× (docs/CALIBRATION.md).
+    ("Global", "kParamOversampling", ("linear", 0, 2, True), 1, "presets"),
     ("Global", "kParamLimitSameNotePolyphony", ("toggle",), 0, "assumed"),
     ("Oscillator", "kParamType", ("choice", ["kOsc_WT", "kOsc_Sample", "kOsc_MultiSample", "kOsc_Granular", "kOsc_Spectral"]), 0, "presets"),
     ("Oscillator", "kParamDetuneMode", ("choice", ["kDetuneLinear", "kDetuneSuper", "kDetuneExp", "kDetuneInv", "kDetuneRandom"]), 0, "binary name table"),

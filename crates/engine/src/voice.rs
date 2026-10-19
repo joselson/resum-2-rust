@@ -53,6 +53,9 @@ const FILTER_DRIVE: P = P::new("VoiceFilter", 0, "kParamDrive");
 const FILTER_WET: P = P::new("VoiceFilter", 0, "kParamWet");
 const FILTER_LEVEL: P = P::new("VoiceFilter", 0, "kParamLevelOut");
 const FILTER_KEYTRACK: P = P::new("VoiceFilter", 0, "kParamKeyTrack");
+const OVERSAMPLING: P = P::new("Global", 0, "kParamOversampling");
+const FILTER_STEREO: P = P::new("VoiceFilter", 0, "kParamStereo");
+const FILTER_VAR: P = P::new("VoiceFilter", 0, "kParamVar");
 const ENV_ATTACK: P = P::new("Env", 0, "kParamAttack");
 const ENV_HOLD: P = P::new("Env", 0, "kParamHold");
 const ENV_DECAY: P = P::new("Env", 0, "kParamDecay");
@@ -91,6 +94,7 @@ pub(crate) const RENDERED: &[(&str, &str)] = &[
     ("NoiseOsc", "kParamColor"), ("SubOsc", "kParamShape"), ("SubOsc", "kParamInitialPhase"),
     ("VoiceFilter", "kParamEnable"), ("VoiceFilter", "kParamType"), ("VoiceFilter", "kParamFreq"), ("VoiceFilter", "kParamReso"),
     ("VoiceFilter", "kParamDrive"), ("VoiceFilter", "kParamWet"), ("VoiceFilter", "kParamLevelOut"), ("VoiceFilter", "kParamKeyTrack"),
+    ("VoiceFilter", "kParamStereo"), ("Global", "kParamOversampling"),
     ("Env", "kParamAttack"), ("Env", "kParamHold"), ("Env", "kParamDecay"), ("Env", "kParamSustain"), ("Env", "kParamRelease"),
     ("Env", "kParamCurve1"), ("Env", "kParamCurve2"), ("Env", "kParamCurve3"),
     ("LFO", "kParamRate"), ("LFO", "kParamSmooth"), ("LFO", "kParamRise"), ("LFO", "kParamDelay"), ("LFO", "kParamPhase"),
@@ -445,6 +449,8 @@ impl Voice {
         let noise_cut = 200.0 * 100f32.powf((m(NOISE_PITCH) / 0.5).min(1.0));
         let noise_coef = 1.0 - (-std::f32::consts::TAU * noise_cut / sr).exp();
 
+        // Serum runs its filters at 4× by default and at 2× on the lowest setting (measured).
+        let oversampling = if m(OVERSAMPLING) < 0.5 { 2 } else { 4 };
         let mut filter_on = [false; 2];
         let mut filter_mix = [(0f32, 1f32); 2];
         for i in 0..2 {
@@ -454,14 +460,19 @@ impl Voice {
             let Some(kind) = filters::model(v.choice(FILTER_TYPE.on(i))).0 else { continue };
             filter_on[i] = true;
             if self.filters[i].kind() != kind {
-                self.filters[i] = Filter::new(kind);
+                self.filters[i].set_kind(kind);
             }
+            self.filters[i].set_var(m(FILTER_VAR.on(i)) / 100.0);
+            self.filters[i].set_oversampling(oversampling);
+            // Stereo 50 is neutral; 0 moves the left cutoff 2.65 octaves up and the right down.
+            self.filters[i].set_spread((50.0 - m(FILTER_STEREO.on(i))) / 50.0 * 2.65);
             let mut hz = cutoff_hz(m(FILTER_FREQ.on(i)));
             if v.flag(FILTER_KEYTRACK.on(i)) {
                 hz *= ((self.note as f32 - 60.0) / 12.0).exp2();
             }
             self.filters[i].set(hz, m(FILTER_RESO.on(i)) / 100.0, m(FILTER_DRIVE.on(i)) / 100.0, sr);
-            let level = m(FILTER_LEVEL.on(i)) / FILTER_LEVEL.spec().default_for(i).max(1e-6);
+            // Level is squared: Serum shows 0.1 as −28 dB and 1.0 as +12 dB around 0.5.
+            let level = (m(FILTER_LEVEL.on(i)) / FILTER_LEVEL.spec().default_for(i).max(1e-6)).powi(2);
             filter_mix[i] = (m(FILTER_WET.on(i)) / 100.0, level);
         }
         // −100 = all to filter 1, +100 = all to filter 2.
