@@ -10,7 +10,7 @@ use crate::sampleosc::{SampleSource, SampleVoice};
 use lumen_dsp::env::{EnvParams, Envelope};
 use lumen_dsp::filter::{Filter, FilterKind};
 use lumen_dsp::lfo::{Lfo, LfoMode, LfoTiming};
-use lumen_dsp::osc::{DetuneMode, Unison, WtOscillator};
+use lumen_dsp::osc::{DetuneMode, Unison, UnisonStack, WtOscillator};
 use lumen_dsp::sub::{SubOscillator, SubShape};
 use lumen_dsp::warp::{WarpMode, WarpSlot, WarpSource};
 use lumen_dsp::{note_to_hz, Rng};
@@ -32,6 +32,7 @@ const OSC_BLEND: P = P::new("Oscillator", 0, "kParamDetuneWid");
 const OSC_WIDTH: P = P::new("Oscillator", 0, "kParamUnisonStereo");
 const OSC_DETUNE_MODE: P = P::new("Oscillator", 0, "kParamDetuneMode");
 const OSC_UNISON_RANGE: P = P::new("Oscillator", 0, "kParamUnisonRange");
+const OSC_UNISON_STACK: P = P::new("Oscillator", 0, "kParamUnisonStack");
 const OSC_TYPE: P = P::new("Oscillator", 0, "kParamType");
 const WT_POS: P = P::new("WTOsc", 0, "kParamTablePos");
 const WT_UNISON_POS: P = P::new("WTOsc", 0, "kParamUnisonWTPos");
@@ -87,7 +88,7 @@ pub(crate) const RENDERED: &[(&str, &str)] = &[
     ("Oscillator", "kParamEnable"), ("Oscillator", "kParamVolume"), ("Oscillator", "kParamPan"), ("Oscillator", "kParamOctave"),
     ("Oscillator", "kParamPitch"), ("Oscillator", "kParamFine"), ("Oscillator", "kParamCoarsePit"), ("Oscillator", "kParamUnison"),
     ("Oscillator", "kParamDetune"), ("Oscillator", "kParamDetuneWid"), ("Oscillator", "kParamUnisonStereo"), ("Oscillator", "kParamDetuneMode"),
-    ("Oscillator", "kParamUnisonRange"), ("Oscillator", "kParamType"),
+    ("Oscillator", "kParamUnisonRange"), ("Oscillator", "kParamUnisonStack"), ("Oscillator", "kParamType"),
     ("WTOsc", "kParamTablePos"), ("WTOsc", "kParamUnisonWTPos"), ("WTOsc", "kParamInitialPhase"), ("WTOsc", "kParamRandomPhase"),
     ("WTOsc", "kParamWarpMenu"), ("WTOsc", "kParamWarp"), ("WTOsc", "kParamWarpVar"), ("WTOsc", "kParamWarpMenu2"),
     ("WTOsc", "kParamWarp2"), ("WTOsc", "kParamWarpVar2"), ("Oscillator", "kParamUnisonWarp"), ("Oscillator", "kParamUnisonWarp2"),
@@ -159,6 +160,20 @@ fn detune_mode(name: &str) -> DetuneMode {
     }
 }
 
+fn unison_stack(name: &str) -> UnisonStack {
+    match name {
+        "kOctave1" => UnisonStack::Octaves(1),
+        "kOctave2" => UnisonStack::Octaves(2),
+        "kOctave3" => UnisonStack::Octaves(3),
+        "kOctaveFifth1" => UnisonStack::OctaveFifth1,
+        "kOctaveFifth2" => UnisonStack::OctaveFifth2,
+        "kOctaveFifth3" => UnisonStack::OctaveFifth3,
+        "kCenter12" => UnisonStack::Centre(12),
+        "kCenter24" => UnisonStack::Centre(24),
+        _ => UnisonStack::None,
+    }
+}
+
 fn sub_shape(name: &str) -> SubShape {
     match name {
         "kRoundRect" => SubShape::RoundRect,
@@ -170,9 +185,16 @@ fn sub_shape(name: &str) -> SubShape {
     }
 }
 
-/// Stored envelope curves are 0–100 with 50 linear; the DSP bend is [-1, 1].
+/// Curve constant k for a stored envelope curve (0–100, 50 linear). Measured on attack,
+/// decay and release probes, each segment an exact (e^{k·u} − 1)/(e^k − 1) in amplitude;
+/// k is odd about 50 and tabled against x = |50 − curve|/50.
 fn env_curve(stored: f32) -> f32 {
-    ((stored - 50.0) / 50.0).clamp(-1.0, 1.0)
+    const K: [f32; 12] = [0.0, 1.11, 2.12, 3.15, 4.21, 5.41, 6.77, 8.49, 11.0, 14.9, 20.1, 53.0];
+    const X: [f32; 12] = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.96, 1.0];
+    let x = ((50.0 - stored) / 50.0).clamp(-1.0, 1.0);
+    let i = X.partition_point(|&p| p < x.abs()).clamp(1, X.len() - 1);
+    let t = (x.abs() - X[i - 1]) / (X[i] - X[i - 1]);
+    (K[i - 1] + (K[i] - K[i - 1]) * t) * x.signum()
 }
 
 /// Tempo-synced LFO rate. The stored value's division scale is not yet mapped
@@ -196,6 +218,8 @@ pub struct Voice {
     noise_lp: [f32; 2],
     filters: [Filter; 2],
     envs: [Envelope; 4],
+    /// Env 1 as applied to amplitude: the same segments, run toward sustain².
+    amp_env: Envelope,
     lfos: [Lfo; 10],
     lfo_hold: [f32; 10],
     lfo_smoothed: [f32; 10],
@@ -225,6 +249,7 @@ impl Voice {
             noise_lp: [0.0; 2],
             filters: [Filter::new(FilterKind::Ladder { poles: 2 }), Filter::new(FilterKind::Ladder { poles: 2 })],
             envs: Default::default(),
+            amp_env: Envelope::default(),
             lfos: Default::default(),
             lfo_hold: [0.0; 10],
             lfo_smoothed: [0.0; 10],
@@ -239,7 +264,7 @@ impl Voice {
     }
 
     pub fn is_active(&self) -> bool {
-        self.envs[0].is_active()
+        self.amp_env.is_active()
     }
 
     fn lfo_timing(&self, v: &Values, i: usize, bpm: f32) -> LfoTiming {
@@ -279,7 +304,8 @@ impl Voice {
         for (i, osc) in self.oscs.iter_mut().enumerate() {
             osc.trigger(v.get(WT_PHASE.on(i)) / 360.0, v.get(WT_RANDOM_PHASE.on(i)) / 100.0, &mut Rng::new(phase_seed));
         }
-        self.sub.trigger(v.get(SUB_PHASE) / 360.0);
+        // At phase 0 Serum's sub starts half a cycle into its shape (every shape, measured).
+        self.sub.trigger(v.get(SUB_PHASE) / 360.0 + 0.5);
         for (i, sv) in self.sample_voices.iter_mut().enumerate() {
             let transposed = start.note as f32 + v.get(OSC_OCTAVE.on(i)).round() * 12.0 + v.get(OSC_SEMI.on(i)).round() + v.get(OSC_COARSE.on(i));
             sv.trigger(&patch.samples[i], v, i, transposed.round().clamp(0.0, 127.0) as u8, start.velocity, &mut self.rng);
@@ -290,6 +316,7 @@ impl Voice {
         for e in &mut self.envs {
             e.trigger(false);
         }
+        self.amp_env.trigger(false);
         for i in 0..10 {
             let timing = self.lfo_timing(v, i, 120.0);
             self.lfos[i].trigger(&timing);
@@ -310,12 +337,14 @@ impl Voice {
         for e in &mut self.envs {
             e.release();
         }
+        self.amp_env.release();
     }
 
     /// Silences immediately (voice stealing, patch change).
     pub fn kill(&mut self) {
         self.held = false;
         self.envs = Default::default();
+        self.amp_env = Envelope::default();
         self.amp = 0.0;
     }
 
@@ -346,6 +375,7 @@ impl Voice {
             release_velocity: self.release_velocity,
             ..Sources::default()
         };
+        let mut amp_level = 0.0;
         for i in 0..4 {
             let m = |p: P| self.offsets.apply(v, p.on(i));
             let params = EnvParams {
@@ -357,6 +387,11 @@ impl Voice {
                 curves: ENV_CURVES.map(|c| env_curve(m(c))),
             };
             src.envs[i] = self.envs[i].advance(&params, sr, n);
+            if i == 0 {
+                // Serum's amp envelope runs in amplitude toward sustain² (0.5 sustains at
+                // −12 dB) with the same curves; it is not the square of the curved level.
+                amp_level = self.amp_env.advance(&EnvParams { sustain: params.sustain * params.sustain, ..params }, sr, n);
+            }
         }
         for i in 0..10 {
             let timing = self.lfo_timing(v, i, controls.bpm);
@@ -426,12 +461,15 @@ impl Voice {
             let frames = table.frames().saturating_sub(1) as f32;
             let unison = Unison {
                 voices: m(OSC_UNISON.on(i)).round().clamp(1.0, 16.0) as usize,
-                detune_semis: m(OSC_DETUNE.on(i)) * v.get(OSC_UNISON_RANGE.on(i)) * 0.5,
+                // Outer voices sit at ±range·detune^1.25 semitones (measured at detune
+                // 0.05–1 and range 2, 12 and 48).
+                detune_semis: v.get(OSC_UNISON_RANGE.on(i)) * m(OSC_DETUNE.on(i)).max(0.0).powf(1.25),
                 mode: detune_mode(v.choice(OSC_DETUNE_MODE.on(i))),
-                width: m(OSC_WIDTH.on(i)).abs() / 100.0,
+                width: m(OSC_WIDTH.on(i)) / 100.0,
                 position_spread: m(WT_UNISON_POS.on(i)) / 100.0 * frames * 0.5,
                 blend: m(OSC_BLEND.on(i)) / 100.0,
                 warp_spread: OSC_UNISON_WARP.map(|p| m(p.on(i)) / 100.0),
+                stack: unison_stack(v.choice(OSC_UNISON_STACK.on(i))),
             };
             let warps = WT_WARP.map(|(menu, amount, var)| WarpSlot {
                 mode: WarpMode::from_name(v.choice(menu.on(i))).unwrap_or(WarpMode::Off),
@@ -481,9 +519,7 @@ impl Voice {
         let filter_dest = [dest(v, 5), dest(v, 6)];
         let sends: [[f32; 2]; 7] = std::array::from_fn(|i| [m(ROUTE_BUS1.on(i)) / 100.0, m(ROUTE_BUS2.on(i)) / 100.0]);
 
-        // The amp envelope's level is applied squared: Serum displays sustain 0.5 as
-        // −12 dB and a 0.2 sustain measures 27 dB below the peak.
-        let amp_target = src.envs[0] * src.envs[0];
+        let amp_target = amp_level;
         let amp_start = self.amp;
 
         for s in 0..n {
@@ -623,6 +659,14 @@ fn pan_gains(pan: f32, gain: f32) -> [f32; 2] {
 mod tests {
     use super::*;
     use crate::params::MODULES;
+
+    #[test]
+    fn envelope_curve_constants_follow_the_measured_table() {
+        assert_eq!(env_curve(50.0), 0.0);
+        for (stored, k) in [(25.0, 5.41), (75.0, -5.41), (10.0, 11.0), (0.0, 53.0), (100.0, -53.0), (66.6, -3.50)] {
+            assert!((env_curve(stored) - k).abs() < 0.05, "{stored}: {}", env_curve(stored));
+        }
+    }
 
     #[test]
     fn rendered_entries_exist() {

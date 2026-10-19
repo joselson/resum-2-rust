@@ -305,7 +305,7 @@ mod tests {
         let payload = Value::Map(vec![
             (t("Env1"), Value::Map(vec![(t("plainParams"), Value::Map(vec![(t("kParamDecay"), Value::Float(0.25)), (t("kParamBogus"), Value::Float(1.0))]))])),
             (t("Oscillator1"), Value::Map(vec![
-                (t("plainParams"), Value::Map(vec![(t("kParamEnable"), Value::Float(1.0)), (t("kParamUnisonStack"), t("kOctave1"))])),
+                (t("plainParams"), Value::Map(vec![(t("kParamEnable"), Value::Float(1.0)), (t("kParamUnisonStack"), t("kOctave1")), (t("kParamUnisonSpan"), Value::Float(30.0))])),
                 (t("WTOsc1"), Value::Map(vec![(t("plainParams"), Value::Map(vec![(t("kParamWarpMenu"), t("kNotAMode"))]))])),
             ])),
         ]);
@@ -316,6 +316,6 @@ mod tests {
         assert_eq!(p.values.choice(ParamRef::new("Oscillator", 1, "kParamUnisonStack")), "kOctave1");
         assert!(cov.unsupported.contains_key("Env.kParamBogus (unknown parameter)"));
         assert!(cov.unsupported.contains_key("WTOsc.kParamWarpMenu option kNotAMode"));
-        assert!(cov.unsupported.contains_key("Oscillator.kParamUnisonStack"), "{:?}", cov.unsupported);
+        assert!(cov.unsupported.contains_key("Oscillator.kParamUnisonSpan"), "{:?}", cov.unsupported);
     }
 }

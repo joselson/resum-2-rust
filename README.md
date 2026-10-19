@@ -62,9 +62,12 @@ Verified on the 626 Serum 2 factory presets: all load and render finite audio,
 all wavetables resolve, 7,417 mod routes apply. Every preset still uses at
 least one feature listed below; `--survey` ranks them.
 
-Implemented: wavetable oscillators A–C with unison (5 detune modes, width,
-table-position spread), noise, sub, per-source routing and filter balance, two
-voice filters (SVF LP/HP/BP 12/24, notch, peak, ladder), four envelopes, ten
+Implemented: wavetable oscillators A–C band-limited like Serum's (flat to about
+0.49·fs at every pitch) with measured unison (5 detune modes, stacks, width, blend,
+table-position spread), noise, the six measured sub shapes, per-source routing and
+filter balance, two
+voice filters (SVF LP/HP/BP 12/24, notch, peak, ladder), four envelopes with
+measured curves, ten
 curve/S&H LFOs (trigger/free/envelope modes, delay, rise, smoothing), eight
 macros, 64 mod slots with aux sources and bipolar mode, mono/legato/portamento,
 pitch bend, mod wheel, aftertouch.

@@ -73,6 +73,8 @@ const FILTER_DELAY = ["CombP", "CombN", "CombL6P", "CombL6N", "CombH6P", "CombH6
 // Three oscillators at full volume with one phase: peaks well above a single oscillator.
 const LOUD = [0, 1, 2].flatMap((o) => [[`Oscillator${o}`, "kParamEnable", 1], [`Oscillator${o}`, "kParamVolume", 1], [`Oscillator${o}.WTOsc${o}`, "kParamRandomPhase", 0]]);
 const filter = (type, freq, reso = 10) => [["VoiceFilter0", "kParamEnable", 1], ["VoiceFilter0", "kParamType", type], ["VoiceFilter0", "kParamFreq", freq], ["VoiceFilter0", "kParamReso", reso]];
+const RP0 = [["Oscillator0.WTOsc0", "kParamRandomPhase", 0]];
+const uni = (n, detune) => [["Oscillator0", "kParamUnison", n], ["Oscillator0", "kParamDetune", detune]];
 const probes = {
   "init": [],
   "osc-octave-up": [["Oscillator0", "kParamOctave", 1]],
@@ -172,6 +174,35 @@ const probes = {
   "filt3-loud-L12-open-drive-10": [...LOUD, ...filter("L12", 1, 0), ["VoiceFilter0", "kParamDrive", 10]],
   // Var against cutoff: is a Var-set frequency absolute or relative to the cutoff?
   ...Object.fromEntries(["LH12", "CombL6P", "LBH24"].flatMap((t) => [0.3, 0.7].flatMap((c) => [25, 50, 75].map((v) => [`filt4-${t}-freq-${c}-var-${v}`, [...filter(t, c, t === "CombL6P" ? 70 : 10), ["VoiceFilter0", "kParamVar", v]]])))),
+  // Oscillator core (osc2-): high-note band-limiting, unison law, sub shapes, envelope curves.
+  // Random phase 0 so unison voices start coherent: detune 0 measures the level law
+  // and resolved fundamentals give each voice's detune and pan.
+  ...Object.fromEntries([1, 2, 3, 4].flatMap((o) => [0, 4, 8].map((st) => [`osc2-pitch-oct-${o}-semi-${st}`, [...RP0, ["Oscillator0", "kParamOctave", o], ["Oscillator0", "kParamPitch", st]]]))),
+  ...Object.fromEntries([2, 3, 4, 5, 7, 8, 16].flatMap((n) => [[`osc2-uni-${n}-coherent`, [...RP0, ...uni(n, 0)]], [`osc2-uni-${n}`, [...RP0, ...uni(n, 0.25)]]])),
+  ...Object.fromEntries([0.05, 0.1, 0.5, 1].map((d) => [`osc2-uni-7-detune-${d}`, [...RP0, ...uni(7, d)]])),
+  ...Object.fromEntries(["kDetuneSuper", "kDetuneExp", "kDetuneInv", "kDetuneRandom"].map((m) => [`osc2-uni-7-${m.slice(7).toLowerCase()}`, [...RP0, ...uni(7, 0.5), ["Oscillator0", "kParamDetuneMode", m]]])),
+  ...Object.fromEntries([0, 25, 50, -100].map((w) => [`osc2-uni-7-width-${w}`, [...RP0, ...uni(7, 0.5), ["Oscillator0", "kParamUnisonStereo", w]]])),
+  ...Object.fromEntries([0, 25, 50, 100].flatMap((b) => [[`osc2-uni-7-blend-${b}-coherent`, [...RP0, ...uni(7, 0), ["Oscillator0", "kParamDetuneWid", b]]], [`osc2-uni-4-blend-${b}-coherent`, [...RP0, ...uni(4, 0), ["Oscillator0", "kParamDetuneWid", b]]]])),
+  ...Object.fromEntries([12, 48].map((r) => [`osc2-uni-7-range-${r}`, [...RP0, ...uni(7, 0.5), ["Oscillator0", "kParamUnisonRange", r]]])),
+  ...Object.fromEntries(["kSine", "kRoundRect", "kTriangle", "kSaw", "kSquare", "kPulse"].flatMap((sh) => [-1, 2].map((o) => [`osc2-sub-${sh.slice(1).toLowerCase()}-oct-${o}`, [["Oscillator4", "kParamEnable", 1], ["Oscillator4.SubOsc4", "kParamShape", sh], ["Oscillator4", "kParamOctave", o], ["Oscillator0", "kParamEnable", 0]]]))),
+  ...Object.fromEntries([0, 10, 25, 40, 60, 75, 90, 100].flatMap((c) => [
+    [`osc2-env-attack-curve-${c}`, [...RP0, ["Env0", "kParamAttack", 0.5], ["Env0", "kParamCurve1", c]]],
+    [`osc2-env-decay-curve-${c}`, [...RP0, ["Env0", "kParamDecay", 0.5], ["Env0", "kParamSustain", 0], ["Env0", "kParamCurve2", c]]],
+    [`osc2-env-release-curve-${c}`, [...RP0, ["Env0", "kParamRelease", 0.45], ["Env0", "kParamCurve3", c]]],
+  ])),
+  // Second unison pass (osc3-): detuned blend sweeps, super spacing per count, width, stacks.
+  ...Object.fromEntries([3, 4, 7].flatMap((n) => [0, 10, 25, 40, 50, 60, 90, 100].map((b) => [`osc3-uni-${n}-blend-${b}`, [...RP0, ...uni(n, 0.25), ["Oscillator0", "kParamDetuneWid", b]]]))),
+  ...Object.fromEntries([3, 4, 5, 8, 16].flatMap((n) => ["kDetuneSuper", "kDetuneExp", "kDetuneInv"].map((m) => [`osc3-uni-${n}-${m.slice(7).toLowerCase()}`, [...RP0, ...uni(n, 0.5), ["Oscillator0", "kParamDetuneMode", m]]]))),
+  ...Object.fromEntries([10, 75, -50].map((w) => [`osc3-uni-7-width-${w}`, [...RP0, ...uni(7, 0.5), ["Oscillator0", "kParamUnisonStereo", w]]])),
+  "osc3-uni-2-width-0": [...RP0, ...uni(2, 0.5), ["Oscillator0", "kParamUnisonStereo", 0]],
+  ...Object.fromEntries(["kOctave1", "kOctave2", "kOctaveFifth1", "kCenter12", "kCenter24"].map((st) => [`osc3-uni-4-stack-${st.slice(1).toLowerCase()}`, [...RP0, ...uni(4, 0.25), ["Oscillator0", "kParamUnisonStack", st]]])),
+  "osc3-single": RP0,
+  // Third pass (osc4-): envelope curve constants, amp sustain law, unison stack voice assignment.
+  ...Object.fromEntries([2, 5, 15, 20, 30, 35, 45, 50, 55, 65, 70, 80, 85, 95, 98].map((c) => [`osc4-env-attack-curve-${c}`, [...RP0, ["Env0", "kParamAttack", 0.5], ["Env0", "kParamCurve1", c]]])),
+  ...Object.fromEntries([[0.5, 25], [0.5, 66.6], [0.2, 90]].map(([sus, c]) => [`osc4-env-decay-sus-${sus}-curve-${c}`, [...RP0, ["Env0", "kParamDecay", 0.5], ["Env0", "kParamSustain", sus], ["Env0", "kParamCurve2", c]]])),
+  "osc4-env-release-sus-0.5": [...RP0, ["Env0", "kParamSustain", 0.5], ["Env0", "kParamRelease", 0.45], ["Env0", "kParamCurve3", 25]],
+  ...Object.fromEntries([3, 5, 7, 8].flatMap((n) => ["kOctave1", "kOctave2", "kOctave3", "kOctaveFifth1", "kOctaveFifth2", "kOctaveFifth3", "kCenter12", "kCenter24"].map((st) => [`osc4-uni-${n}-stack-${st.slice(1).toLowerCase()}`, [...RP0, ...uni(n, 0.25), ["Oscillator0", "kParamUnisonStack", st]]]))),
+  "osc4-single": RP0,
   "fx-split-dist-high": rack(fx("FXSplit", { kParamFreq: 1000, kParamModuleCount1: 0, kParamModuleCount2: 1 }), fx("FXDistortion", { kParamDrive: 80 })),
 };
 

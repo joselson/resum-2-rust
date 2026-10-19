@@ -50,7 +50,7 @@ levels, per-channel levels, envelope over time).
 | Behaviour | Measured | Source |
 |---|---|---|
 | Envelope times | 32·n⁵ s; Env 1 attack 1 ms, others 0.5 ms | parameter oracle |
-| Amp envelope | level applied squared (sustain 0.5 = −12 dB) | parameter display, decay probe |
+| Amp envelope | runs in amplitude toward sustain² (0.5 = −12 dB); segments are curved in amplitude, not squared | parameter display, osc4 sustain probes |
 | Filter cutoff | 8.1758 Hz·2^(11.4·n) (to 22.1 kHz) | parameter display; comb delays pin the span within a cent |
 | Oscillator level | plain amplitude, default 0.5625 (−5 dB); frames play as stored, DC kept | init and table-position probes |
 | Master volume | plain amplitude +3 dB, default 0.25 | parameter display |
@@ -58,7 +58,7 @@ levels, per-channel levels, envelope over time).
 | Random phase | one draw per note shared by oscillators A–C | OSC B probe |
 | Sub level | −1.2 dB relative to a wavetable oscillator | sub probe |
 | Noise | mono, −7.4 dB for uniform white noise | noise probe |
-| Unison blend | scales the centre voice; 75 weighs all voices equally | blend probe |
+| Unison | see "Oscillator core findings" | osc2–osc4 probes |
 | Filter balance | −100 (filter 1) … +100 (filter 2), default −100 | parameter oracle |
 
 ## FX findings
@@ -164,9 +164,34 @@ dist-comb 2, add-bass, PZ SVF and DJ mixer at non-default Var; full resonance
 (r = 1) of comb/phase types; the HL6 damping's Var mapping; FX filter drive and
 stereo (assumed equal to the voice filter); stereo spread between 0, 50 and 100.
 
+## Oscillator core findings
+
+Probes `osc2-`, `osc3-` and `osc4-` (C3, random phase 0 so unison voices start
+coherent) are analysed by least-squares fits of sinusoids at each voice's known
+frequency, which separates voices far closer than an FFT bin; resolved peaks gave
+the frequencies first.
+
+| Behaviour | Measured | Fit |
+|---|---|---|
+| Band limit | every harmonic below ~0.49·fs kept flat at every pitch, no aliasing above −92 dB | quarter-octave mip levels (every count below 32), fold limit 0.54·fs; top band within 0.45 dB, same top harmonic at all 12 pitches |
+| Unison detune | outer voices at ±range·detune^1.25 semitones (range default 2) | detune 0.05–1, range 2/12/48, within 0.01 st |
+| Detune modes | position s ∈ [−1, 1]: Linear s, Exp s·\|s\|, Inv sin(π/2·s), Super 0.654·s + 0.346·s⁴ (odd) | 3–16 voices, within 0.003 of the outer offset |
+| Unison pans | pitch order alternates R, L, R … from the bottom and L, R, L … from the top; an odd count's middle voice is centred | every voice at 2–16 |
+| Unison pan law | R − L = p, R + L = 0.7915 + 0.2085·p² (p = ±width) | width 0–100, within 0.003 |
+| Unison levels | per voice S(n)·w: centre w = 1.109·(1 − 0.552b²), others 0.049 + 1.394·b²·(1 − 0.552b²) for blend b; S = 1.056, 1, 0.973, 0.946, 0.895, 0.869, 0.690 at 2, 3, 4, 5, 7, 8, 16 voices | ≤ 0.3 dB per voice |
+| Unison stacks | slot = distance from voice n/2 (centre voices 0); lists repeat by slot: Octave n [0, 12 … 12n], Oct+5th 1 [0, 0, 7], 2 [0, 12, 7, 12], 3 [0, 12, 31]; Centre 12/24 drop the centre voice(s) | 3, 4, 5, 7, 8 voices, every voice |
+| Sub shapes | sine; round-rect = sine + harmonics 2–12 ≤ −33 dB (table); triangle peak 1.218; rising saw ±1.1435; square ±0.680; pulse low −1.089 from phase 0.5 for 27.1%, high 0.405 (no DC) | harmonics within 0.2 dB down to −40 dB |
+| Sub phase | starts half a cycle into each shape at phase 0 | h1 phase within 0.005 cycles |
+| Envelope curves | each segment (e^{k·u} − 1)/(e^k − 1) in amplitude; k odd about 50, tabled: x = \|50 − c\|/50 → 0.1: 1.11, 0.2: 2.12, 0.5: 5.41, 0.8: 11.0, 0.9: 14.9, 1: ≈ 53 | 23 curve values × 3 segments, rms ≤ 0.003 |
+
+Probe scores: osc2 1.02 → 0.08, osc3 0.30 → 0.03, osc4 1.33 → 0.02; also the
+original probe set 0.61 → 0.19, FX 0.89 → 0.63, compressor 0.78 → 0.64, warp
+1.90 → 1.79, sample 0.78 → 0.72; factory set 7.33 → 7.21.
+
+Open: Random detune spacing (not measured), stacks above 8 voices (lists assumed
+to repeat), a constant ~76 µs latency in Serum's renders (h1 phase at 523 Hz),
+unison span.
+
 ## Open discrepancies (probe set, worst first)
 
-- Sub round-rect, triangle, square, pulse: spectra and levels differ.
-- Unison: about +2 dB and −4 dB width; blend 0 still differs.
-- Envelope curve parameter: Serum bends harder than the current mapping.
-- Pitch above the root: octave-spaced mip levels drop the top harmonics early.
+- Multisample level (see warp and sample findings).

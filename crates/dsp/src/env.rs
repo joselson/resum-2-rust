@@ -7,8 +7,9 @@ pub struct EnvParams {
     pub decay: f32,
     pub sustain: f32,
     pub release: f32,
-    /// Curvature per segment (attack, decay, release) in [-1, 1]; 0 is linear,
-    /// positive bows toward a fast start, negative toward a slow start.
+    /// Curve constant k per segment (attack, decay, release): progress through a
+    /// segment is (e^{k·u} − 1)/(e^k − 1), so 0 is linear, positive starts slowly and
+    /// negative starts fast.
     pub curves: [f32; 3],
 }
 
@@ -44,15 +45,19 @@ impl Default for Envelope {
     }
 }
 
-/// Maps linear progress to a curved one. `c` ∈ [-1, 1].
+/// Maps linear progress `t` to a curved one with curve constant `k`.
 #[inline]
-fn bend(t: f32, c: f32) -> f32 {
-    if c.abs() < 1e-4 {
+fn bend(t: f32, k: f32) -> f32 {
+    if k.abs() < 1e-4 {
         return t;
     }
-    // Exponential family: k grows with |c|; shape(0)=0, shape(1)=1.
-    let k = c * 8.0;
-    (1.0 - (-k * t).exp()) / (1.0 - (-k).exp())
+    // Written with a non-positive exponent so a step-like |k| (≈ 53) cannot overflow.
+    let k = k.clamp(-80.0, 80.0);
+    if k > 0.0 {
+        ((k * (t - 1.0)).exp() - (-k).exp()) / (1.0 - (-k).exp())
+    } else {
+        (1.0 - (k * t).exp()) / (1.0 - k.exp())
+    }
 }
 
 impl Envelope {
@@ -196,10 +201,13 @@ mod tests {
 
     #[test]
     fn curves_bow_but_keep_endpoints() {
-        for c in [-1.0, -0.3, 0.3, 1.0] {
-            assert!(bend(0.0, c).abs() < 1e-6);
-            assert!((bend(1.0, c) - 1.0).abs() < 1e-6);
+        for k in [-80.0, -53.0, -5.0, 2.0, 11.0, 53.0, 200.0] {
+            assert!(bend(0.0, k).abs() < 1e-6, "{k}");
+            assert!((bend(1.0, k) - 1.0).abs() < 1e-6, "{k}");
+            assert!(bend(0.5, k).is_finite());
         }
-        assert!(bend(0.5, 0.5) > 0.5 && bend(0.5, -0.5) < 0.5);
+        assert!(bend(0.5, 4.0) < 0.5 && bend(0.5, -4.0) > 0.5);
+        // (e^{k/2} − 1)/(e^k − 1) = 1/(1 + e^{k/2}).
+        assert!((bend(0.5, 5.41) - 1.0 / (1.0 + 2.705f32.exp())).abs() < 1e-5);
     }
 }

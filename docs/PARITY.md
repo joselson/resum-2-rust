@@ -27,15 +27,15 @@ the option onto a generic implementation; nothing is sound-matched yet.
 | Oscillator types | WT, Sample, MultiSample, Granular, Spectral, Noise, Sub | WT, Sample, MultiSample (SFZ); noise (generated, mono); sub |
 | WT warp modes | 70 (sync, bend ×3, PWM, asym ×3, flip, mirror, remap ×4, quantize, odd/even, LPF/HPF, 14 distortions, FM/FME/FML/PD/AM/RM × 6 sources, self PD) | all 70, two slots + unison warp; calibrated by probes (mean score 1.9) |
 | Spectral warps | 88 | none |
-| Sub shapes | sine, round-rect, triangle, saw, square, pulse | all six (sine, saw match; others differ in probes) |
+| Sub shapes | sine, round-rect, triangle, saw, square, pulse | all six, measured (harmonics within 0.2 dB) |
 | Noise | sample-based noise types | white with tilt |
-| Unison detune | Linear, Super, Exp, Inv, Random | all five (curves assumed) |
-| Unison stacks | none + 8 (octave, octave+fifth, centre 12/24) | none |
+| Unison detune | Linear, Super, Exp, Inv, Random | all five; spacing, pans, blend and width measured per voice (Random spacing approximate) |
+| Unison stacks | none + 8 (octave, octave+fifth, centre 12/24) | all eight (measured to 8 voices) |
 | Granular windows / density modes | 10 / 3 | none |
 | Sample loop modes | forward, reverse, ping-pong, tailed | all, with crossfade |
 | Filter types | 107 (MG ladder, L/H/B/P/N 6–24, dual/triple combos, comb ×8, flange ×8, phase ×16, EQ, ring mod, S&H, formant, scream, dist-comb, diffuser…) | measured models (within ~1 dB) for L/H/B/N/P 6–24, MG Low 6–24, MG Ladder, comb/flange ±, phase P, morph duals and triples, Exp MM/BPF, Wsp, Scream; drive per type, level, stereo, Var; EMS/Acid/Dirty ladders, damped combs, negative phase, German LP, Scream LP/BP, Dist.Comb 1 approximate; formant, reverb, ring mod, S&H, EQ and other exotic types missing |
 | Routing destinations | Filter, Master, Direct, None | Filter, Master, None |
-| Envelopes | 4 × AHDSR, 3 curves, start/end, beat sync, legato invert | 4 × AHDSR, 3 curves |
+| Envelopes | 4 × AHDSR, 3 curves, start/end, beat sync, legato invert | 4 × AHDSR, 3 measured curves |
 | LFO types | Path, RandomSH, Lorenz, Rossler | Path, RandomSH |
 | LFO timing | sync with dotted/triplet/×10, delay, rise, smooth, anchored, direction | free Hz, approx. sync, delay, rise, smooth |
 | Mod sources | 58 | 26 |

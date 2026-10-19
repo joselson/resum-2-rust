@@ -1,26 +1,59 @@
 //! Band-limited wavetables.
 //!
-//! Every frame is resampled to `FRAME_LEN` and stored at one mip level per
-//! octave: level k keeps the lowest `FRAME_LEN / 2 >> k` harmonics, so a voice
-//! picks the richest level whose top harmonic stays under Nyquist.
+//! Every frame is resampled to `FRAME_LEN` and stored at mip levels a quarter
+//! octave apart, each keeping the lowest `harmonics` partials. Serum stays flat to
+//! about 0.49·fs at every pitch with no measurable aliasing (osc2 pitch probes), so
+//! a voice picks the richest level whose top harmonic folds back no lower than
+//! `FOLD_LIMIT`·fs. Levels are stored at ~8 samples per harmonic (capped at
+//! `FRAME_LEN`), which bounds linear-interpolation droop to about 0.5 dB; a frame
+//! takes about 36k samples, 1.6× the old one-level-per-octave layout.
 
 use realfft::RealFftPlanner;
 use std::f32::consts::TAU;
 
 pub const FRAME_LEN: usize = 2048;
 const MAX_HARMONICS: usize = FRAME_LEN / 2;
-/// Levels down to a single harmonic (1024, 512, ..., 1).
-pub const MIP_LEVELS: usize = 11;
-/// Upper bound on frames; keeps a hostile file from exhausting memory (256 × 11 × 8 KiB ≈ 23 MiB).
+/// Levels per octave of harmonic count.
+const LEVELS_PER_OCTAVE: f32 = 4.0;
+/// Top harmonic at most this fraction of the sample rate: anything above Nyquist
+/// folds back to at least (1 − FOLD_LIMIT)·fs, above 20 kHz at 44.1 kHz and up.
+const FOLD_LIMIT: f32 = 0.54;
+/// Upper bound on frames; keeps a hostile file from exhausting memory (256 frames ×
+/// ~36k samples ≈ 37 MB).
 pub const MAX_FRAMES: usize = 256;
+
+/// Below this many harmonics every count gets a level (quarter octaves are finer
+/// than whole partials there).
+const DENSE_BELOW: usize = 32;
+
+/// Harmonic count of every level, richest first (1024, 861, 724, ..., 38, 32, 31, ..., 1).
+fn level_harmonics() -> &'static [usize] {
+    static COUNTS: std::sync::OnceLock<Vec<usize>> = std::sync::OnceLock::new();
+    COUNTS.get_or_init(|| {
+        let mut counts: Vec<usize> = (0..)
+            .map(|j| ((MAX_HARMONICS as f32) * (-(j as f32) / LEVELS_PER_OCTAVE).exp2()).round() as usize)
+            .take_while(|&n| n > DENSE_BELOW)
+            .collect();
+        counts.extend((1..=DENSE_BELOW).rev());
+        counts
+    })
+}
+
+/// Stored samples per cycle for a level keeping `harmonics` partials.
+fn level_len(harmonics: usize) -> usize {
+    (harmonics * 8).next_power_of_two().clamp(64, FRAME_LEN)
+}
+
+struct Level {
+    len: usize,
+    /// `data[frame * (len + 1) + i]`, each frame padded with one wrap sample.
+    data: Vec<f32>,
+}
 
 pub struct Wavetable {
     frames: usize,
-    /// `levels[level][frame * STRIDE + i]`, each frame padded with one wrap sample.
-    levels: Vec<Vec<f32>>,
+    levels: Vec<Level>,
 }
-
-const STRIDE: usize = FRAME_LEN + 1;
 
 impl Wavetable {
     /// Builds from raw single-cycle frames of `frame_len` samples each.
@@ -38,28 +71,35 @@ impl Wavetable {
         let frames = cycles.len().clamp(1, MAX_FRAMES);
         let mut planner = RealFftPlanner::<f32>::new();
         let forward = planner.plan_fft_forward(FRAME_LEN);
-        let inverse = planner.plan_fft_inverse(FRAME_LEN);
-        let mut levels = vec![vec![0.0; frames * STRIDE]; MIP_LEVELS];
+        let counts = level_harmonics();
+        let mut levels: Vec<Level> = counts.iter().map(|&n| Level { len: level_len(n), data: vec![0.0; frames * (level_len(n) + 1)] }).collect();
         let mut spectrum = forward.make_output_vec();
         let mut scratch_in = forward.make_input_vec();
-        let mut filtered = spectrum.clone();
-        let mut out = inverse.make_output_vec();
+        // One inverse plan and buffer pair per level length.
+        let mut inverses: Vec<_> = levels
+            .iter()
+            .map(|l| {
+                let plan = planner.plan_fft_inverse(l.len);
+                let (input, output) = (plan.make_input_vec(), plan.make_output_vec());
+                (plan, input, output)
+            })
+            .collect();
         for (f, cycle) in cycles.iter().take(frames).enumerate() {
             scratch_in.copy_from_slice(&cycle[..FRAME_LEN]);
             forward.process(&mut scratch_in, &mut spectrum).expect("FFT sizes match");
-            // DC is kept: frames play as stored (pulse frames carry offsets). Nyquist is
-            // dropped at every level.
-            for (level, table) in levels.iter_mut().enumerate() {
-                let keep = MAX_HARMONICS >> level;
-                for (bin, (dst, src)) in filtered.iter_mut().zip(&spectrum).enumerate() {
-                    *dst = if bin <= keep && bin < MAX_HARMONICS { *src } else { Default::default() };
+            // DC is kept: frames play as stored (pulse frames carry offsets). Each
+            // level's Nyquist bin is dropped.
+            for ((level, &keep), (inverse, filtered, out)) in levels.iter_mut().zip(counts).zip(&mut inverses) {
+                let len = level.len;
+                for (bin, dst) in filtered.iter_mut().enumerate() {
+                    *dst = if bin <= keep && bin < len / 2 { spectrum[bin] } else { Default::default() };
                 }
-                inverse.process(&mut filtered, &mut out).expect("FFT sizes match");
-                let dst = &mut table[f * STRIDE..(f + 1) * STRIDE];
-                for (d, s) in dst.iter_mut().zip(&out) {
+                inverse.process(filtered, out).expect("FFT sizes match");
+                let dst = &mut level.data[f * (len + 1)..(f + 1) * (len + 1)];
+                for (d, s) in dst.iter_mut().zip(out.iter()) {
                     *d = s / FRAME_LEN as f32;
                 }
-                dst[FRAME_LEN] = dst[0];
+                dst[len] = dst[0];
             }
         }
         // No normalization: frames play at their stored level.
@@ -89,27 +129,42 @@ impl Wavetable {
     /// Mip level for a phase increment in cycles per sample.
     #[inline]
     pub fn level_for(increment: f32) -> usize {
-        let limit = 0.5 / increment.abs().max(1e-9);
-        let mut level = 0;
-        while level + 1 < MIP_LEVELS && (MAX_HARMONICS >> level) as f32 > limit {
+        let limit = FOLD_LIMIT / increment.abs().max(1e-9);
+        let counts = level_harmonics();
+        // Start from the log estimate, then step to the richest level within the limit.
+        let mut level = if limit >= DENSE_BELOW as f32 {
+            ((MAX_HARMONICS as f32 / limit).log2() * LEVELS_PER_OCTAVE).floor().clamp(0.0, (counts.len() - 1) as f32) as usize
+        } else {
+            counts.len() - (limit as usize).max(1)
+        };
+        while level > 0 && counts[level - 1] as f32 <= limit {
+            level -= 1;
+        }
+        while level + 1 < counts.len() && counts[level] as f32 > limit {
             level += 1;
         }
         level
     }
 
+    /// Number of mip levels.
+    pub fn levels() -> usize {
+        level_harmonics().len()
+    }
+
     /// Reads at `phase` ∈ [0, 1) and fractional frame `position` ∈ [0, frames - 1].
     #[inline]
     pub fn read(&self, level: usize, position: f32, phase: f32) -> f32 {
-        let table = &self.levels[level];
+        let Level { len, data } = &self.levels[level];
+        let (len, stride) = (*len, *len + 1);
         let pos = position.clamp(0.0, (self.frames - 1) as f32);
         let f0 = pos as usize;
         let f1 = (f0 + 1).min(self.frames - 1);
         let ff = pos - f0 as f32;
-        let x = phase * FRAME_LEN as f32;
-        let i = (x as usize).min(FRAME_LEN - 1);
+        let x = phase * len as f32;
+        let i = (x as usize).min(len - 1);
         let fx = x - i as f32;
-        let a = &table[f0 * STRIDE + i..f0 * STRIDE + i + 2];
-        let b = &table[f1 * STRIDE + i..f1 * STRIDE + i + 2];
+        let a = &data[f0 * stride + i..f0 * stride + i + 2];
+        let b = &data[f1 * stride + i..f1 * stride + i + 2];
         let sa = a[0] + (a[1] - a[0]) * fx;
         let sb = b[0] + (b[1] - b[0]) * fx;
         sa + (sb - sa) * ff
@@ -160,17 +215,42 @@ mod tests {
         let wt = Wavetable::from_cycles(&[sine]);
         assert!((wt.read(0, 0.0, 0.25) - 1.0).abs() < 1e-3);
         // A pure sine survives even the most aggressive mip level.
-        assert!((wt.read(MIP_LEVELS - 1, 0.0, 0.25) - 1.0).abs() < 1e-3);
+        assert!((wt.read(Wavetable::levels() - 1, 0.0, 0.25) - 1.0).abs() < 1e-3);
     }
 
     #[test]
-    fn level_selection_keeps_harmonics_below_nyquist() {
-        for hz in [20.0f32, 440.0, 5000.0, 15000.0] {
-            let inc = hz / 48000.0;
-            let level = Wavetable::level_for(inc);
-            let top = (MAX_HARMONICS >> level) as f32 * hz;
-            assert!(top <= 24000.0 || level == MIP_LEVELS - 1, "{hz} Hz -> level {level}, top {top}");
+    fn level_selection_keeps_the_top_octave_without_audible_folding() {
+        let counts = level_harmonics();
+        assert_eq!((counts[0], *counts.last().unwrap()), (MAX_HARMONICS, 1));
+        for i in 0..400 {
+            let hz = 20.0 * 1000f32.powf(i as f32 / 400.0);
+            let level = Wavetable::level_for(hz / 48000.0);
+            let top = counts[level] as f32 * hz;
+            // Folded partials stay above 22 kHz; the band below ~20.5 kHz is kept.
+            assert!(top <= 0.54 * 48000.0 + 1.0 || level == counts.len() - 1, "{hz} Hz -> {top}");
+            // The next richer level would cross the limit, and it is at most a quarter octave richer.
+            if level > 0 {
+                assert!(counts[level - 1] as f32 * hz > 0.54 * 48000.0, "{hz} Hz: level {level} not the richest");
+                let (richer, n) = (counts[level - 1] as f32, counts[level] as f32);
+                assert!(richer <= n + 1.0 || richer <= n * 2f32.powf(0.25) * 1.01, "{richer} after {n}");
+            }
+            if hz < 1500.0 && level > 0 {
+                assert!(top > 21000.0, "{hz} Hz keeps only {top}");
+            }
         }
+    }
+
+    #[test]
+    fn short_levels_read_without_droop() {
+        // A harmonic just inside a level's band reads back within 0.6 dB.
+        let counts = level_harmonics();
+        let level = counts.iter().position(|&n| n <= 40).unwrap();
+        let k = counts[level];
+        let cycle: Vec<f32> = (0..FRAME_LEN).map(|i| (TAU * (k * i) as f32 / FRAME_LEN as f32).sin()).collect();
+        let wt = Wavetable::from_cycles(&[cycle]);
+        let n = 4096;
+        let peak = (0..n).map(|i| wt.read(level, 0.0, (i as f32 + 0.37) / n as f32).abs()).fold(0.0f32, f32::max);
+        assert!(peak > 0.93 && peak < 1.001, "{k} harmonics in {} samples: {peak}", level_len(k));
     }
 
     #[test]
