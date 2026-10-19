@@ -259,11 +259,15 @@ impl Patch {
     }
 }
 
-/// Every FX module is a first implementation awaiting calibration; report each type used.
+/// FX modules whose model is fitted to measurements (docs/CALIBRATION.md).
+const MEASURED_FX: &[&str] = &["FXEQ", "FXDelay"];
+
+/// Reports each FX module type used whose model is not yet calibrated.
 fn note_fx(fx: &FxSetup, cov: &mut Coverage) {
     fn walk(nodes: &[NodeSetup], cov: &mut Coverage) {
         for n in nodes {
             match n {
+                NodeSetup::Effect(m) if MEASURED_FX.contains(&MODULES[m.kind].name) => {}
                 NodeSetup::Effect(m) => cov.note(format!("{} (approximate)", MODULES[m.kind].name)),
                 NodeSetup::Split { module, bands } => {
                     cov.note(format!("{} (approximate)", MODULES[module.kind].name));

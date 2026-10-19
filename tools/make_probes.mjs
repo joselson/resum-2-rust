@@ -88,6 +88,11 @@ const SLOW_LFO = [["Oscillator0", "kParamVolume", 0], ["Oscillator0.WTOsc0", "kP
 const ENV2_STEP = [["Oscillator0", "kParamVolume", 0], ["Oscillator0.WTOsc0", "kParamRandomPhase", 0], ["Env1", "kParamAttack", 0], ["Env1", "kParamSustain", 1], ["Env1", "kParamRelease", 0], ["Env0", "kParamRelease", 2]];
 // Env 2 drives OSC A's volume from 0; the amp envelope releases slowly so Env 2's release shows.
 const ENV2_VOL = [["Oscillator0", "kParamVolume", 0], ["Oscillator0.WTOsc0", "kParamRandomPhase", 0], ["Env0", "kParamRelease", 3], slotVol([3, 0], { kParamAmount: 100 })];
+const SUB_SINE = [["Oscillator4", "kParamEnable", 1], ["Oscillator4", "kParamVolume", 1], ["Oscillator0", "kParamEnable", 0]];
+const DIST_MODES = ["kTube", "kSoftClip", "kHardClip", "kDiode1", "kDiode2", "kLinFold", "kSinFold", "kZeroSquare", "kDownsample", "kAsym", "kRectify", "kXShaper", "kXShaperAsym", "kSineShaper", "kStompBox", "kTapeSat", "kOverdrive", "kSoftSat"];
+const DIST_SHAPED = ["kTube", "kSoftClip", "kHardClip", "kDiode1", "kDiode2", "kAsym", "kStompBox", "kTapeSat", "kOverdrive", "kSoftSat", "kZeroSquare"];
+// A click: OSC A at C5 with an instant amp envelope (decay and release at minimum, sustain 0).
+const CLICK = [["Oscillator0.WTOsc0", "kParamRandomPhase", 0], ["Env0", "kParamAttack", 0], ["Env0", "kParamDecay", 0.002], ["Env0", "kParamSustain", 0], ["Env0", "kParamRelease", 0.002]];
 const LFO_VOL = [["Oscillator0", "kParamVolume", 0], ["Oscillator0.WTOsc0", "kParamRandomPhase", 0], ["__mod", 0, [6, 0], "Oscillator", 0, "kParamVolume", 1, { kParamAmount: 100 }]];
 const probes = {
   "init": [],
@@ -254,6 +259,94 @@ const probes = {
   ...Object.fromEntries([0.25, 1, 2].map((a) => [`mod-env-sync-attack-${a}`, [...ENV2_VOL, ["Env1", "kParamBeatSync", 1], ["Env1", "kParamAttack", a]]])),
   ...Object.fromEntries([["dir-0", [["LFO0", "kParamDirection", 0]]], ["dir-1", [["LFO0", "kParamDirection", 1]]], ["dir-2", [["LFO0", "kParamDirection", 2]]], ["anchored-0", [["LFO0", "kParamAnchored", 0]]], ["mono", [["LFO0", "kParamMono", 1]]], ["anchored-0-phase-90", [["LFO0", "kParamAnchored", 0], ["LFO0", "kParamPhase", 90]]], ["phase-90", [["LFO0", "kParamPhase", 90]]]].map(([n, extra]) => [`mod-lfo-${n}`, [...SLOW_LFO, ["__section", "LFO0", { curveData: curveData([[0, 0], [0.98, 1], [1, 0]], [0.5, 0.5]), pathData: {}, plainParams: { kParamBeatSync: f(0), kParamRate: 0.5 } }], ...extra, slotVol([6, 0], { kParamAmount: 100 })]])),
   "mod-tuning-out-50": [["__mod", 0, [38, 0], "Global", 0, "kParamMasterTuning", 1, { kParamAmount: 100, kParamOut: 50 }]],
+  // FX frequency responses (fxr-): C1 through one module; `fxr-off` is the dry reference.
+  "fxr-off": [],
+  ...Object.fromEntries([
+    ...[0, 30, 60, 100].flatMap((q) => [[`eq-b1-t0-200-q${q}`, { kParamType1: 0, kParamFreq1: 200, kParamGain1: 12, kParamReso1: q }], [`eq-b1-t1-200-q${q}`, { kParamType1: 1, kParamFreq1: 200, kParamGain1: 12, kParamReso1: q }], [`eq-b1-t2-200-q${q}`, { kParamType1: 2, kParamFreq1: 200, kParamReso1: q }], [`eq-b2-t0-4000-q${q}`, { kParamType2: 0, kParamFreq2: 4000, kParamGain2: 12, kParamReso2: q }], [`eq-b2-t1-4000-q${q}`, { kParamType2: 1, kParamFreq2: 4000, kParamGain2: 12, kParamReso2: q }], [`eq-b2-t2-4000-q${q}`, { kParamType2: 2, kParamFreq2: 4000, kParamReso2: q }]]),
+    ...[50, 1000, 4000].map((fr) => [`eq-b1-t1-${fr}`, { kParamType1: 1, kParamFreq1: fr, kParamGain1: 12 }]),
+    ...[100, 1000].map((fr) => [`eq-b2-t1-${fr}`, { kParamType2: 1, kParamFreq2: fr, kParamGain2: 12 }]),
+    ...[-12, 6, 24].map((g) => [`eq-b1-t1-gain${g}`, { kParamType1: 1, kParamGain1: g }]),
+    ...[-12, 24].map((g) => [`eq-b1-t0-gain${g}`, { kParamType1: 0, kParamGain1: g }]),
+    ["eq-b1-t2-1000", { kParamType1: 2, kParamFreq1: 1000 }], ["eq-b2-t2-1000", { kParamType2: 2, kParamFreq2: 1000 }],
+    ["eq-b1-t0-1000", { kParamType1: 0, kParamFreq1: 1000, kParamGain1: 12 }], ["eq-b2-t0-1000", { kParamType2: 0, kParamFreq2: 1000, kParamGain2: 12 }],
+    ["eq-defaults", {}],
+  ].map(([n, params]) => [`fxr-${n}`, rack(fx("FXEQ", params))])),
+  // Distortion pre/post filter alone: Downsample at drive 0 passes the signal unchanged.
+  ...Object.fromEntries([
+    ...[0, 25, 50, 75, 100].map((m) => [`dflt-lphp${m}`, { kParamLPHP: m }]),
+    ...[0.3, 0.7].flatMap((f) => [0, 50, 100].map((m) => [`dflt-lphp${m}-f${f}`, { kParamLPHP: m, kParamFreq: f }])),
+    ...[0.5, 4, 7].flatMap((bw) => [0, 50].map((m) => [`dflt-lphp${m}-bw${bw}`, { kParamLPHP: m, kParamBW: bw }])),
+    ["dflt-post-lphp50", { kParamLPHP: 50, kParamPrePost: 2 }],
+  ].map(([n, params]) => [`fxr-${n}`, rack(fx("FXDistortion", { kParamMode: "kDownsample", kParamDrive: 0, kParamPrePost: 1, ...params }))])),
+  // Distortion transfer curves (fxd-): the sub's sine at C1 through each mode; `fxd-off` is dry.
+  "fxd-off": SUB_SINE,
+  ...Object.fromEntries(DIST_MODES.flatMap((m) => [0, 25, 50, 100].map((d) => [`fxd-${m.slice(1).toLowerCase()}-${d}`, [...SUB_SINE, ...rack(fx("FXDistortion", { kParamMode: m, kParamDrive: d }))]]))),
+  // Distortion drive law and input-level check (fxd2-).
+  "fxd2-off": SUB_SINE,
+  "fxd2-off-quiet": [...SUB_SINE, ["Oscillator4", "kParamVolume", 0.25]],
+  ...Object.fromEntries(DIST_SHAPED.flatMap((m) => [10, 40, 60, 75, 90].map((d) => [`fxd2-${m.slice(1).toLowerCase()}-${d}`, [...SUB_SINE, ...rack(fx("FXDistortion", { kParamMode: m, kParamDrive: d }))]]))),
+  ...Object.fromEntries(DIST_SHAPED.map((m) => [`fxd2-${m.slice(1).toLowerCase()}-50-quiet`, [...SUB_SINE, ["Oscillator4", "kParamVolume", 0.25], ...rack(fx("FXDistortion", { kParamMode: m, kParamDrive: 50 }))]])),
+  // Distortion over a wide input range (fxd3-): one or two FX Utility stages at +12 dB first.
+  "fxd3-off": SUB_SINE,
+  "fxd3-boost-1": [...SUB_SINE, ...rack(fx("FXUtils", { kParamLevelOut: 1 }))],
+  "fxd3-boost-2": [...SUB_SINE, ...rack(fx("FXUtils", { kParamLevelOut: 1 }), fx("FXUtils", { kParamLevelOut: 1 }))],
+  ...Object.fromEntries([...DIST_SHAPED, "kDiode1"].flatMap((m) => [[1, 100], [2, 100], [2, 0], [2, 50]].map(([n, d]) => [`fxd3-${m.slice(1).toLowerCase()}-${d}-boost-${n}`, [...SUB_SINE, ...rack(...Array.from({ length: n }, () => fx("FXUtils", { kParamLevelOut: 1 })), fx("FXDistortion", { kParamMode: m, kParamDrive: d }))]]))),
+  // Distortion curve tables (fxd4-): every static mode × 9 drives × 3 input ranges.
+  "fxd4-off": SUB_SINE,
+  "fxd4-boost-1": [...SUB_SINE, ...rack(fx("FXUtils", { kParamLevelOut: 1 }))],
+  "fxd4-boost-2": [...SUB_SINE, ...rack(fx("FXUtils", { kParamLevelOut: 1 }), fx("FXUtils", { kParamLevelOut: 1 }))],
+  ...Object.fromEntries([...DIST_SHAPED, "kDiode1"].flatMap((m) => [0, 10, 25, 40, 50, 60, 75, 90, 100].flatMap((d) => [0, 1, 2].map((n) => [`fxd4-${m.slice(1).toLowerCase()}-${d}-b${n}`, [...SUB_SINE, ...rack(...Array.from({ length: n }, () => fx("FXUtils", { kParamLevelOut: 1 })), fx("FXDistortion", { kParamMode: m, kParamDrive: d }))]])))),
+  // Delay taps (fxdl-): a click (instant amp envelope) through the delay at 100 % wet.
+  "fxdl-dry": CLICK,
+  ...Object.fromEntries([
+    ["default", {}],
+    ...[0.0625, 0.125, 0.25, 0.375, 0.5].map((t) => [`sync-${t}`, { kParamTimeL: t, kParamTimeR: t }]),
+    ...[0.05, 0.2, 0.4].map((t) => [`free-${t}`, { kParamBeatSync: 0, kParamTimeL: t, kParamTimeR: t }]),
+    ...[0, 20, 60, 90].map((fb) => [`fb-${fb}`, { kParamFeedback: fb }]),
+    ["mode-1", { kParamMode: 1 }], ["mode-2", { kParamMode: 2 }],
+    ["offset-l-0.75", { kParamOffsetL: 0.75 }], ["offset-r-1.25", { kParamOffsetR: 1.25 }],
+    ["link", { kParamLink: 1, kParamTimeR: 0.125 }], ["unlinked-r", { kParamTimeR: 0.125 }],
+    ...[200, 2000, 8000].map((fr) => [`freq-${fr}`, { kParamFreq: fr }]),
+    ...[0.75, 3, 8.25].map((bw) => [`bw-${bw}`, { kParamBW: bw }]),
+    ["hq-0", { kParamHQ: 0 }],
+  ].map(([n, params]) => [`fxdl-${n}`, [...CLICK, ...rack(fx("FXDelay", { kParamWet: 100, ...params }))]])),
+  // Delay timing details (fxdl2-) and its filter response (fxr-dly-, C1 saw, no feedback).
+  ...Object.fromEntries([
+    ...[0.03, 0.09, 0.1, 0.2].map((t) => [`sync-${t}`, { kParamTimeL: t, kParamTimeR: t }]),
+    ...[0.002, 0.01, 0.1, 0.5].map((t) => [`free-${t}`, { kParamBeatSync: 0, kParamTimeL: t, kParamTimeR: t }]),
+    ["mode-2-short", { kParamMode: 2, kParamTimeL: 0.01, kParamTimeR: 0.01 }],
+  ].map(([n, params]) => [`fxdl2-${n}`, [...CLICK, ...rack(fx("FXDelay", { kParamWet: 100, ...params }))]])),
+  ...Object.fromEntries([
+    ["default", {}], ...[100, 300, 2000, 8000].map((fr) => [`f${fr}`, { kParamFreq: fr }]),
+    ...[0.75, 2, 4, 8.25].map((bw) => [`bw${bw}`, { kParamBW: bw }]), ["f300-bw2", { kParamFreq: 300, kParamBW: 2 }],
+  ].map(([n, params]) => [`fxr-dly-${n}`, rack(fx("FXDelay", { kParamWet: 100, kParamFeedback: 0, kParamTimeL: 0.01, kParamTimeR: 0.01, ...params }))])),
+  // Synced delay time sweep (fxdl3-): first tap time for 101 values of TimeL.
+  ...Object.fromEntries(Array.from({ length: 101 }, (_, i) => 0.001 + i * 0.005).map((t) => [`fxdl3-${t.toFixed(3)}`, [...CLICK, ...rack(fx("FXDelay", { kParamWet: 100, kParamFeedback: 0, kParamTimeL: t, kParamTimeR: t }))]])),
+  // Fine sweep around each synced delay threshold (fxdl4-), 0.0005 steps.
+  ...Object.fromEntries([0.001, 0.006, 0.011, 0.031, 0.061, 0.106, 0.176, 0.276, 0.416].flatMap((lo) => Array.from({ length: 11 }, (_, i) => lo + i * 0.0005)).map((t) => [`fxdl4-${t.toFixed(4)}`, [...CLICK, ...rack(fx("FXDelay", { kParamWet: 100, kParamFeedback: 0, kParamTimeL: t, kParamTimeR: t }))]])),
+  "fxm2-dry": [],
+  "fxm2-mode2-sustain": rack(fx("FXDelay", { kParamWet: 100, kParamMode: 2 })),
+  "fxm2-mode2-wet50": rack(fx("FXDelay", { kParamWet: 50, kParamMode: 2 })),
+  "fxm2-mode2-free": rack(fx("FXDelay", { kParamWet: 100, kParamMode: 2, kParamBeatSync: 0, kParamTimeL: 0.2, kParamTimeR: 0.2 })),
+  // Reverb impulse responses (fxrv-): a click at 100 % wet.
+  "fxrv-dry": CLICK,
+  ...Object.fromEntries([
+    ...["kHall", "kVintage", "kAbyss", "kSpace"].flatMap((t) => [["default", {}], ["size0", { kParamSize: 0 }], ["size100", { kParamSize: 100 }], ["fb0", { kParamFeedback: 0 }], ["fb60", { kParamFeedback: 60 }], ["fb100", { kParamFeedback: 100 }], ["freqb0", { kParamFreqB: 0 }], ["freqb100", { kParamFreqB: 100 }]].map(([n, q]) => [`${t.slice(1).toLowerCase()}-${n}`, { kParamType: t, ...q }])),
+    ...[["freq100", { kParamFreq: 100 }], ["freq50", { kParamFreq: 50 }], ["delay0", { kParamDelay: 0 }], ["delay250", { kParamDelay: 250 }], ["predelay0.25", { kParamPreDelay: 0.25 }], ["width0", { kParamWidth: 0 }], ["width100", { kParamWidth: 100 }], ["freqc0", { kParamFreqC: 0 }], ["freqc100", { kParamFreqC: 100 }], ["mode0", { kParamMode: 0 }], ["mode100", { kParamMode: 100 }]].map(([n, q]) => [`hall-${n}`, q]),
+    ...[["vscale0", { kParamVintageScale: 0 }], ["vscale100", { kParamVintageScale: 100 }], ["vscaleb0", { kParamVintageScaleB: 0 }], ["vscaleb100", { kParamVintageScaleB: 100 }]].map(([n, q]) => [`vintage-${n}`, { kParamType: "kVintage", ...q }]),
+  ].map(([n, params]) => [`fxrv-${n}`, [...CLICK, ...rack(fx("FXReverb", { kParamWet: 100, ...params }))]])),
+  // Reverb with every main control set explicitly, as factory presets store them (fxrv2-).
+  "fxrv2-dry": CLICK,
+  ...Object.fromEntries(["kHall", "kVintage", "kAbyss", "kSpace", null].flatMap((t) => [[30, 35], [60, 35], [30, 80]].map(([size, decay]) => [`fxrv2-${t ? t.slice(1).toLowerCase() : "untyped"}-s${size}-d${decay}`, [...CLICK, ...rack(fx("FXReverb", { kParamWet: 100, kParamSize: size, kParamFeedback: decay, kParamDelay: 20, kParamFreqB: 50, kParamFreq: 10, ...(t ? { kParamType: t } : {}) }))]]))),
+  // FX filter responses (fxr-ff-): the FX filter against the voice filter's measured models.
+  ...Object.fromEntries([
+    ...["L12", "MgL12", "H12", "B12", "L24", "LH12", "CombP", "Phase24P"].flatMap((t) => [10, 60].map((q) => [`ff-${t}-r${q}`, { kParamType: t, kParamFreq: 0.5, kParamReso: q }])),
+    ["ff-L12-f03", { kParamType: "L12", kParamFreq: 0.3 }], ["ff-L12-f07", { kParamType: "L12", kParamFreq: 0.7 }],
+    ["ff-L12-drive50", { kParamType: "L12", kParamFreq: 0.5, kParamDrive: 50 }],
+    ["ff-L12-stereo0", { kParamType: "L12", kParamFreq: 0.5, kParamStereo: 0 }],
+    ["ff-L12-level1", { kParamType: "L12", kParamFreq: 0.5, kParamLevelOut: 1 }],
+    ["ff-default", {}],
+  ].map(([n, params]) => [`fxr-${n}`, rack(fx("FXFilter", params))])),
   "fx-split-dist-high": rack(fx("FXSplit", { kParamFreq: 1000, kParamModuleCount1: 0, kParamModuleCount2: 1 }), fx("FXDistortion", { kParamDrive: 80 })),
 };
 

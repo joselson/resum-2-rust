@@ -1,10 +1,12 @@
 """Filter frequency responses from a probe run (tools/make_probes.mjs `filt-` set).
 
-usage: filter_response.py RUN_DIR [--plot OUT.png NAME_REGEX] [--top N]
+usage: filter_response.py RUN_DIR [--prefix filt] [--plot OUT.png NAME_REGEX] [--top N]
 
 Each probe plays one low note (C1) through the filter; dividing its harmonic
 magnitudes by the `filt-off` render gives |H(f)| at every harmonic, for Serum
 (reference/) and Lumen (lumen/) separately, so oscillator differences cancel.
+`--prefix` picks the probe family (`filt` voice filters, `fxr` FX responses); its
+`PREFIX-off` probe is the reference.
 Writes RUN_DIR/filter-response.json and prints probes ranked by response error
 (RMS dB over 40 Hz–16 kHz, harmonics within 60 dB of the passband peak).
 """
@@ -69,15 +71,17 @@ def response(run, side, pid, off):
 def main():
     run = Path(sys.argv[1])
     args = sys.argv[2:]
+    prefix = args[args.index("--prefix") + 1] if "--prefix" in args else "filt"
+    family = re.compile(rf"_{prefix}\d?_")
     jobs = json.loads((run / "jobs.json").read_text())["jobs"]
     ids = [j["id"] for j in jobs]
-    off_id = next(i for i in ids if i.endswith("filt_off"))
+    off_id = next(i for i in ids if i.endswith(f"{prefix}_off"))
     off = {side: harmonics(run / side / f"{off_id}.wav") for side in ("reference", "lumen")}
     results = {}
     for pid in ids:
-        if not re.search(r"_filt\d?_", pid) or pid == off_id:
+        if not family.search(pid) or pid == off_id:
             continue
-        name = re.split(r"_filt\d?_", pid, maxsplit=1)[1]
+        name = family.split(pid, maxsplit=1)[1]
         s, l = response(run, "reference", pid, off), response(run, "lumen", pid, off)
         if s is None or l is None:
             continue
@@ -88,7 +92,7 @@ def main():
         band = (f > 40) & (f < 16000) & (ms > ms.max() - 60)
         err = float(np.sqrt(np.mean((ms[band] - ml[band]) ** 2))) if band.any() else float("nan")
         results[name] = {"freqs": f.round(2).tolist(), "serum": hs.round(2).tolist(), "lumen": hl.round(2).tolist(), "rms_db": round(err, 2)}
-    (run / "filter-response.json").write_text(json.dumps(results))
+    (run / f"{prefix}-response.json" if prefix != "filt" else run / "filter-response.json").write_text(json.dumps(results))
 
     if "--plot" in args:
         i = args.index("--plot")

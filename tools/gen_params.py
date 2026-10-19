@@ -21,13 +21,14 @@ FX_CHOICES = {
     ("FXDistortion", "kParamMode"): ["kTube", "kSoftClip", "kHardClip", "kDiode1", "kDiode2", "kLinFold", "kSinFold", "kZeroSquare", "kDownsample", "kAsym", "kRectify", "kXShaper", "kXShaperAsym", "kSineShaper", "kStompBox", "kTapeSat", "kOverdrive", "kSoftSat"],
     ("FXReverb", "kParamType"): ["kHall", "kVintage", "kAbyss", "kSpace"],
 }
-# Defaults the readback search could not pin down (no exact float match); to be
-# calibrated with render probes. (module, param): (default, min, max)
+# Defaults the readback search could not pin down (no exact float match), from
+# render probes where noted. (module, param): (default, min, max[, evidence])
 FX_ASSUMED = {
     ("FXBode", "kParamRange"): (1000.0, 0.1, 5000.0),
     ("FXDelay", "kParamFreq"): (850.0, 40.0, 18000.0),
-    ("FXDelay", "kParamTimeL"): (0.25, 0.001, 0.501),
-    ("FXDelay", "kParamTimeR"): (0.25, 0.001, 0.501),
+    # The default renders exactly like 0.0625 (a quarter note; delay probes).
+    ("FXDelay", "kParamTimeL"): (0.0625, 0.001, 0.501, "measured"),
+    ("FXDelay", "kParamTimeR"): (0.0625, 0.001, 0.501, "measured"),
     # Measured: the default compressor barely changes level, so the default ratio is ~1:1.
     ("FXComp", "kParamRatio"): (1.0, 1.0, 1000000.0),
     ("FXComp", "kParamAttack"): (10.0, 0.1, 1000.0),
@@ -280,8 +281,8 @@ def main():
             default, lo, hi = r["default"], r["min"], r["max"]
             evidence = "measured"
             if (module, name) in FX_ASSUMED:
-                default, lo, hi = FX_ASSUMED[(module, name)]
-                evidence = "assumed"
+                default, lo, hi, *rest = FX_ASSUMED[(module, name)]
+                evidence = rest[0] if rest else "assumed"
             choice = FX_CHOICES.get((module, name)) or (filter_types if (module, name) == ("FXFilter", "kParamType") else None)
             if choice:
                 idx = int(default) if isinstance(default, (int, float)) else (choice.index(default) if default in choice else 0)

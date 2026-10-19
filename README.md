@@ -73,9 +73,10 @@ triplet, direction; trigger/free/envelope modes, delay, rise, smoothing), eight
 macros, 64 mod slots with aux sources and bipolar mode, mono/legato/portamento,
 pitch bend, mod wheel, aftertouch.
 
-FX racks (main + two buses, nested splits, all 16 module types), all 70
-wavetable warp modes and the sample/multisample oscillators (SFZ) render with
-first-pass calibration. Filters run oversampled like Serum's (4× by default) and
+FX racks (main + two buses, nested splits, all 16 module types) render, with EQ,
+delay (including ping-pong and reverse), the FX filter and most distortion modes
+measured against Serum; all 70 wavetable warp modes and the sample/multisample
+oscillators (SFZ) render with first-pass calibration. Filters run oversampled like Serum's (4× by default) and
 the main families are measured within about 1 dB: multimode 6–24, MG ladders,
 comb/flange/phase, morph duals and triples, Exp, Wsp and Scream, with drive,
 level, stereo and Var (see docs/CALIBRATION.md). The plugin exposes 550 host

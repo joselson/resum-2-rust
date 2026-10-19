@@ -147,8 +147,9 @@ def main():
             hold, tail, vel = job.get("hold", 1.5), job.get("tail", 1.5), int(round(job.get("velocity", 0.8) * 127))
             midi = [(bytes([0x90, n, vel]), 0.0) for n in job.get("notes", [60])]
             midi += [(bytes([0x80, n, 64]), hold) for n in job.get("notes", [60])]
-            # Warm-up render lets wavetables and IRs finish loading before the measured one.
-            serum([], duration=0.25, sample_rate=rate, num_channels=2)
+            # Warm-up render lets wavetables, IRs and reverb buffers finish loading before
+            # the measured one ("warmup" seconds per job; some reverb types need more).
+            serum([], duration=job.get("warmup", spec.get("warmup", 0.25)), sample_rate=rate, num_channels=2)
             audio = serum(midi, duration=hold + tail, sample_rate=rate, num_channels=2, reset=False)
             write_wav(job["out"], audio, rate)
             print(f"ok {time.time() - t:5.1f}s peak {float(np.abs(audio).max()):.3f}  {job['out']}", flush=True)

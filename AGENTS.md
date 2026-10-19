@@ -2,7 +2,8 @@
 
 Lumen is a Rust synthesizer that loads Serum 2 presets and aims to sound like
 Serum 2. Read [README.md](README.md) first, then
-[docs/PARITY.md](docs/PARITY.md) (what is implemented) and
+[docs/PARITY.md](docs/PARITY.md) (what is implemented),
+[docs/NEXT_STEPS.md](docs/NEXT_STEPS.md) (the roadmap) and
 [docs/CALIBRATION.md](docs/CALIBRATION.md) (how behaviour is measured).
 
 ## Clean-room rules

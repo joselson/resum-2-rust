@@ -81,6 +81,33 @@ slots agree).
 | Bode width | spreads up-shift left, down-shift right |
 | Routing slots 5, 6 | filter 1/2 outputs (destination and bus sends) |
 
+Step 4 measurements (`fxr-` responses through `tools/filter_response.py --prefix fxr`,
+`fxd*` distortion transfer curves through `tools/fit_distortion.py`, `fxdl*` delay
+taps from a click, `fxrv*` reverb impulses):
+
+| Behaviour | Measured | Fit |
+|---|---|---|
+| EQ | RBJ shelf/peak/cut biquads; Q = 0.1 + 18.8·r⁴ (peak, cut), 0.4 + 1.74·r³ (shelf) for resonance r | 0.02 dB mean over 39 responses |
+| Distortion curves | memoryless for tube, soft/hard clip, diodes, asym, stomp box, soft sat, zero-square: tabled F(mode, drive, x) at 9 drives over ±10.5 inside the rack (output ÷ master gain) | harmonics within 0.1–2 dB |
+| Distortion drive 0 | diode 1, stomp box, tape sat pass x/2 unshaped | renders |
+| Downsample | holds 1 + 96·drive² samples | exact |
+| Distortion filter | resonant 2-pole (BW is resonance: Q 1.2, 2.05, 3.9, 20.7 at BW 0.5, 1.95, 4, 7), LP → unnormalised BP → −HP morph, −0.9 dB | 1.2 dB mean (top-octave shape) |
+| Delay times | synced: straight divisions 1/512–4 bars by threshold table; free: value − 1 ms; link uses the right time | sweep at 0.0005 |
+| Delay feedback / ping-pong | each repeat × feedback; ping-pong hands L → R at full level, R → L × feedback | taps |
+| Delay filter | 2-pole band-pass, 0 dB peak, 1/Q ≈ 2^(BW − 1.2) | ≈ 1 dB |
+| Delay mode 2 | reverse: each chunk plays the one two back reversed, ×2 output, 5 ms edge fades | ≈ 1 dB envelope |
+| FX filter | the voice-filter models, best at 2× oversampling | 0.67 dB mean |
+| Sub volume | level ∝ √volume (0.5625 and 1.0 measured) | 0.0 dB |
+| Amp envelope | evaluated per sample (a 2 ms click lost its peak at block rate) | click energy exact |
+
+Open: overdrive (normalises its input by the signal level) and tape sat (level-dependent
+folding) are not static and keep the generic shapers, as do the folders, X-shapers,
+rectify and sine shaper; the distortion filter's top-octave shape; reverb (the omitted
+type is a fifth, unnamed type; feedback does not set decay for Hall, Abyss or it;
+several isolated probes render silence in the headless rig while factory presets do
+not); compressor and multiband compressor (205 of 540 factory compressors); chorus,
+phaser, flanger, hyper/dimension, Bode, convolution levels.
+
 FX probe set (30 single-module probes on Init): within 1.3 dB loudness on
 average. Open: reverb decay and width at large sizes, chorus at full wet, phaser
 brightness, hyper/dimension character, Bode shift scale, EQ shelf frequency and

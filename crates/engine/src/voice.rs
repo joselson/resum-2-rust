@@ -273,7 +273,6 @@ pub struct Voice {
     lfo_last_phase: [f32; 10],
     random: [f32; 2],
     alternate: [f32; 2],
-    amp: f32,
     offsets: Offsets,
     /// Previous-sample outputs of A, B, C, Noise, Sub, Filter 1, Filter 2 (warp modulators).
     prev: [f32; 7],
@@ -304,7 +303,6 @@ impl Voice {
             lfo_last_phase: [0.0; 10],
             random: [0.0; 2],
             alternate: [0.0; 2],
-            amp: 0.0,
             offsets: Offsets::default(),
             prev: [0.0; 7],
             sample_voices: Default::default(),
@@ -387,7 +385,6 @@ impl Voice {
             self.lfo_last_phase[i] = self.lfos[i].phase();
             self.lfo_smoothed[i] = patch.lfo_curves[i].eval(self.lfos[i].position());
         }
-        self.amp = 0.0;
         self.prev = [0.0; 7];
     }
 
@@ -408,7 +405,6 @@ impl Voice {
         self.held = false;
         self.envs = Default::default();
         self.amp_env = Envelope::default();
-        self.amp = 0.0;
     }
 
     /// Adds `n` (≤ `BLOCK`) samples of this voice into the output buses.
@@ -438,7 +434,7 @@ impl Voice {
             release_velocity: self.release_velocity,
             ..Sources::default()
         };
-        let mut amp_level = 0.0;
+        let mut amp_params = EnvParams::default();
         for i in 0..4 {
             let m = |p: P| self.offsets.apply(v, p.on(i));
             let synced = v.flag(ENV_SYNC.on(i));
@@ -457,7 +453,7 @@ impl Voice {
             if i == 0 {
                 // Serum's amp envelope runs in amplitude toward sustain² (0.5 sustains at
                 // −12 dB) with the same curves; it is not the square of the curved level.
-                amp_level = self.amp_env.advance(&EnvParams { sustain: params.sustain * params.sustain, ..params }, sr, n);
+                amp_params = EnvParams { sustain: params.sustain * params.sustain, ..params };
             }
         }
         for i in 0..10 {
@@ -517,7 +513,11 @@ impl Voice {
         for i in 0..5 {
             if v.flag(OSC_ENABLE.on(i)) {
                 dests[i] = dest(v, i);
-                gains[i] = pan_gains(m(OSC_PAN.on(i)) / 50.0, m(OSC_VOLUME.on(i)));
+                // The sub's level follows √volume (0.5625 and 1.0 measured 0.75 apart); the
+                // other oscillators' follows volume. Both agree at the default 0.5625.
+                let volume = m(OSC_VOLUME.on(i));
+                let level = if i == 4 { 0.75 * volume.max(0.0).sqrt() } else { volume };
+                gains[i] = pan_gains(m(OSC_PAN.on(i)) / 50.0, level);
             }
         }
         let mut wavetable = [false; 3];
@@ -602,8 +602,7 @@ impl Voice {
         let sends: [[f32; 2]; 7] = std::array::from_fn(|i| [m(ROUTE_BUS1.on(i)) / 100.0, m(ROUTE_BUS2.on(i)) / 100.0]);
 
         // Voice amp is linear gain with 0.5 as unity (0.25 measured −6 dB, 1.0 +6 dB).
-        let amp_target = amp_level * m(VOICE_AMP) * 2.0;
-        let amp_start = self.amp;
+        let voice_amp = m(VOICE_AMP) * 2.0;
 
         for s in 0..n {
             let mut samples = [(0f32, 0f32); 5];
@@ -644,7 +643,9 @@ impl Voice {
                 *p = 0.5 * (s.0 + s.1);
             }
 
-            let amp = amp_start + (amp_target - amp_start) * ((s + 1) as f32 / n as f32);
+            // The amp envelope runs per sample: a click with instant attack and a 2 ms decay
+            // peaks at full level in Serum (delay probes); per-block steps lost it.
+            let amp = self.amp_env.advance(&amp_params, sr, 1) * voice_amp;
             let mut filter_in = [[0f32; 2]; 2];
             let mut add = |bus: Bus, l: f32, r: f32| {
                 let k = bus as usize * 2;
@@ -701,7 +702,6 @@ impl Voice {
                 }
             }
         }
-        self.amp = amp_target;
     }
 
     /// Modulation offsets this voice computed for FX modules in the last block.

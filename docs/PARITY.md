@@ -40,9 +40,9 @@ the option onto a generic implementation; nothing is sound-matched yet.
 | LFO timing | sync with dotted/triplet/×10, delay, rise, smooth, anchored, direction, mono | measured sync divisions, dotted, triplet, ×10, direction, delay, rise, smooth; anchored and mono open |
 | Mod sources | 58 | 36 (LFO Y added; audio-rate, MPE, discrete random open) |
 | Mod slot options | amount, aux, bipolar, curves in/out, aux curve, out, smoothing, delay, bypass | amount, aux, bipolar (measured), drawn and input curves, aux curves, out, bypass; smoothing, curve-out, delay open |
-| Distortion modes | 17 | all, as generic waveshapers (level calibrated, character not) |
+| Distortion modes | 18 | measured static curves for 9 modes, measured downsample and pre/post filter; overdrive, tape sat, folders, X-shapers, rectify, sine shaper generic |
 | Reverb types | Hall, Vintage, Abyss, Space | one FDN reverb with per-type decay/modulation |
-| FX modules | Distortion, Flanger, Phaser, Chorus, Delay, Comp, Reverb, EQ, Filter, HyperDimension, Bode, Convolve, Utility + Split, Split3, SplitMS | all 16 (first implementations; multiband compression not modelled) |
+| FX modules | Distortion, Flanger, Phaser, Chorus, Delay, Comp, Reverb, EQ, Filter, HyperDimension, Bode, Convolve, Utility + Split, Split3, SplitMS | all 16; EQ, delay, FX filter and most distortion measured; reverb, compressor (incl. multiband), modulation effects still first implementations |
 | Arp / Clip player | yes | none |
 | MPE / note expression | yes | none |
 | Oversampling | `kParamOversampling` 0–2; filters measure as 2× at 0 and 4× at 1–2 (default 1) | voice filters at 2×/4× with polyphase IIR half-band resamplers |

@@ -5,6 +5,7 @@
 //! Every module is addressed as `rack × 100 + position in the list`, the
 //! `destModuleID` mod slots use.
 
+mod dist_curves;
 mod effects;
 
 use crate::params::{self, ModuleSpec, MODULES};
