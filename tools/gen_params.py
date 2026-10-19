@@ -94,7 +94,9 @@ EXTRA = [
     ("Env", "kParamBeatSync", ("toggle",), 0, "presets"),
     ("Env", "kParamLegatoInverted", ("toggle",), 0, "presets"),
     ("LFO", "kParamMode", ("choice", ["Trig", "Free", "Envelope"]), 0, "presets"),
-    ("LFO", "kParamType", ("choice", ["Path", "RandomSH", "Lorenz", "Rossler"]), 0, "presets"),
+    # Presets omit the default, the ordinary drawn-curve LFO, so its stored name is unknown;
+    # "Curve" is Lumen's. "Path" (stored explicitly) is the XY path LFO (lfo/path probes).
+    ("LFO", "kParamType", ("choice", ["Curve", "Path", "RandomSH", "Lorenz", "Rossler"]), 0, "presets"),
     ("LFO", "kParamBeatSync", ("toggle",), 1, "presets"),
     ("LFO", "kParamDotted", ("toggle",), 0, "presets"),
     ("LFO", "kParamTriplets", ("toggle",), 0, "presets"),

@@ -7,15 +7,19 @@ pub struct EnvParams {
     pub decay: f32,
     pub sustain: f32,
     pub release: f32,
-    /// Curve constant k per segment (attack, decay, release): progress through a
-    /// segment is (e^{k·u} − 1)/(e^k − 1), so 0 is linear, positive starts slowly and
-    /// negative starts fast.
+    /// Curve amount per segment (attack, decay, release) in [−1, 1], applied to
+    /// progress through the segment by `curve::shape`: 0 is linear, positive starts
+    /// fast, negative slowly.
     pub curves: [f32; 3],
+    /// Level the attack starts from (unless legato) and the release ends at (probes:
+    /// start 0.3 attacks from 0.3, end 0.4 releases to 0.4 and holds).
+    pub start: f32,
+    pub end: f32,
 }
 
 impl Default for EnvParams {
     fn default() -> Self {
-        EnvParams { attack: 0.0005, hold: 0.0, decay: 1.0, sustain: 1.0, release: 0.015, curves: [0.0; 3] }
+        EnvParams { attack: 0.0005, hold: 0.0, decay: 1.0, sustain: 1.0, release: 0.015, curves: [0.0; 3], start: 0.0, end: 0.0 }
     }
 }
 
@@ -37,28 +41,17 @@ pub struct Envelope {
     level: f32,
     /// Level when the current segment started (release and retrigger start from here).
     from: f32,
+    /// A non-legato trigger: the attack starts from the `start` level.
+    fresh: bool,
 }
 
 impl Default for Envelope {
     fn default() -> Self {
-        Envelope { stage: Stage::Idle, t: 0.0, level: 0.0, from: 0.0 }
+        Envelope { stage: Stage::Idle, t: 0.0, level: 0.0, from: 0.0, fresh: false }
     }
 }
 
-/// Maps linear progress `t` to a curved one with curve constant `k`.
-#[inline]
-fn bend(t: f32, k: f32) -> f32 {
-    if k.abs() < 1e-4 {
-        return t;
-    }
-    // Written with a non-positive exponent so a step-like |k| (≈ 53) cannot overflow.
-    let k = k.clamp(-80.0, 80.0);
-    if k > 0.0 {
-        ((k * (t - 1.0)).exp() - (-k).exp()) / (1.0 - (-k).exp())
-    } else {
-        (1.0 - (k * t).exp()) / (1.0 - k.exp())
-    }
-}
+use crate::curve::shape as bend;
 
 impl Envelope {
     pub fn stage(&self) -> Stage {
@@ -76,6 +69,7 @@ impl Envelope {
     /// `legato` keeps the current level so retriggers don't click.
     pub fn trigger(&mut self, legato: bool) {
         self.from = if legato { self.level } else { 0.0 };
+        self.fresh = !legato;
         self.stage = Stage::Attack;
         self.t = 0.0;
     }
@@ -94,9 +88,12 @@ impl Envelope {
     /// remaining sample, so the loop runs at most once per stage.
     pub fn advance(&mut self, p: &EnvParams, sample_rate: f32, samples: usize) -> f32 {
         let mut remaining = samples as f32;
+        if std::mem::take(&mut self.fresh) {
+            self.from = p.start;
+        }
         loop {
             let duration = match self.stage {
-                Stage::Idle => return 0.0,
+                Stage::Idle => return self.level,
                 Stage::Sustain => {
                     self.level = p.sustain;
                     return self.level;
@@ -122,7 +119,7 @@ impl Envelope {
                 Stage::Attack | Stage::Hold => Stage::Decay,
                 Stage::Decay => Stage::Sustain,
                 Stage::Release => {
-                    self.level = 0.0;
+                    self.level = p.end;
                     Stage::Idle
                 }
                 s => s,
@@ -135,8 +132,8 @@ impl Envelope {
             Stage::Attack => self.from + (1.0 - self.from) * bend(self.t, p.curves[0]),
             Stage::Hold => 1.0,
             Stage::Decay => 1.0 + (p.sustain - 1.0) * bend(self.t, p.curves[1]),
-            Stage::Release => self.from * (1.0 - bend(self.t, p.curves[2])),
-            Stage::Idle => 0.0,
+            Stage::Release => p.end + (self.from - p.end) * (1.0 - bend(self.t, p.curves[2])),
+            Stage::Idle => self.level,
             Stage::Sustain => p.sustain,
         }
     }
@@ -148,7 +145,7 @@ mod tests {
 
     #[test]
     fn runs_through_all_stages() {
-        let p = EnvParams { attack: 0.01, hold: 0.01, decay: 0.01, sustain: 0.5, release: 0.01, curves: [0.0; 3] };
+        let p = EnvParams { attack: 0.01, hold: 0.01, decay: 0.01, sustain: 0.5, release: 0.01, ..EnvParams::default() };
         let mut e = Envelope::default();
         e.trigger(false);
         assert!((e.advance(&p, 1000.0, 5) - 0.5).abs() < 1e-3, "halfway up the attack");
@@ -178,7 +175,7 @@ mod tests {
     /// zero step and spun forever (factory preset "ARP - Acid101", amp envelope).
     #[test]
     fn terminates_on_awkward_stage_lengths() {
-        let p = EnvParams { attack: 0.000_239_684_42, hold: 0.0, decay: 0.618_478_35, sustain: 0.205_934_78, release: 0.113_769_09, curves: [0.0, 0.332, 0.332] };
+        let p = EnvParams { attack: 0.000_239_684_42, hold: 0.0, decay: 0.618_478_35, sustain: 0.205_934_78, release: 0.113_769_09, curves: [0.0, 0.332, 0.332], ..EnvParams::default() };
         for sr in [44100.0, 48000.0, 96000.0] {
             let mut e = Envelope::default();
             e.trigger(false);
@@ -193,21 +190,19 @@ mod tests {
             assert!(!e.is_active());
         }
         // Sub-sample stages and huge blocks.
-        let tiny = EnvParams { attack: 1e-9, hold: 1e-9, decay: 1e-9, sustain: 0.5, release: 1e-9, curves: [0.0; 3] };
+        let tiny = EnvParams { attack: 1e-9, hold: 1e-9, decay: 1e-9, sustain: 0.5, release: 1e-9, ..EnvParams::default() };
         let mut e = Envelope::default();
         e.trigger(false);
         assert_eq!(e.advance(&tiny, 48000.0, 1_000_000), 0.5);
     }
 
     #[test]
-    fn curves_bow_but_keep_endpoints() {
-        for k in [-80.0, -53.0, -5.0, 2.0, 11.0, 53.0, 200.0] {
-            assert!(bend(0.0, k).abs() < 1e-6, "{k}");
-            assert!((bend(1.0, k) - 1.0).abs() < 1e-6, "{k}");
-            assert!(bend(0.5, k).is_finite());
-        }
-        assert!(bend(0.5, 4.0) < 0.5 && bend(0.5, -4.0) > 0.5);
-        // (e^{k/2} − 1)/(e^k − 1) = 1/(1 + e^{k/2}).
-        assert!((bend(0.5, 5.41) - 1.0 / (1.0 + 2.705f32.exp())).abs() < 1e-5);
+    fn curved_attack_starts_slowly_for_negative_amounts() {
+        // Stored curve 25 (amount −0.5) measured 1/(1 + e^{5.41/2}) halfway up the attack.
+        let p = EnvParams { attack: 1.0, curves: [-0.5, 0.0, 0.0], ..EnvParams::default() };
+        let mut e = Envelope::default();
+        e.trigger(false);
+        let mid = e.advance(&p, 1000.0, 500);
+        assert!((mid - 1.0 / (1.0 + 2.705f32.exp())).abs() < 1e-3, "{mid}");
     }
 }

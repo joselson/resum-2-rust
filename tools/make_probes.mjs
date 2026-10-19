@@ -27,6 +27,12 @@ function probe(changes) {
       payload.FXRack0 = { FX: change[1].map(([name, type, params, extra]) => ({ [name]: { plainParams: Object.keys(params).length ? Object.fromEntries(Object.entries(params).map(([k, v]) => [k, typeof v === "string" ? v : f(v)])) : "default", ...extra }, type })), displayName: "", plainParams: "default" };
       continue;
     }
+    if (change[0] === "__mod") {
+      // [__mod, slot, [source, aux], destModuleTypeString, destModuleID, destParamName, destParamID, {slot params}]
+      const [, slot, source, type, id, name, paramId, params, extra = {}] = change;
+      payload[`ModSlot${slot}`] = { destModuleID: id, destModuleParamID: paramId, destModuleParamName: name, destModuleTypeString: type, plainParams: Object.fromEntries(Object.entries(params).map(([k, v]) => [k, typeof v === "string" ? v : f(v)])), source, ...extra };
+      continue;
+    }
     const [path, key, value] = change;
     const section = path.split(".").reduce((s, k) => (s[k] ??= {}), payload);
     if (typeof section.plainParams !== "object") section.plainParams = {};
@@ -75,6 +81,14 @@ const LOUD = [0, 1, 2].flatMap((o) => [[`Oscillator${o}`, "kParamEnable", 1], [`
 const filter = (type, freq, reso = 10) => [["VoiceFilter0", "kParamEnable", 1], ["VoiceFilter0", "kParamType", type], ["VoiceFilter0", "kParamFreq", freq], ["VoiceFilter0", "kParamReso", reso]];
 const RP0 = [["Oscillator0.WTOsc0", "kParamRandomPhase", 0]];
 const uni = (n, detune) => [["Oscillator0", "kParamUnison", n], ["Oscillator0", "kParamDetune", detune]];
+const curveData = (pts, tensions) => ({ curveVals: [...tensions, 0.5], numPoints: pts.length - 1, xVals: pts.map(([x]) => f(x)), yVals: pts.map(([, y]) => f(1 - y)) });
+const slotVol = (source, params, extra) => ["__mod", 0, source, "Oscillator", 0, "kParamVolume", 1, params, extra];
+const SLOW_LFO = [["Oscillator0", "kParamVolume", 0], ["Oscillator0.WTOsc0", "kParamRandomPhase", 0], ["LFO0", "kParamBeatSync", 0], ["LFO0", "kParamRate", 0.5]];
+// Env 2: instant attack, full sustain, instant release; the amp envelope releases slowly so the fall is visible.
+const ENV2_STEP = [["Oscillator0", "kParamVolume", 0], ["Oscillator0.WTOsc0", "kParamRandomPhase", 0], ["Env1", "kParamAttack", 0], ["Env1", "kParamSustain", 1], ["Env1", "kParamRelease", 0], ["Env0", "kParamRelease", 2]];
+// Env 2 drives OSC A's volume from 0; the amp envelope releases slowly so Env 2's release shows.
+const ENV2_VOL = [["Oscillator0", "kParamVolume", 0], ["Oscillator0.WTOsc0", "kParamRandomPhase", 0], ["Env0", "kParamRelease", 3], slotVol([3, 0], { kParamAmount: 100 })];
+const LFO_VOL = [["Oscillator0", "kParamVolume", 0], ["Oscillator0.WTOsc0", "kParamRandomPhase", 0], ["__mod", 0, [6, 0], "Oscillator", 0, "kParamVolume", 1, { kParamAmount: 100 }]];
 const probes = {
   "init": [],
   "osc-octave-up": [["Oscillator0", "kParamOctave", 1]],
@@ -203,6 +217,43 @@ const probes = {
   "osc4-env-release-sus-0.5": [...RP0, ["Env0", "kParamSustain", 0.5], ["Env0", "kParamRelease", 0.45], ["Env0", "kParamCurve3", 25]],
   ...Object.fromEntries([3, 5, 7, 8].flatMap((n) => ["kOctave1", "kOctave2", "kOctave3", "kOctaveFifth1", "kOctaveFifth2", "kOctaveFifth3", "kCenter12", "kCenter24"].map((st) => [`osc4-uni-${n}-stack-${st.slice(1).toLowerCase()}`, [...RP0, ...uni(n, 0.25), ["Oscillator0", "kParamUnisonStack", st]]]))),
   "osc4-single": RP0,
+  // LFO timing (lfo-): LFO 1 drives OSC A's volume from 0, so the output level traces the LFO.
+  ...Object.fromEntries([0.3, 0.35, 0.4, 0.425, 0.45, 0.475, 0.5, 0.525, 0.55, 0.575, 0.6, 0.625, 0.65, 0.675, 0.7, 0.725, 0.75, 0.775, 0.8].map((x) => [`lfo-sync-x${x}`, [...LFO_VOL, ["LFO0", "kParamRate", 100 * x ** 4]]])),
+  ...Object.fromEntries([0.25, 0.5, 1, 2, 4, 8, 16, 32].map((r) => [`lfo-free-${r}`, [...LFO_VOL, ["LFO0", "kParamBeatSync", 0], ["LFO0", "kParamRate", r]]])),
+  ...Object.fromEntries([["dotted", "kParamDotted"], ["triplet", "kParamTriplets"], ["x10", "kParamRate10x"]].flatMap(([n, k]) => [6.25, 12.96].map((r) => [`lfo-sync-${n}-${r}`, [...LFO_VOL, ["LFO0", "kParamRate", r], ["LFO0", k, 1]]]))),
+  ...Object.fromEntries([["dotted", "kParamDotted"], ["triplet", "kParamTriplets"], ["x10", "kParamRate10x"]].map(([n, k]) => [`lfo-free-2-${n}`, [...LFO_VOL, ["LFO0", "kParamBeatSync", 0], ["LFO0", "kParamRate", 2], ["LFO0", k, 1]]])),
+  ...Object.fromEntries(["Lorenz", "Rossler", "RandomSH"].flatMap((t) => [[`lfo-${t.toLowerCase()}-sync`, [...LFO_VOL, ["LFO0", "kParamType", t]]], [`lfo-${t.toLowerCase()}-free-1`, [...LFO_VOL, ["LFO0", "kParamType", t], ["LFO0", "kParamBeatSync", 0], ["LFO0", "kParamRate", 1]]], [`lfo-${t.toLowerCase()}-free-4`, [...LFO_VOL, ["LFO0", "kParamType", t], ["LFO0", "kParamBeatSync", 0], ["LFO0", "kParamRate", 4]]]])),
+  "lfo-bipolar": [...LFO_VOL.slice(0, -1), ["__mod", 0, [6, 0], "Oscillator", 0, "kParamVolume", 1, { kParamAmount: 50, kParamBipolar: 1 }], ["Oscillator0", "kParamVolume", 0.5]],
+  "lfo-off": [["Oscillator0", "kParamVolume", 0], ["Oscillator0.WTOsc0", "kParamRandomPhase", 0]],
+  // Mod slot options (mod-): LFO 1 free at 0.5 Hz sweeps the curves; Env 2 steps for smoothing; Fixed for static depth.
+  ...Object.fromEntries([-100, -50, -20, 20, 50, 100].map((c) => [`mod-curvein-${c}`, [...SLOW_LFO, slotVol([6, 0], { kParamAmount: 100, kParamCurveIn: c })]])),
+  ...Object.fromEntries([["t02", curveData([[0, 0], [1, 1]], [0.2])], ["t08", curveData([[0, 0], [1, 1]], [0.8])], ["peak", curveData([[0, 0], [0.5, 1], [1, 0.25]], [0.5, 0.5])]].map(([n, c]) => [`mod-main-${n}`, [...SLOW_LFO, slotVol([6, 0], { kParamAmount: 100, kParamMainCurveData: 1 }, { flex: [c, {}] })]])),
+  "mod-main-fall-t02": [...SLOW_LFO, slotVol([6, 0], { kParamAmount: 100, kParamMainCurveData: 1 }, { flex: [curveData([[0, 1], [1, 0]], [0.2]), {}] })],
+  ...Object.fromEntries([["rise", [[0, 0], [0.5, 1], [1, 0]], [0.2, 0.5]], ["fall", [[0, 0], [0.5, 1], [1, 0]], [0.5, 0.2]]].map(([n, pts, t]) => [`mod-lfo-shape-${n}-t02`, [...SLOW_LFO, ["__section", "LFO0", { curveData: curveData(pts, t), pathData: {}, plainParams: { kParamBeatSync: f(0), kParamRate: 0.5 } }], slotVol([6, 0], { kParamAmount: 100 })]])),
+  ...Object.fromEntries([-50, 50, 100].map((c) => [`mod-curveout-${c}`, [...SLOW_LFO, slotVol([6, 0], { kParamAmount: 100, kParamCurveOut: c })]])),
+  "mod-curveout-50-bipolar": [...SLOW_LFO, ["Oscillator0", "kParamVolume", 0.25], slotVol([6, 0], { kParamAmount: 100, kParamBipolar: 1, kParamCurveOut: 50 })],
+  "mod-auxcurve-50": [...SLOW_LFO, slotVol([38, 6], { kParamAmount: 100, kParamAuxCurve: 50 })],
+  "mod-aux-t02": [...SLOW_LFO, slotVol([38, 6], { kParamAmount: 100, kParamAuxCurveData: 1 }, { flex: [{}, curveData([[0, 0], [1, 1]], [0.2])] })],
+  "mod-aux-plain": [...SLOW_LFO, slotVol([38, 6], { kParamAmount: 100 })],
+  "mod-out-50": [...SLOW_LFO, slotVol([6, 0], { kParamAmount: 100, kParamOut: 50 })],
+  "mod-plain": [...SLOW_LFO, slotVol([6, 0], { kParamAmount: 100 })],
+  ...Object.fromEntries([[25, 25, 1], [50, 50, 1], [100, 100, 1], [25, 100, 0], [100, 25, 0]].map(([r, fl, link]) => [`mod-smooth-r${r}-f${fl}-l${link}`, [...ENV2_STEP, slotVol([3, 0], { kParamAmount: 100, kParamSmoothRise: r, kParamSmoothFall: fl, kParamSmoothLink: link })]])),
+  "mod-smooth-none": [...ENV2_STEP, slotVol([3, 0], { kParamAmount: 100 })],
+  ...Object.fromEntries([[10, 0], [50, 0], [100, 0], [100, 1], [20, 1]].map(([a, b]) => [`mod-tuning-${a}${b ? "-bi" : ""}`, [["__mod", 0, [38, 0], "Global", 0, "kParamMasterTuning", 1, { kParamAmount: a, kParamBipolar: b }]]])),
+  ...Object.fromEntries([1, 2, -5].map((a) => [`mod-tuning-fine-${a}`, [["__mod", 0, [38, 0], "Global", 0, "kParamMasterTuning", 1, { kParamAmount: a }]]])),
+  "mod-tuning-static-0.55": [["Global0", "kParamMasterTuning", 0.55]],
+  ...Object.fromEntries(["Lorenz", "Rossler", "RandomSH", "Path"].flatMap((t) => [[`mod-lfoy-${t.toLowerCase()}`, [...SLOW_LFO, ["LFO0", "kParamRate", 1], ["LFO0", "kParamType", t], slotVol([39, 0], { kParamAmount: 100 })]], [`mod-lfox-${t.toLowerCase()}`, [...SLOW_LFO, ["LFO0", "kParamRate", 1], ["LFO0", "kParamType", t], slotVol([6, 0], { kParamAmount: 100 })]]])),
+  "mod-lfoy-default": [...SLOW_LFO, slotVol([39, 0], { kParamAmount: 100 })],
+  ...Object.fromEntries([["tri", [[0.1, 0.5], [0.9, 0.5], [0.5, 0.6]], [0.5, 0.5, 0.5], false], ["tri-t02", [[0.1, 0.5], [0.9, 0.5], [0.5, 0.6]], [0.2, 0.5, 0.5], false], ["open", [[0.1, 0.2], [0.9, 0.5], [0.3, 0.9]], [0.5, 0.5, 0.5], true]].flatMap(([n, pts, t, open]) => [[39, "y"], [6, "x"]].map(([src, axis]) => [`mod-path-${n}-${axis}`, [...SLOW_LFO, ["__section", "LFO0", { curveData: {}, pathData: { curveVals: t, isOpen: open, numPoints: pts.length, xVals: pts.map(([x]) => x), yVals: pts.map(([, y]) => y) }, pathDisplayName: "Custom", plainParams: { kParamBeatSync: f(0), kParamRate: 0.5, kParamType: "Path" } }], slotVol([src, 0], { kParamAmount: 100 })]]))),
+  // Global voice amp; envelope start/end and beat sync; LFO direction, anchoring and mono.
+  ...Object.fromEntries([0, 0.25, 0.75, 1].map((a) => [`mod-voiceamp-${a}`, [["Global0", "kParamVoiceAmp", a]]])),
+  "mod-voiceamp-mod-25": [["__mod", 0, [38, 0], "Global", 0, "kParamVoiceAmp", 2, { kParamAmount: 25 }]],
+  "mod-env-start-0.3": [...ENV2_VOL, ["Env1", "kParamAttack", 0.5], ["Env1", "kParamStart", 0.3]],
+  "mod-env-end-0.4": [...ENV2_VOL, ["Env1", "kParamRelease", 0.5], ["Env1", "kParamEnd", 0.4]],
+  "mod-env-start-end-plain": [...ENV2_VOL, ["Env1", "kParamAttack", 0.5], ["Env1", "kParamRelease", 0.5]],
+  ...Object.fromEntries([0.25, 1, 2].map((a) => [`mod-env-sync-attack-${a}`, [...ENV2_VOL, ["Env1", "kParamBeatSync", 1], ["Env1", "kParamAttack", a]]])),
+  ...Object.fromEntries([["dir-0", [["LFO0", "kParamDirection", 0]]], ["dir-1", [["LFO0", "kParamDirection", 1]]], ["dir-2", [["LFO0", "kParamDirection", 2]]], ["anchored-0", [["LFO0", "kParamAnchored", 0]]], ["mono", [["LFO0", "kParamMono", 1]]], ["anchored-0-phase-90", [["LFO0", "kParamAnchored", 0], ["LFO0", "kParamPhase", 90]]], ["phase-90", [["LFO0", "kParamPhase", 90]]]].map(([n, extra]) => [`mod-lfo-${n}`, [...SLOW_LFO, ["__section", "LFO0", { curveData: curveData([[0, 0], [0.98, 1], [1, 0]], [0.5, 0.5]), pathData: {}, plainParams: { kParamBeatSync: f(0), kParamRate: 0.5 } }], ...extra, slotVol([6, 0], { kParamAmount: 100 })]])),
+  "mod-tuning-out-50": [["__mod", 0, [38, 0], "Global", 0, "kParamMasterTuning", 1, { kParamAmount: 100, kParamOut: 50 }]],
   "fx-split-dist-high": rack(fx("FXSplit", { kParamFreq: 1000, kParamModuleCount1: 0, kParamModuleCount2: 1 }), fx("FXDistortion", { kParamDrive: 80 })),
 };
 

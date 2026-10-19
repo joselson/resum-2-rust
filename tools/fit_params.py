@@ -36,11 +36,12 @@ def fit(samples):
     cands = []
     a, b = lstsq_line(pts)
     cands.append(("linear", lambda x, a=a, b=b: a + b * x, {}))
-    for k10 in range(11, 101):
+    # Two points cannot tell curve families apart; only a line is justified.
+    for k10 in range(11, 101) if len(pts) >= 3 else ():
         k = k10 / 10
         a2, b2 = lstsq_line([(x ** k, y) for x, y in pts])
         cands.append(("power", lambda x, a=a2, b=b2, k=k: a + b * x ** k, {"k": k}))
-    if all(y > 0 for _, y in pts):
+    if len(pts) >= 3 and all(y > 0 for _, y in pts):
         c, d = lstsq_line([(x, math.log(y)) for x, y in pts])
         cands.append(("exp", lambda x, c=c, d=d: math.exp(c + d * x), {}))
     def err(f):
@@ -56,13 +57,31 @@ def fit(samples):
     return {"kind": "table", "points": pts, "fit_error": round(e, 4)}
 
 
+def number(text):
+    try:
+        return float(text.strip())
+    except (AttributeError, ValueError):
+        return None
+
+
+def fill_from_display(samples):
+    """Serum omits a field at its default, so that sample has no plain value. When the
+    display text is a bare number that equals the plain value at every other sample,
+    it stands in for the missing one (e.g. LFO smooth, whose default 0 is the
+    sweep's first point)."""
+    known = [(plain, number(text)) for _, plain, text in samples if isinstance(plain, (int, float)) and not isinstance(plain, bool)]
+    if not known or any(n is None or abs(n - plain) > max(0.051, abs(plain) * 0.01) for plain, n in known):
+        return [(x, plain) for x, plain, _ in samples]
+    return [(x, plain if plain is not None else number(text)) for x, plain, text in samples]
+
+
 def main(src, dst):
     rows = json.load(open(src))
     out = []
     for r in rows:
         if r["name"].endswith("_name") or "." not in r["field"]:
             continue
-        spec = fit([(x, plain) for x, plain, _text in r["samples"]])
+        spec = fit(fill_from_display(r["samples"]))
         f = spec.pop("_f", None)
         d = r["default_plain"]
         if d is None and f is not None:

@@ -240,6 +240,11 @@ fn key_char(key: egui::Key) -> Option<char> {
 /// A playable keyboard: mouse (lower on a key is louder) or computer keys
 /// `A W S E D F T G Y H U J K O L P`, with `Z`/`X` for octave down/up.
 fn keyboard(ui: &mut egui::Ui, shared: &Shared, state: &mut State) {
+    // In a DAW the host decides who gets keys; the standalone hands them to the editor.
+    #[cfg(feature = "standalone")]
+    if crate::standalone::is_standalone() {
+        crate::standalone::claim_keyboard();
+    }
     let base = piano::base_note(state.octave, OCTAVES);
     ui.horizontal(|ui| {
         if ui.button("Oct −").clicked() {

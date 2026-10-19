@@ -34,7 +34,7 @@ pub const OSCILLATOR: ModuleSpec = ModuleSpec {
         ParamSpec { name: "kParamLoopCrossfade", host: Some("a_loop_x_fade"), curve: Curve::Linear { min: 0.0, max: 100.0, integer: false }, defaults: &[0.0], options: &[], displays: &[], evidence: Evidence::Measured },
         ParamSpec { name: "kParamLoopMode", host: Some("a_loop_mode"), curve: Curve::Choice, defaults: &[0.0], options: &["kNone", "kForward", "kReverse", "kPingPong", "kTailed"], displays: &["One-shot", "Fwd Loop", "Rev Loop", "Fwd/Rev Loop", "Tailed"], evidence: Evidence::Measured },
         ParamSpec { name: "kParamLoopStartLink", host: Some("a_relative_loop"), curve: Curve::Toggle, defaults: &[0.0], options: &[], displays: &[], evidence: Evidence::Measured },
-        ParamSpec { name: "kParamSlicingSingleSlice", host: Some("a_single_slice"), curve: Curve::Linear { min: 6.0, max: 100.0, integer: true }, defaults: &[6.0], options: &[], displays: &[], evidence: Evidence::Measured },
+        ParamSpec { name: "kParamSlicingSingleSlice", host: Some("a_single_slice"), curve: Curve::Linear { min: 1.0, max: 100.0, integer: true }, defaults: &[1.0], options: &[], displays: &[], evidence: Evidence::Measured },
         ParamSpec { name: "kParamSlicingPlayToEnd", host: Some("a_slice_play_mode"), curve: Curve::Toggle, defaults: &[0.0], options: &[], displays: &[], evidence: Evidence::Measured },
         ParamSpec { name: "kParamUnison", host: Some("a_unison"), curve: Curve::Linear { min: 1.0, max: 16.0, integer: true }, defaults: &[1.0], options: &[], displays: &[], evidence: Evidence::Measured },
         ParamSpec { name: "kParamUnisonStack", host: Some("a_uni_stack"), curve: Curve::Choice, defaults: &[0.0], options: &["kNoUnisonStack", "kOctave1", "kOctave2", "kOctave3", "kOctaveFifth1", "kOctaveFifth2", "kOctaveFifth3", "kCenter12", "kCenter24"], displays: &["off", "12 (1x)", "12 (2x)", "12 (3x)", "12+7(1x)", "12+7(2x)", "12+7(3x)", "Center-12", "Center-24"], evidence: Evidence::Measured },
@@ -266,7 +266,7 @@ pub const LFO: ModuleSpec = ModuleSpec {
     automatable: 5,
     params: &[
         ParamSpec { name: "kParamRate", host: Some("lfo_1_rate"), curve: Curve::Power { min: 0.0, max: 100.0, k: 4.0 }, defaults: &[6.25], options: &[], displays: &[], evidence: Evidence::Measured },
-        ParamSpec { name: "kParamSmooth", host: Some("lfo_1_smooth"), curve: Curve::Power { min: 31.723, max: 100.0, k: 1.8 }, defaults: &[31.723], options: &[], displays: &[], evidence: Evidence::Measured },
+        ParamSpec { name: "kParamSmooth", host: Some("lfo_1_smooth"), curve: Curve::Linear { min: 0.0, max: 100.0, integer: false }, defaults: &[0.0], options: &[], displays: &[], evidence: Evidence::Measured },
         ParamSpec { name: "kParamRise", host: Some("lfo_1_rise"), curve: Curve::Linear { min: 0.0, max: 4.0, integer: false }, defaults: &[0.0], options: &[], displays: &[], evidence: Evidence::Measured },
         ParamSpec { name: "kParamDelay", host: Some("lfo_1_delay"), curve: Curve::Linear { min: 0.0, max: 4.0, integer: false }, defaults: &[0.0], options: &[], displays: &[], evidence: Evidence::Measured },
         ParamSpec { name: "kParamPhase", host: Some("lfo_1_phase"), curve: Curve::Linear { min: 0.0, max: 360.0, integer: false }, defaults: &[0.0], options: &[], displays: &[], evidence: Evidence::Measured },
@@ -283,7 +283,7 @@ pub const LFO: ModuleSpec = ModuleSpec {
         ParamSpec { name: "kParamRate10x", host: None, curve: Curve::Toggle, defaults: &[0.0], options: &[], displays: &[], evidence: Evidence::Presets },
         ParamSpec { name: "kParamSwing", host: None, curve: Curve::Toggle, defaults: &[0.0], options: &[], displays: &[], evidence: Evidence::Presets },
         ParamSpec { name: "kParamTriplets", host: None, curve: Curve::Toggle, defaults: &[0.0], options: &[], displays: &[], evidence: Evidence::Presets },
-        ParamSpec { name: "kParamType", host: None, curve: Curve::Choice, defaults: &[0.0], options: &["Path", "RandomSH", "Lorenz", "Rossler"], displays: &["Path", "RandomSH", "Lorenz", "Rossler"], evidence: Evidence::Presets },
+        ParamSpec { name: "kParamType", host: None, curve: Curve::Choice, defaults: &[0.0], options: &["Curve", "Path", "RandomSH", "Lorenz", "Rossler"], displays: &["Curve", "Path", "RandomSH", "Lorenz", "Rossler"], evidence: Evidence::Presets },
     ],
 };
 

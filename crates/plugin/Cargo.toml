@@ -15,7 +15,7 @@ vst3 = ["nih_plug/vst3"]
 # The egui editor. Needs X11/OpenGL development libraries on Linux.
 gui = ["dep:nih_plug_egui"]
 # A self-contained app with its own audio and MIDI I/O (`lumen-standalone`).
-standalone = ["gui", "nih_plug/standalone", "dep:cpal", "dep:midir"]
+standalone = ["gui", "nih_plug/standalone", "dep:cpal", "dep:midir", "dep:windows-sys"]
 
 [[bin]]
 name = "lumen-standalone"
@@ -31,3 +31,7 @@ cpal = { version = "0.15", optional = true }
 midir = { version = "0.9", optional = true }
 nih_plug = { git = "https://github.com/robbert-vdh/nih-plug", default-features = false }
 nih_plug_egui = { git = "https://github.com/robbert-vdh/nih-plug", optional = true }
+
+# Keyboard focus for the standalone's editor window (a version already in the tree).
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.59", optional = true, features = ["Win32_Foundation", "Win32_UI_WindowsAndMessaging", "Win32_UI_Input_KeyboardAndMouse"] }

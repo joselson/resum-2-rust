@@ -1,5 +1,6 @@
 pub mod biquad;
 pub mod convolver;
+pub mod curve;
 pub mod delay;
 pub mod env;
 pub mod filter;

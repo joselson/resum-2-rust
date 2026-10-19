@@ -35,11 +35,11 @@ the option onto a generic implementation; nothing is sound-matched yet.
 | Sample loop modes | forward, reverse, ping-pong, tailed | all, with crossfade |
 | Filter types | 107 (MG ladder, L/H/B/P/N 6–24, dual/triple combos, comb ×8, flange ×8, phase ×16, EQ, ring mod, S&H, formant, scream, dist-comb, diffuser…) | measured models (within ~1 dB) for L/H/B/N/P 6–24, MG Low 6–24, MG Ladder, comb/flange ±, phase P, morph duals and triples, Exp MM/BPF, Wsp, Scream; drive per type, level, stereo, Var; EMS/Acid/Dirty ladders, damped combs, negative phase, German LP, Scream LP/BP, Dist.Comb 1 approximate; formant, reverb, ring mod, S&H, EQ and other exotic types missing |
 | Routing destinations | Filter, Master, Direct, None | Filter, Master, None |
-| Envelopes | 4 × AHDSR, 3 curves, start/end, beat sync, legato invert | 4 × AHDSR, 3 measured curves |
-| LFO types | Path, RandomSH, Lorenz, Rossler | Path, RandomSH |
-| LFO timing | sync with dotted/triplet/×10, delay, rise, smooth, anchored, direction | free Hz, approx. sync, delay, rise, smooth |
-| Mod sources | 58 | 26 |
-| Mod slot options | amount, aux, bipolar, curves in/out, smoothing, delay, bypass | amount, aux, bipolar, bypass |
+| Envelopes | 4 × AHDSR, 3 curves, start/end, beat sync, legato invert | 4 × AHDSR, 3 measured curves, start/end, measured beat sync; legato invert open |
+| LFO types | Curve, Path, RandomSH, Lorenz, Rossler | all five (Lorenz/Rössler and their Y outputs fitted; path tension approximate) |
+| LFO timing | sync with dotted/triplet/×10, delay, rise, smooth, anchored, direction, mono | measured sync divisions, dotted, triplet, ×10, direction, delay, rise, smooth; anchored and mono open |
+| Mod sources | 58 | 36 (LFO Y added; audio-rate, MPE, discrete random open) |
+| Mod slot options | amount, aux, bipolar, curves in/out, aux curve, out, smoothing, delay, bypass | amount, aux, bipolar (measured), drawn and input curves, aux curves, out, bypass; smoothing, curve-out, delay open |
 | Distortion modes | 17 | all, as generic waveshapers (level calibrated, character not) |
 | Reverb types | Hall, Vintage, Abyss, Space | one FDN reverb with per-type decay/modulation |
 | FX modules | Distortion, Flanger, Phaser, Chorus, Delay, Comp, Reverb, EQ, Filter, HyperDimension, Bode, Convolve, Utility + Split, Split3, SplitMS | all 16 (first implementations; multiband compression not modelled) |

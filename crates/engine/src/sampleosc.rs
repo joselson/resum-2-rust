@@ -187,9 +187,9 @@ impl SampleVoice {
                     let pan = (r.pan / 100.0).clamp(-1.0, 1.0);
                     let env = if values.flag(MS_ENV_OVERRIDE.on(i)) {
                         let e = MS_ENV.map(|p| values.get(p.on(i)));
-                        EnvParams { attack: e[0], hold: e[1], decay: e[2], sustain: e[3], release: e[4], curves: [0.0; 3] }
+                        EnvParams { attack: e[0], hold: e[1], decay: e[2], sustain: e[3], release: e[4], curves: [0.0; 3], ..EnvParams::default() }
                     } else {
-                        EnvParams { attack: r.ampeg[0], hold: r.ampeg[1], decay: r.ampeg[2], sustain: r.ampeg[3], release: r.ampeg[4], curves: [0.0; 3] }
+                        EnvParams { attack: r.ampeg[0], hold: r.ampeg[1], decay: r.ampeg[2], sustain: r.ampeg[3], release: r.ampeg[4], curves: [0.0; 3], ..EnvParams::default() }
                     };
                     let layer = Layer {
                         region,

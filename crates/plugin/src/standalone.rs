@@ -114,6 +114,30 @@ pub fn run() {
     nih_plug::wrapper::standalone::nih_export_standalone_with_args::<crate::Lumen, _>(args);
 }
 
+/// Gives the editor keyboard focus. The standalone hosts the editor as a child of its
+/// own window, and Windows sends key presses only to the focused window, so typed
+/// notes never reached the editor (mouse clicks did). Call once per frame: it only
+/// acts while the top-level window holds the focus.
+#[cfg(windows)]
+pub fn claim_keyboard() {
+    use windows_sys::Win32::UI::Input::KeyboardAndMouse::{GetActiveWindow, GetFocus, SetFocus};
+    use windows_sys::Win32::UI::WindowsAndMessaging::{GetWindow, GW_CHILD};
+    // SAFETY: plain Win32 calls on this thread's own windows; null handles are checked.
+    unsafe {
+        let parent = GetActiveWindow();
+        if parent.is_null() || GetFocus() != parent {
+            return;
+        }
+        let editor = GetWindow(parent, GW_CHILD);
+        if !editor.is_null() {
+            SetFocus(editor);
+        }
+    }
+}
+
+#[cfg(not(windows))]
+pub fn claim_keyboard() {}
+
 /// Saves the settings and starts a new instance with them; the caller exits.
 pub fn relaunch(settings: &Settings) -> Result<(), String> {
     settings.save()?;

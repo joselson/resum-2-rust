@@ -7,7 +7,7 @@ use crate::params::{self, Curve, ParamRef, Values, MODULES};
 use crate::sampleosc::{self, SampleSource};
 use crate::tables::TableStore;
 use crate::voice::RENDERED;
-use lumen_dsp::lfo::Curve as LfoCurve;
+use lumen_dsp::lfo::{Curve as LfoCurve, Path as LfoPath};
 use lumen_dsp::wavetable::Wavetable;
 use lumen_preset::Value;
 use std::collections::BTreeMap;
@@ -38,6 +38,8 @@ pub struct Patch {
     /// Samples or multisample regions for oscillators A–C of those types.
     pub samples: [SampleSource; 3],
     pub lfo_curves: Vec<LfoCurve>,
+    /// Drawn XY paths of Path-type LFOs (None: no path, which Serum plays as 0.5, 0.5).
+    pub lfo_paths: Vec<Option<LfoPath>>,
     pub routes: Vec<Route>,
     pub fx: FxSetup,
 }
@@ -77,16 +79,20 @@ fn load_params(payload: &Value, values: &mut Values, cov: &mut Coverage) {
     }
 }
 
-fn lfo_curve(section: Option<&Value>) -> Option<LfoCurve> {
-    let data = section?.get("curveData")?;
+/// A Path LFO's points; unlike curves, `numPoints` is the point count and y is not flipped.
+fn lfo_path(section: Option<&Value>) -> Option<LfoPath> {
+    let data = section?.get("pathData")?;
     let n = data.get("numPoints")?.as_f64()? as usize;
-    let xs = data.get("xVals")?.as_array()?;
-    let ys = data.get("yVals")?.as_array()?;
-    let tensions: Vec<f32> = data.get("curveVals").and_then(Value::as_array).unwrap_or(&[]).iter().filter_map(Value::as_f64).map(|v| v as f32).collect();
+    let num = |key: &str| -> Vec<f32> { data.get(key).and_then(Value::as_array).unwrap_or(&[]).iter().filter_map(Value::as_f64).map(|v| v as f32).collect() };
+    let (xs, ys) = (num("xVals"), num("yVals"));
     let n = n.min(xs.len()).min(ys.len());
-    // Stored y uses screen coordinates: 0 is the top of the editor.
-    let points: Vec<(f32, f32)> = xs[..n].iter().zip(&ys[..n]).filter_map(|(x, y)| Some((x.as_f64()? as f32, 1.0 - y.as_f64()? as f32))).collect();
-    LfoCurve::new(&points, &tensions)
+    let points: Vec<(f32, f32)> = xs[..n].iter().zip(&ys[..n]).map(|(&x, &y)| (x, y)).collect();
+    let open = matches!(data.get("isOpen"), Some(Value::Bool(true)));
+    LfoPath::new(&points, &num("curveVals"), !open)
+}
+
+fn lfo_curve(section: Option<&Value>) -> Option<LfoCurve> {
+    crate::modulation::slot_curve(section?.get("curveData")?)
 }
 
 const OSC_ENABLE: ParamRef = ParamRef::new("Oscillator", 0, "kParamEnable");
@@ -104,8 +110,8 @@ fn active(values: &Values, kind: usize, instance: usize) -> bool {
         "NoiseOsc" => values.flag(OSC_ENABLE.on(3)),
         "SubOsc" => values.flag(OSC_ENABLE.on(4)),
         "VoiceFilter" => values.flag(FILTER_ENABLE.on(instance)),
-        // Mod slot parameters are covered by route parsing; editor/sequencer modules separately.
-        "ModSlot" | "ClipPlayer" | "PitchQuantizer" => false,
+        // Editor/sequencer modules are reported separately; unused mod slots keep defaults.
+        "ClipPlayer" | "PitchQuantizer" => false,
         _ => true,
     }
 }
@@ -192,7 +198,7 @@ impl Patch {
         let lfo_curves = (0..10)
             .map(|i| {
                 let kind = values.choice(LFO_TYPE.on(i));
-                if !matches!(kind, "Path" | "RandomSH") {
+                if !matches!(kind, "Curve" | "Path" | "RandomSH" | "Lorenz" | "Rossler") {
                     cov.note(format!("LFO type {kind}"));
                 }
                 lfo_curve(payload.get(&format!("LFO{i}"))).unwrap_or_else(LfoCurve::triangle)
@@ -233,7 +239,8 @@ impl Patch {
         note_fx(&fx, &mut cov);
 
         let name = payload.get("presetName").and_then(Value::as_str).unwrap_or("Init").to_owned();
-        (Patch { name, values, tables: osc_tables, samples, lfo_curves, routes, fx }, cov)
+        let lfo_paths = (0..10).map(|i| lfo_path(payload.get(&format!("LFO{i}")))).collect();
+        (Patch { name, values, tables: osc_tables, samples, lfo_curves, lfo_paths, routes, fx }, cov)
     }
 
     pub fn param(&self, p: ParamRef) -> f32 {

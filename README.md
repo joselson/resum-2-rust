@@ -68,7 +68,8 @@ table-position spread), noise, the six measured sub shapes, per-source routing a
 filter balance, two
 voice filters (SVF LP/HP/BP 12/24, notch, peak, ladder), four envelopes with
 measured curves, ten
-curve/S&H LFOs (trigger/free/envelope modes, delay, rise, smoothing), eight
+LFOs (curve, path, S&H, Lorenz and Rössler; measured sync divisions, dotted,
+triplet, direction; trigger/free/envelope modes, delay, rise, smoothing), eight
 macros, 64 mod slots with aux sources and bipolar mode, mono/legato/portamento,
 pitch bend, mod wheel, aftertouch.
 
@@ -79,9 +80,9 @@ the main families are measured within about 1 dB: multimode 6–24, MG ladders,
 comb/flange/phase, morph duals and triples, Exp, Wsp and Scream, with drive,
 level, stereo and Var (see docs/CALIBRATION.md). The plugin exposes 550 host
 parameters generated from the parameter tables. Not yet implemented:
-granular/spectral oscillators, chaos LFOs (Lorenz/Rossler), arpeggiator and clip
+granular/spectral oscillators, arpeggiator and clip
 player, the remaining exotic filter types (formant, reverb, ring mod, EQ…) and the
-EMS/Acid/Dirty ladder responses, LFO note divisions, a Serum-style editor (the
+EMS/Acid/Dirty ladder responses, mod smoothing and audio-rate mod sources, a Serum-style editor (the
 current one is a generic parameter page).
 
 ## Parameter semantics

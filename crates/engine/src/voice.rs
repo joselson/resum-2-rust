@@ -9,7 +9,7 @@ use crate::patch::Patch;
 use crate::sampleosc::{SampleSource, SampleVoice};
 use lumen_dsp::env::{EnvParams, Envelope};
 use lumen_dsp::filter::{Filter, FilterKind};
-use lumen_dsp::lfo::{Lfo, LfoMode, LfoTiming};
+use lumen_dsp::lfo::{Chaos, ChaosKind, Direction, Lfo, LfoMode, LfoTiming};
 use lumen_dsp::osc::{DetuneMode, Unison, UnisonStack, WtOscillator};
 use lumen_dsp::sub::{SubOscillator, SubShape};
 use lumen_dsp::warp::{WarpMode, WarpSlot, WarpSource};
@@ -63,6 +63,10 @@ const ENV_DECAY: P = P::new("Env", 0, "kParamDecay");
 const ENV_SUSTAIN: P = P::new("Env", 0, "kParamSustain");
 const ENV_RELEASE: P = P::new("Env", 0, "kParamRelease");
 const ENV_CURVES: [P; 3] = [P::new("Env", 0, "kParamCurve1"), P::new("Env", 0, "kParamCurve2"), P::new("Env", 0, "kParamCurve3")];
+const ENV_START: P = P::new("Env", 0, "kParamStart");
+const ENV_END: P = P::new("Env", 0, "kParamEnd");
+const ENV_SYNC: P = P::new("Env", 0, "kParamBeatSync");
+const VOICE_AMP: P = P::new("Global", 0, "kParamVoiceAmp");
 const LFO_RATE: P = P::new("LFO", 0, "kParamRate");
 const LFO_SMOOTH: P = P::new("LFO", 0, "kParamSmooth");
 const LFO_RISE: P = P::new("LFO", 0, "kParamRise");
@@ -71,8 +75,13 @@ const LFO_PHASE: P = P::new("LFO", 0, "kParamPhase");
 const LFO_MODE: P = P::new("LFO", 0, "kParamMode");
 const LFO_TYPE: P = P::new("LFO", 0, "kParamType");
 const LFO_SYNC: P = P::new("LFO", 0, "kParamBeatSync");
+const LFO_DOTTED: P = P::new("LFO", 0, "kParamDotted");
+const LFO_DIRECTION: P = P::new("LFO", 0, "kParamDirection");
+const LFO_TRIPLETS: P = P::new("LFO", 0, "kParamTriplets");
+const LFO_RATE10X: P = P::new("LFO", 0, "kParamRate10x");
 const MACRO_VALUE: P = P::new("Macro", 0, "kParamValue");
 const GLOBAL_A4: P = P::new("Global", 0, "kParamGlobalTuning");
+const MASTER_TUNING: P = P::new("Global", 0, "kParamMasterTuning");
 const TRANSPOSE: P = P::new("Global", 0, "kParamTranspose");
 const BEND_UP: P = P::new("Global", 0, "kParamBendRangeUp");
 const BEND_DOWN: P = P::new("Global", 0, "kParamBendRangeDn");
@@ -95,13 +104,18 @@ pub(crate) const RENDERED: &[(&str, &str)] = &[
     ("NoiseOsc", "kParamColor"), ("SubOsc", "kParamShape"), ("SubOsc", "kParamInitialPhase"),
     ("VoiceFilter", "kParamEnable"), ("VoiceFilter", "kParamType"), ("VoiceFilter", "kParamFreq"), ("VoiceFilter", "kParamReso"),
     ("VoiceFilter", "kParamDrive"), ("VoiceFilter", "kParamWet"), ("VoiceFilter", "kParamLevelOut"), ("VoiceFilter", "kParamKeyTrack"),
-    ("VoiceFilter", "kParamStereo"), ("Global", "kParamOversampling"),
+    ("VoiceFilter", "kParamStereo"), ("VoiceFilter", "kParamVar"), ("Global", "kParamOversampling"),
     ("Env", "kParamAttack"), ("Env", "kParamHold"), ("Env", "kParamDecay"), ("Env", "kParamSustain"), ("Env", "kParamRelease"),
     ("Env", "kParamCurve1"), ("Env", "kParamCurve2"), ("Env", "kParamCurve3"),
     ("LFO", "kParamRate"), ("LFO", "kParamSmooth"), ("LFO", "kParamRise"), ("LFO", "kParamDelay"), ("LFO", "kParamPhase"),
     ("LFO", "kParamMode"), ("LFO", "kParamType"), ("LFO", "kParamBeatSync"), ("LFO", "kParamDefaultMode"),
+    ("LFO", "kParamDotted"), ("LFO", "kParamTriplets"), ("LFO", "kParamRate10x"), ("LFO", "kParamDirection"),
     ("Macro", "kParamValue"),
-    ("Global", "kParamMasterVolume"), ("Global", "kParamGlobalTuning"), ("Global", "kParamTranspose"), ("Global", "kParamBendRangeUp"),
+    ("ModSlot", "kParamAmount"), ("ModSlot", "kParamBipolar"), ("ModSlot", "kParamBypass"), ("ModSlot", "kParamAuxInverted"),
+    ("ModSlot", "kParamCurveIn"), ("ModSlot", "kParamMainCurveData"), ("ModSlot", "kParamAuxCurveData"), ("ModSlot", "kParamOut"), ("ModSlot", "kParamAuxCurve"),
+    ("Global", "kParamMasterVolume"), ("Global", "kParamVoiceAmp"),
+    ("Env", "kParamStart"), ("Env", "kParamEnd"), ("Env", "kParamBeatSync"), ("Global", "kParamGlobalTuning"), ("Global", "kParamMasterTuning"), ("Global", "kParamTranspose"),
+    ("Global", "kParamBendRangeUp"),
     ("Global", "kParamBendRangeDn"), ("Global", "kParamPolyCount"), ("Global", "kParamMonoToggle"), ("Global", "kParamLegato"),
     ("Global", "kParamPortamentoTime"), ("Global", "kParamPortaAlways"), ("Global", "kParamModWheel"),
     ("RoutingSlot", "kParamRoutingDest"), ("RoutingSlot", "kParamFilterBalance"), ("RoutingSlot", "kParamFXBus1Level"),
@@ -160,6 +174,14 @@ fn detune_mode(name: &str) -> DetuneMode {
     }
 }
 
+fn chaos_kind(name: &str) -> Option<ChaosKind> {
+    match name {
+        "Lorenz" => Some(ChaosKind::Lorenz),
+        "Rossler" => Some(ChaosKind::Rossler),
+        _ => None,
+    }
+}
+
 fn unison_stack(name: &str) -> UnisonStack {
     match name {
         "kOctave1" => UnisonStack::Octaves(1),
@@ -185,22 +207,46 @@ fn sub_shape(name: &str) -> SubShape {
     }
 }
 
-/// Curve constant k for a stored envelope curve (0–100, 50 linear). Measured on attack,
-/// decay and release probes, each segment an exact (e^{k·u} − 1)/(e^k − 1) in amplitude;
-/// k is odd about 50 and tabled against x = |50 − curve|/50.
-fn env_curve(stored: f32) -> f32 {
-    const K: [f32; 12] = [0.0, 1.11, 2.12, 3.15, 4.21, 5.41, 6.77, 8.49, 11.0, 14.9, 20.1, 53.0];
-    const X: [f32; 12] = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.96, 1.0];
-    let x = ((50.0 - stored) / 50.0).clamp(-1.0, 1.0);
-    let i = X.partition_point(|&p| p < x.abs()).clamp(1, X.len() - 1);
-    let t = (x.abs() - X[i - 1]) / (X[i] - X[i - 1]);
-    (K[i - 1] + (K[i] - K[i - 1]) * t) * x.signum()
+/// Beat-synced envelope time. The time control (plain = 32·x⁵) steps through 47 equal
+/// cells, round(46x): "fast", then from 1/1024 to 32 bars in threes — a division, the
+/// next one's triplet, then the division dotted (display sweep; renders at 120 BPM
+/// confirm 1/16 t, 1/4 t and 1/2 t).
+fn synced_env_seconds(stored: f32, bpm: f32) -> f32 {
+    let x = (stored.max(0.0) / 32.0).powf(0.2);
+    let j = (x * 46.0).round().clamp(0.0, 46.0) as i32;
+    if j == 0 {
+        return 0.0;
+    }
+    let (group, step) = ((j - 1) / 3, (j - 1) % 3);
+    let bars = (group as f32).exp2() / 1024.0 * [1.0, 4.0 / 3.0, 1.5][step as usize];
+    bars * 4.0 * 60.0 / bpm.max(1.0)
 }
 
-/// Tempo-synced LFO rate. The stored value's division scale is not yet mapped
-/// (default 6.25 displays as 1/4); this keeps 6.25 at one cycle per beat.
-fn synced_lfo_hz(rate: f32, bpm: f32) -> f32 {
-    bpm / 60.0 * (rate / 6.25).max(1e-3).powf(0.5)
+/// Curve amount for a stored envelope curve (0–100, 50 linear): below 50 a segment
+/// starts slowly. Each segment is the shared curve law in amplitude (envelope probes).
+fn env_curve(stored: f32) -> f32 {
+    ((stored - 50.0) / 50.0).clamp(-1.0, 1.0)
+}
+
+/// Tempo-synced LFO rate. The rate control (plain = 100·x⁴) steps through 15 equal
+/// cells, ⌊14x + 0.16⌋: 32 bars, 16 bars … 1/256, then "fast" (taken as 1/512).
+/// Dotted gives the last two thirds of each cell to the next division dotted;
+/// triplets give the last third to the cell's own division as a triplet (rate
+/// display sweeps; renders confirm the snapping at 120 BPM).
+fn synced_lfo_hz(rate: f32, bpm: f32, dotted: bool, triplets: bool) -> f32 {
+    let x = (rate.max(0.0) / 100.0).powf(0.25);
+    let pos = (x * 14.0 + 0.16).clamp(0.0, 14.999);
+    let (cell, frac) = (pos.floor(), pos.fract());
+    // Division length in beats: 32 bars is 128 beats, halving per cell.
+    let beats = |k: f32| 128.0 * (-k).exp2();
+    let length = if dotted && frac >= 1.0 / 3.0 && (!triplets || frac < 2.0 / 3.0) {
+        beats(cell + 1.0) * 1.5
+    } else if triplets && frac >= 2.0 / 3.0 {
+        beats(cell) * 2.0 / 3.0
+    } else {
+        beats(cell)
+    };
+    bpm / 60.0 / length
 }
 
 #[derive(Clone)]
@@ -222,6 +268,7 @@ pub struct Voice {
     amp_env: Envelope,
     lfos: [Lfo; 10],
     lfo_hold: [f32; 10],
+    chaos: [Chaos; 10],
     lfo_smoothed: [f32; 10],
     lfo_last_phase: [f32; 10],
     random: [f32; 2],
@@ -252,6 +299,7 @@ impl Voice {
             amp_env: Envelope::default(),
             lfos: Default::default(),
             lfo_hold: [0.0; 10],
+            chaos: [Chaos::default(); 10],
             lfo_smoothed: [0.0; 10],
             lfo_last_phase: [0.0; 10],
             random: [0.0; 2],
@@ -271,7 +319,14 @@ impl Voice {
         let m = |p: P| self.offsets.apply(v, p.on(i));
         let rate = m(LFO_RATE);
         LfoTiming {
-            hz: if v.flag(LFO_SYNC.on(i)) { synced_lfo_hz(rate, bpm) } else { rate },
+            // ×10 applies to the free rate only (synced probes are unchanged by it).
+            hz: if v.flag(LFO_SYNC.on(i)) {
+                synced_lfo_hz(rate, bpm, v.flag(LFO_DOTTED.on(i)), v.flag(LFO_TRIPLETS.on(i)))
+            } else if v.flag(LFO_RATE10X.on(i)) {
+                rate * 10.0
+            } else {
+                rate
+            },
             mode: match v.choice(LFO_MODE.on(i)) {
                 "Free" => LfoMode::Free,
                 "Envelope" => LfoMode::Envelope,
@@ -280,6 +335,11 @@ impl Voice {
             phase: m(LFO_PHASE) / 360.0,
             delay: m(LFO_DELAY),
             rise: m(LFO_RISE),
+            direction: match v.get(LFO_DIRECTION.on(i)).round() as i32 {
+                1 => Direction::Reverse,
+                2 => Direction::PingPong,
+                _ => Direction::Forward,
+            },
         }
     }
 
@@ -321,8 +381,11 @@ impl Voice {
             let timing = self.lfo_timing(v, i, 120.0);
             self.lfos[i].trigger(&timing);
             self.lfo_hold[i] = self.rng.unit();
+            if let Some(kind) = chaos_kind(v.choice(LFO_TYPE.on(i))) {
+                self.chaos[i].trigger(kind);
+            }
             self.lfo_last_phase[i] = self.lfos[i].phase();
-            self.lfo_smoothed[i] = patch.lfo_curves[i].eval(self.lfos[i].phase());
+            self.lfo_smoothed[i] = patch.lfo_curves[i].eval(self.lfos[i].position());
         }
         self.amp = 0.0;
         self.prev = [0.0; 7];
@@ -378,13 +441,17 @@ impl Voice {
         let mut amp_level = 0.0;
         for i in 0..4 {
             let m = |p: P| self.offsets.apply(v, p.on(i));
+            let synced = v.flag(ENV_SYNC.on(i));
+            let time = |p: P| if synced { synced_env_seconds(m(p), controls.bpm) } else { m(p) };
             let params = EnvParams {
-                attack: m(ENV_ATTACK),
-                hold: m(ENV_HOLD),
-                decay: m(ENV_DECAY),
+                attack: time(ENV_ATTACK),
+                hold: time(ENV_HOLD),
+                decay: time(ENV_DECAY),
                 sustain: m(ENV_SUSTAIN),
-                release: m(ENV_RELEASE),
+                release: time(ENV_RELEASE),
                 curves: ENV_CURVES.map(|c| env_curve(m(c))),
+                start: m(ENV_START),
+                end: m(ENV_END),
             };
             src.envs[i] = self.envs[i].advance(&params, sr, n);
             if i == 0 {
@@ -401,7 +468,21 @@ impl Voice {
                 self.lfo_hold[i] = self.rng.unit();
             }
             self.lfo_last_phase[i] = phase;
-            let raw = if v.choice(LFO_TYPE.on(i)) == "RandomSH" { self.lfo_hold[i] } else { shaped };
+            let kind = v.choice(LFO_TYPE.on(i));
+            let raw = match chaos_kind(kind) {
+                Some(chaos) => {
+                    let [x, y] = self.chaos[i].advance(chaos, timing.hz, dt);
+                    src.lfo_y[i] = y;
+                    x
+                }
+                None if kind == "RandomSH" => self.lfo_hold[i],
+                None if kind == "Path" => {
+                    let (x, y) = patch.lfo_paths[i].as_ref().map_or((0.5, 0.5), |p| p.eval(self.lfos[i].position()));
+                    src.lfo_y[i] = y;
+                    x
+                }
+                None => shaped,
+            };
             let smooth = self.offsets.apply(v, LFO_SMOOTH.on(i)) / 100.0;
             let coef = if smooth > 0.0 { 1.0 - (-dt / (smooth * 0.25)).exp() } else { 1.0 };
             self.lfo_smoothed[i] += (raw - self.lfo_smoothed[i]) * coef;
@@ -425,7 +506,8 @@ impl Voice {
         let m = |p: P| offsets.apply(v, p);
 
         let bend = if controls.pitch_bend >= 0.0 { controls.pitch_bend * v.get(BEND_UP) } else { -controls.pitch_bend * v.get(BEND_DOWN) };
-        let base_note = self.pitch + v.get(TRANSPOSE) + bend;
+        // Master tuning spans ±64 semitones around 0.5 (0.1 of its range measured 12.80 st).
+        let base_note = self.pitch + v.get(TRANSPOSE) + bend + (m(MASTER_TUNING) - 0.5) * 128.0;
         let a4 = v.get(GLOBAL_A4);
         let osc_note = |i: usize| base_note + m(OSC_OCTAVE.on(i)).round() * 12.0 + m(OSC_SEMI.on(i)).round() + m(OSC_COARSE.on(i)) + m(OSC_FINE.on(i)) / 100.0;
 
@@ -519,7 +601,8 @@ impl Voice {
         let filter_dest = [dest(v, 5), dest(v, 6)];
         let sends: [[f32; 2]; 7] = std::array::from_fn(|i| [m(ROUTE_BUS1.on(i)) / 100.0, m(ROUTE_BUS2.on(i)) / 100.0]);
 
-        let amp_target = amp_level;
+        // Voice amp is linear gain with 0.5 as unity (0.25 measured −6 dB, 1.0 +6 dB).
+        let amp_target = amp_level * m(VOICE_AMP) * 2.0;
         let amp_start = self.amp;
 
         for s in 0..n {
@@ -661,12 +744,29 @@ mod tests {
     use crate::params::MODULES;
 
     #[test]
-    fn envelope_curve_constants_follow_the_measured_table() {
-        assert_eq!(env_curve(50.0), 0.0);
-        for (stored, k) in [(25.0, 5.41), (75.0, -5.41), (10.0, 11.0), (0.0, 53.0), (100.0, -53.0), (66.6, -3.50)] {
-            assert!((env_curve(stored) - k).abs() < 0.05, "{stored}: {}", env_curve(stored));
+    fn synced_envelope_times_follow_the_division_list() {
+        // Rendered at 120 BPM: stored 0.25, 1 and 2 → 1/16 t, 1/4 t, 1/2 t.
+        for (stored, secs) in [(0.25, 1.0 / 12.0), (1.0, 1.0 / 3.0), (2.0, 2.0 / 3.0)] {
+            assert!((synced_env_seconds(stored, 120.0) - secs).abs() < 1e-4, "{stored}: {}", synced_env_seconds(stored, 120.0));
         }
+        assert_eq!(synced_env_seconds(0.0, 120.0), 0.0);
+        assert!((synced_env_seconds(32.0, 120.0) - 64.0).abs() < 1e-3, "32 bars");
     }
+
+    #[test]
+    fn synced_lfo_rates_snap_to_measured_divisions() {
+        let at = |x: f32, d: bool, t: bool| synced_lfo_hz(100.0 * x.powi(4), 120.0, d, t);
+        // Rendered at 120 BPM: x → Hz.
+        for (x, hz) in [(0.3, 0.25), (0.4, 0.5), (0.425, 1.0), (0.5, 2.0), (0.55, 2.0), (0.575, 4.0), (0.65, 8.0), (0.725, 16.0), (0.8, 32.0)] {
+            assert!((at(x, false, false) - hz).abs() < 1e-3, "{x}: {}", at(x, false, false));
+        }
+        assert!((at(0.6, true, false) - 16.0 / 3.0).abs() < 1e-3, "1/16 dotted");
+        assert!((at(0.6, false, true) - 4.0).abs() < 1e-3);
+        // Triplet label starts two thirds into the 1/4 cell (display sweep: 0.536).
+        assert!((at(0.54, false, true) - 3.0).abs() < 1e-3);
+        assert!((at(0.0, false, false) - 1.0 / 64.0).abs() < 1e-6, "32 bars at 120 BPM is 64 s");
+    }
+
 
     #[test]
     fn rendered_entries_exist() {

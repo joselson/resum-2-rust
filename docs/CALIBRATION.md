@@ -192,6 +192,39 @@ Open: Random detune spacing (not measured), stacks above 8 voices (lists assumed
 to repeat), a constant ~76 µs latency in Serum's renders (h1 phase at 523 Hz),
 unison span.
 
+## Modulation findings
+
+Probes `lfo-` and `mod-` route a source to OSC A's volume from 0, so the output level
+traces the modulation (level = 0.2035·host², so host = √(level/0.2035)); a 0.5 Hz
+triangle LFO sweeps curves, Env 2 steps, and the Fixed source gives static depths.
+`tools/display_sweep.py` reads division lists from a host parameter's display with
+hidden flags set by a loaded probe.
+
+| Behaviour | Measured | Fit |
+|---|---|---|
+| LFO smooth | default 0 (the fitted table had 31.7, smoothing every LFO) | depth at 0.25–32 Hz within 0.003 |
+| Default LFO shape | triangle from 0 at phase 0 | point for point |
+| LFO free rate | stored value is Hz; ×10 multiplies the free rate only | 0.25–32 Hz |
+| LFO sync | 15 cells ⌊14x + 0.16⌋ (plain = 100x⁴): 32 bars … 1/256, fast; dotted gives the cell's last two thirds to the next division dotted, triplets its last third to its own triplet | 19 rates, dotted, triplet at 120 BPM |
+| LFO direction | 1 reverse, 2 forward then backward over two periods | trace |
+| Lorenz | σ 10, ρ 28, β 8/3; 2 units/s/Hz; from (0.405, 0.405, 0); X (x + 20)/40, Y (z − 2.16)/50.5 | rms ≤ 0.014 for 1–4 s |
+| Rössler | a = b = 0.2, c 5.7; 5.85 units/s/Hz; from (0, 0.32, 0); X (x + 10.1)/22.5, Y (y + 11.7)/22.5 | rms ≤ 0.014 for 4 s |
+| Path LFO | equal time per segment, raw XY, closed paths return; tension bows (approximate) | 3 paths |
+| One curve law | envelope segments, breakpoint tension (amount 2·(0.5 − t)) and slot curve-in (c/100) all use the same k table | k within 0.1 across all three |
+| Bipolar | spans the amount peak to peak (amount 50 swings ±0.25) | trace |
+| Slot out | scales the output (50% halves) | trace |
+| Aux curve | the aux source's input curve, like curve-in | trace |
+| Master tuning | ±64 semitones around 0.5 | 0.05 cents |
+| Voice amp | linear gain, 0.5 unity | 0.0 dB |
+| Envelope start / end | attack starts at start; release settles at end | trace |
+| Envelope sync | 47 cells round(46x) (plain = 32x⁵): fast, then 1/1024 … 32 bars in threes (division, next triplet, dotted) | 3 attacks at 120 BPM |
+
+Mod routes applied across the factory library: 7,417 → 12,930. Factory set 7.21 → 6.95.
+
+Open: slot smoothing and curve-out (no effect found in single-note probes),
+LFO mono and anchored (no single-note effect), LFO point modulation, the discrete
+random and audio-rate (oscillator, filter) sources, slot delay.
+
 ## Open discrepancies (probe set, worst first)
 
 - Multisample level (see warp and sample findings).

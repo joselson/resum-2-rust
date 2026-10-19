@@ -2,13 +2,13 @@
  {
   "field": "Arp0.plainParams.kParamChance",
   "host": "arp_chance",
-  "default": 1.12e-07,
+  "default": 1.06e-07,
   "default_raw": 0.5,
   "default_text": "0.0",
   "units": "%",
   "kind": "linear",
-  "min": -99.999999298,
-  "max": 99.999999522
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "Arp0.plainParams.kParamEnabled",
@@ -22,145 +22,145 @@
  {
   "field": "Arp0.plainParams.kParamGate",
   "host": "arp_gate",
-  "default": 1.12e-07,
+  "default": 1.06e-07,
   "default_raw": 0.5,
   "default_text": "0.0",
   "units": "%",
   "kind": "linear",
-  "min": -99.999999298,
-  "max": 99.999999522
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "Arp0.plainParams.kParamOffset",
   "host": "arp_offset",
-  "default": 1.12e-07,
+  "default": 1.06e-07,
   "default_raw": 0.5,
   "default_text": "0.0",
   "units": "%",
   "kind": "linear",
-  "min": -99.999999298,
-  "max": 99.999999522
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "Arp0.plainParams.kParamRate",
   "host": "arp_rate",
-  "default": 1.12e-07,
+  "default": 1.06e-07,
   "default_raw": 0.5,
   "default_text": "0.0",
   "units": "%",
   "kind": "linear",
-  "min": -99.999999298,
-  "max": 99.999999522
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "Arp0.plainParams.kParamRepeats",
   "host": "arp_repeats",
-  "default": 1.12e-07,
+  "default": 1.06e-07,
   "default_raw": 0.5,
   "default_text": "0.0",
   "units": "%",
   "kind": "linear",
-  "min": -99.999999298,
-  "max": 99.999999522
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "Arp0.plainParams.kParamRetrigRate",
   "host": "arp_retrig_rate",
-  "default": 1.12e-07,
+  "default": 1.06e-07,
   "default_raw": 0.5,
   "default_text": "0.0",
   "units": "%",
   "kind": "linear",
-  "min": -99.999999298,
-  "max": 99.999999522
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "Arp0.plainParams.kParamTranspose",
   "host": "arp_transpose",
-  "default": 1.12e-07,
+  "default": 1.06e-07,
   "default_raw": 0.5,
   "default_text": "0.0",
   "units": "%",
   "kind": "linear",
-  "min": -99.999999298,
-  "max": 99.999999522
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "Arp0.plainParams.kParamTransposeRange",
   "host": "arp_range",
-  "default": 1.12e-07,
+  "default": 1.06e-07,
   "default_raw": 0.5,
   "default_text": "0.0",
   "units": "%",
   "kind": "linear",
-  "min": -99.999999298,
-  "max": 99.999999522
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "Arp0.plainParams.kParamTransposeShift",
   "host": "arp_shift",
-  "default": 1.12e-07,
+  "default": 1.06e-07,
   "default_raw": 0.5,
   "default_text": "0.0",
   "units": "%",
   "kind": "linear",
-  "min": -99.999999298,
-  "max": 99.999999522
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "Arp0.plainParams.kParamVeloDecay",
   "host": "arp_velo_decay",
-  "default": 1.12e-07,
+  "default": 1.06e-07,
   "default_raw": 0.5,
   "default_text": "0.0",
   "units": "%",
   "kind": "linear",
-  "min": -99.999999298,
-  "max": 99.999999522
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "Arp0.plainParams.kParamVeloTarget",
   "host": "arp_velo_target",
-  "default": 1.12e-07,
+  "default": 1.06e-07,
   "default_raw": 0.5,
   "default_text": "0.0",
   "units": "%",
   "kind": "linear",
-  "min": -99.999999298,
-  "max": 99.999999522
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "Arp0.plainParams.kParamWrapPhantomNote",
   "host": "arp_wrap_phantom_note",
-  "default": 1.12e-07,
+  "default": 1.06e-07,
   "default_raw": 0.5,
   "default_text": "0.0",
   "units": "%",
   "kind": "linear",
-  "min": -99.999999298,
-  "max": 99.999999522
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "Arp0.plainParams.kParamWrapRange",
   "host": "arp_wrap_range",
-  "default": 1.12e-07,
+  "default": 1.06e-07,
   "default_raw": 0.5,
   "default_text": "0.0",
   "units": "%",
   "kind": "linear",
-  "min": -99.999999298,
-  "max": 99.999999522
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "Arp0.plainParams.kParamWrapTranspose",
   "host": "arp_wrap_transpose",
-  "default": 1.12e-07,
+  "default": 1.06e-07,
   "default_raw": 0.5,
   "default_text": "0.0",
   "units": "%",
   "kind": "linear",
-  "min": -99.999999298,
-  "max": 99.999999522
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "ClipPlayer0.plainParams.kParamEnabled",
@@ -174,35 +174,35 @@
  {
   "field": "ClipPlayer0.plainParams.kParamRate",
   "host": "clip_player_rate",
-  "default": 1.12e-07,
+  "default": 1.06e-07,
   "default_raw": 0.5,
   "default_text": "0.0",
   "units": "%",
   "kind": "linear",
-  "min": -99.999999298,
-  "max": 99.999999522
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "ClipPlayer0.plainParams.kParamRegionOffset",
   "host": "clip_player_offset",
-  "default": 1.12e-07,
+  "default": 1.06e-07,
   "default_raw": 0.5,
   "default_text": "0.0",
   "units": "%",
   "kind": "linear",
-  "min": -99.999999298,
-  "max": 99.999999522
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "ClipPlayer0.plainParams.kParamTranspose",
   "host": "clip_player_transpose",
-  "default": 1.12e-07,
+  "default": 1.06e-07,
   "default_raw": 0.5,
   "default_text": "0.0",
   "units": "%",
   "kind": "linear",
-  "min": -99.999999298,
-  "max": 99.999999522
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "Env0.plainParams.kParamAttack",
@@ -892,7 +892,7 @@
   "default_text": "0.5000",
   "units": null,
   "kind": "linear",
-  "min": 4e-09,
+  "min": 3e-09,
   "max": 0.999999998
  },
  {
@@ -910,13 +910,13 @@
  {
   "field": "Global0.plainParams.kParamModWheel",
   "host": "mod_wheel",
-  "default": 4.24e-07,
+  "default": 3.48e-07,
   "default_raw": 0.0,
   "default_text": "0",
   "units": "%",
   "kind": "linear",
-  "min": 4.24e-07,
-  "max": 99.999999723
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Global0.plainParams.kParamMonoToggle",
@@ -948,13 +948,13 @@
  {
   "field": "Global0.plainParams.kParamPortamentoCurve",
   "host": "porta_curve",
-  "default": 1.12e-07,
+  "default": 1.06e-07,
   "default_raw": 0.5,
   "default_text": "0",
   "units": "%",
   "kind": "linear",
-  "min": -99.999999298,
-  "max": 99.999999522
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "Global0.plainParams.kParamPortamentoTime",
@@ -1214,6 +1214,10 @@
     -2.0
    ],
    [
+    0.5,
+    0.0
+   ],
+   [
     0.55,
     2.0
    ],
@@ -1264,7 +1268,7 @@
   "default_text": "0.5000",
   "units": null,
   "kind": "linear",
-  "min": 4e-09,
+  "min": 3e-09,
   "max": 0.999999998
  },
  {
@@ -1315,14 +1319,13 @@
  {
   "field": "LFO0.plainParams.kParamSmooth",
   "host": "lfo_1_smooth",
-  "default": 31.722980255,
+  "default": 3.56e-07,
   "default_raw": 0.0,
   "default_text": "0.0",
   "units": null,
-  "kind": "power",
-  "min": 31.722980255,
-  "max": 100.0,
-  "k": 1.8
+  "kind": "linear",
+  "min": 3.56e-07,
+  "max": 100.000000436
  },
  {
   "field": "LFO1.plainParams.kParamDelay",
@@ -1372,14 +1375,13 @@
  {
   "field": "LFO1.plainParams.kParamSmooth",
   "host": "lfo_2_smooth",
-  "default": 31.722980255,
+  "default": 3.56e-07,
   "default_raw": 0.0,
   "default_text": "0.0",
   "units": null,
-  "kind": "power",
-  "min": 31.722980255,
-  "max": 100.0,
-  "k": 1.8
+  "kind": "linear",
+  "min": 3.56e-07,
+  "max": 100.000000436
  },
  {
   "field": "LFO2.plainParams.kParamDelay",
@@ -1429,14 +1431,13 @@
  {
   "field": "LFO2.plainParams.kParamSmooth",
   "host": "lfo_3_smooth",
-  "default": 31.722980255,
+  "default": 3.56e-07,
   "default_raw": 0.0,
   "default_text": "0.0",
   "units": null,
-  "kind": "power",
-  "min": 31.722980255,
-  "max": 100.0,
-  "k": 1.8
+  "kind": "linear",
+  "min": 3.56e-07,
+  "max": 100.000000436
  },
  {
   "field": "LFO3.plainParams.kParamDelay",
@@ -1486,14 +1487,13 @@
  {
   "field": "LFO3.plainParams.kParamSmooth",
   "host": "lfo_4_smooth",
-  "default": 31.722980255,
+  "default": 3.56e-07,
   "default_raw": 0.0,
   "default_text": "0.0",
   "units": null,
-  "kind": "power",
-  "min": 31.722980255,
-  "max": 100.0,
-  "k": 1.8
+  "kind": "linear",
+  "min": 3.56e-07,
+  "max": 100.000000436
  },
  {
   "field": "LFO4.plainParams.kParamDelay",
@@ -1543,14 +1543,13 @@
  {
   "field": "LFO4.plainParams.kParamSmooth",
   "host": "lfo_5_smooth",
-  "default": 31.722980255,
+  "default": 3.56e-07,
   "default_raw": 0.0,
   "default_text": "0.0",
   "units": null,
-  "kind": "power",
-  "min": 31.722980255,
-  "max": 100.0,
-  "k": 1.8
+  "kind": "linear",
+  "min": 3.56e-07,
+  "max": 100.000000436
  },
  {
   "field": "LFO5.plainParams.kParamDelay",
@@ -1600,14 +1599,13 @@
  {
   "field": "LFO5.plainParams.kParamSmooth",
   "host": "lfo_6_smooth",
-  "default": 31.722980255,
+  "default": 3.56e-07,
   "default_raw": 0.0,
   "default_text": "0.0",
   "units": null,
-  "kind": "power",
-  "min": 31.722980255,
-  "max": 100.0,
-  "k": 1.8
+  "kind": "linear",
+  "min": 3.56e-07,
+  "max": 100.000000436
  },
  {
   "field": "LFO6.plainParams.kParamDelay",
@@ -1657,14 +1655,13 @@
  {
   "field": "LFO6.plainParams.kParamSmooth",
   "host": "lfo_7_smooth",
-  "default": 31.722980255,
+  "default": 3.56e-07,
   "default_raw": 0.0,
   "default_text": "0.0",
   "units": null,
-  "kind": "power",
-  "min": 31.722980255,
-  "max": 100.0,
-  "k": 1.8
+  "kind": "linear",
+  "min": 3.56e-07,
+  "max": 100.000000436
  },
  {
   "field": "LFO7.plainParams.kParamDelay",
@@ -1714,14 +1711,13 @@
  {
   "field": "LFO7.plainParams.kParamSmooth",
   "host": "lfo_8_smooth",
-  "default": 31.722980255,
+  "default": 3.56e-07,
   "default_raw": 0.0,
   "default_text": "0.0",
   "units": null,
-  "kind": "power",
-  "min": 31.722980255,
-  "max": 100.0,
-  "k": 1.8
+  "kind": "linear",
+  "min": 3.56e-07,
+  "max": 100.000000436
  },
  {
   "field": "LFO8.plainParams.kParamDelay",
@@ -1771,14 +1767,13 @@
  {
   "field": "LFO8.plainParams.kParamSmooth",
   "host": "lfo_9_smooth",
-  "default": 31.722980255,
+  "default": 3.56e-07,
   "default_raw": 0.0,
   "default_text": "0.0",
   "units": null,
-  "kind": "power",
-  "min": 31.722980255,
-  "max": 100.0,
-  "k": 1.8
+  "kind": "linear",
+  "min": 3.56e-07,
+  "max": 100.000000436
  },
  {
   "field": "LFO9.plainParams.kParamDelay",
@@ -1828,102 +1823,101 @@
  {
   "field": "LFO9.plainParams.kParamSmooth",
   "host": "lfo_10_smooth",
-  "default": 31.722980255,
+  "default": 3.56e-07,
   "default_raw": 0.0,
   "default_text": "0.0",
   "units": null,
-  "kind": "power",
-  "min": 31.722980255,
-  "max": 100.0,
-  "k": 1.8
+  "kind": "linear",
+  "min": 3.56e-07,
+  "max": 100.000000436
  },
  {
   "field": "Macro0.plainParams.kParamValue",
   "host": "macro_1",
-  "default": 4.24e-07,
+  "default": 3.48e-07,
   "default_raw": 0.0,
   "default_text": "0",
   "units": null,
   "kind": "linear",
-  "min": 4.24e-07,
-  "max": 99.999999723
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Macro1.plainParams.kParamValue",
   "host": "macro_2",
-  "default": 4.24e-07,
+  "default": 3.48e-07,
   "default_raw": 0.0,
   "default_text": "0",
   "units": null,
   "kind": "linear",
-  "min": 4.24e-07,
-  "max": 99.999999723
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Macro2.plainParams.kParamValue",
   "host": "macro_3",
-  "default": 4.24e-07,
+  "default": 3.48e-07,
   "default_raw": 0.0,
   "default_text": "0",
   "units": null,
   "kind": "linear",
-  "min": 4.24e-07,
-  "max": 99.999999723
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Macro3.plainParams.kParamValue",
   "host": "macro_4",
-  "default": 4.24e-07,
+  "default": 3.48e-07,
   "default_raw": 0.0,
   "default_text": "0",
   "units": null,
   "kind": "linear",
-  "min": 4.24e-07,
-  "max": 99.999999723
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Macro4.plainParams.kParamValue",
   "host": "macro_5",
-  "default": 4.24e-07,
+  "default": 3.48e-07,
   "default_raw": 0.0,
   "default_text": "0",
   "units": null,
   "kind": "linear",
-  "min": 4.24e-07,
-  "max": 99.999999723
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Macro5.plainParams.kParamValue",
   "host": "macro_6",
-  "default": 4.24e-07,
+  "default": 3.48e-07,
   "default_raw": 0.0,
   "default_text": "0",
   "units": null,
   "kind": "linear",
-  "min": 4.24e-07,
-  "max": 99.999999723
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Macro6.plainParams.kParamValue",
   "host": "macro_7",
-  "default": 4.24e-07,
+  "default": 3.48e-07,
   "default_raw": 0.0,
   "default_text": "0",
   "units": null,
   "kind": "linear",
-  "min": 4.24e-07,
-  "max": 99.999999723
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Macro7.plainParams.kParamValue",
   "host": "macro_8",
-  "default": 4.24e-07,
+  "default": 3.48e-07,
   "default_raw": 0.0,
   "default_text": "0",
   "units": null,
   "kind": "linear",
-  "min": 4.24e-07,
-  "max": 99.999999723
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "ModSlot0.plainParams.kParamAmount",
@@ -3347,13 +3341,13 @@
  {
   "field": "Oscillator0.WTOsc0.plainParams.kParamRandomPhase",
   "host": "a_rand_phase",
-  "default": 99.999999706,
+  "default": 99.999999758,
   "default_raw": 1.0,
   "default_text": "100",
   "units": null,
   "kind": "linear",
-  "min": 3.73e-07,
-  "max": 99.999999706
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Oscillator0.WTOsc0.plainParams.kParamTablePos",
@@ -3369,13 +3363,13 @@
  {
   "field": "Oscillator0.WTOsc0.plainParams.kParamUnisonWTPos",
   "host": "a_uni_wt_pos",
-  "default": 1.12e-07,
+  "default": 1.06e-07,
   "default_raw": 0.5,
   "default_text": "0",
   "units": null,
   "kind": "linear",
-  "min": -99.999999298,
-  "max": 99.999999522
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "Oscillator0.WTOsc0.plainParams.kParamWarp",
@@ -3464,24 +3458,24 @@
  {
   "field": "Oscillator0.WTOsc0.plainParams.kParamWarpVar",
   "host": "a_warp_var",
-  "default": 4e-09,
+  "default": 3e-09,
   "default_raw": 0.0,
   "default_text": "0.0000",
   "units": null,
   "kind": "linear",
-  "min": 4e-09,
-  "max": 0.999999997
+  "min": 3e-09,
+  "max": 0.999999998
  },
  {
   "field": "Oscillator0.WTOsc0.plainParams.kParamWarpVar2",
   "host": "a_warp_2_var",
-  "default": 4e-09,
+  "default": 3e-09,
   "default_raw": 0.0,
   "default_text": "0.0000",
   "units": null,
   "kind": "linear",
-  "min": 4e-09,
-  "max": 0.999999997
+  "min": 3e-09,
+  "max": 0.999999998
  },
  {
   "field": "Oscillator0.plainParams.kParamCoarsePit",
@@ -3509,13 +3503,13 @@
  {
   "field": "Oscillator0.plainParams.kParamDetuneWid",
   "host": "a_uni_blend",
-  "default": 74.999999897,
+  "default": 74.999999906,
   "default_raw": 0.75,
   "default_text": "75",
   "units": null,
   "kind": "linear",
-  "min": 3.5e-07,
-  "max": 99.999999747
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Oscillator0.plainParams.kParamEnable",
@@ -3529,57 +3523,57 @@
  {
   "field": "Oscillator0.plainParams.kParamEnd",
   "host": "a_end",
-  "default": 99.999999706,
+  "default": 99.999999758,
   "default_raw": 1.0,
   "default_text": "100",
   "units": "%",
   "kind": "linear",
-  "min": 3.73e-07,
-  "max": 99.999999706
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Oscillator0.plainParams.kParamFine",
   "host": "a_fine_cents",
-  "default": 1.12e-07,
+  "default": 1.06e-07,
   "default_raw": 0.5,
   "default_text": "0",
   "units": "cents",
   "kind": "linear",
-  "min": -99.999999298,
-  "max": 99.999999522
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "Oscillator0.plainParams.kParamHzOffset",
   "host": "a_hz_offset_hz",
-  "default": 1.118e-06,
+  "default": 1.064e-06,
   "default_raw": 0.5,
   "default_text": "0.00",
   "units": "Hz",
   "kind": "linear",
-  "min": -999.99999298,
-  "max": 999.999995215
+  "min": -999.999993033,
+  "max": 999.999995162
  },
  {
   "field": "Oscillator0.plainParams.kParamLoopCrossfade",
   "host": "a_loop_x_fade",
-  "default": 4.24e-07,
+  "default": 3.48e-07,
   "default_raw": 0.0,
   "default_text": "0",
   "units": "%",
   "kind": "linear",
-  "min": 4.24e-07,
-  "max": 99.999999723
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Oscillator0.plainParams.kParamLoopEnd",
   "host": "a_loop_end",
-  "default": 99.999999706,
+  "default": 99.999999758,
   "default_raw": 1.0,
   "default_text": "100",
   "units": "%",
   "kind": "linear",
-  "min": 3.73e-07,
-  "max": 99.999999706
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Oscillator0.plainParams.kParamLoopMode",
@@ -3600,13 +3594,13 @@
  {
   "field": "Oscillator0.plainParams.kParamLoopStart",
   "host": "a_loop_start",
-  "default": 4.24e-07,
+  "default": 3.48e-07,
   "default_raw": 0.0,
   "default_text": "0",
   "units": "%",
   "kind": "linear",
-  "min": 4.24e-07,
-  "max": 99.999999723
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Oscillator0.plainParams.kParamLoopStartLink",
@@ -3664,6 +3658,10 @@
    ],
    [
     0.45,
+    0.0
+   ],
+   [
+    0.5,
     0.0
    ],
    [
@@ -3755,24 +3753,24 @@
  {
   "field": "Oscillator0.plainParams.kParamPosition",
   "host": "a_position",
-  "default": 4.24e-07,
+  "default": 3.48e-07,
   "default_raw": 0.0,
   "default_text": "0",
   "units": "%",
   "kind": "linear",
-  "min": 4.24e-07,
-  "max": 99.999999723
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Oscillator0.plainParams.kParamRandomStart",
   "host": "a_uni_rand_start",
-  "default": 4.24e-07,
+  "default": 3.48e-07,
   "default_raw": 0.0,
   "default_text": "0",
   "units": null,
   "kind": "linear",
-  "min": 4.24e-07,
-  "max": 99.999999723
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Oscillator0.plainParams.kParamReverse",
@@ -3888,13 +3886,13 @@
  {
   "field": "Oscillator0.plainParams.kParamScanRate",
   "host": "a_scan_rate",
-  "default": 99.99999959,
+  "default": 99.999999623,
   "default_raw": 0.75,
   "default_text": "100",
   "units": "%",
   "kind": "linear",
-  "min": -199.9999986,
-  "max": 199.999998986
+  "min": -199.999998607,
+  "max": 199.999999032
  },
  {
   "field": "Oscillator0.plainParams.kParamSlicingPlayToEnd",
@@ -3914,6 +3912,10 @@
   "units": null,
   "kind": "table",
   "points": [
+   [
+    0.0,
+    1.0
+   ],
    [
     0.05,
     6.0
@@ -3995,18 +3997,18 @@
     100.0
    ]
   ],
-  "fit_error": 0.008
+  "fit_error": 0.0079
  },
  {
   "field": "Oscillator0.plainParams.kParamStart",
   "host": "a_start",
-  "default": 4.24e-07,
+  "default": 3.48e-07,
   "default_raw": 0.0,
   "default_text": "0",
   "units": "%",
   "kind": "linear",
-  "min": 4.24e-07,
-  "max": 99.999999723
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Oscillator0.plainParams.kParamUnison",
@@ -4017,6 +4019,10 @@
   "units": null,
   "kind": "steps",
   "points": [
+   [
+    0.0,
+    1.0
+   ],
    [
     0.05,
     1.0
@@ -4104,13 +4110,13 @@
  {
   "field": "Oscillator0.plainParams.kParamUnisonSpan",
   "host": "a_uni_span",
-  "default": 1.12e-07,
+  "default": 1.06e-07,
   "default_raw": 0.5,
   "default_text": "0",
   "units": "%",
   "kind": "linear",
-  "min": -99.999999298,
-  "max": 99.999999522
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "Oscillator0.plainParams.kParamUnisonStack",
@@ -4135,35 +4141,35 @@
  {
   "field": "Oscillator0.plainParams.kParamUnisonStereo",
   "host": "a_uni_width",
-  "default": 99.999999412,
+  "default": 99.999999516,
   "default_raw": 1.0,
   "default_text": "100",
   "units": null,
   "kind": "linear",
-  "min": -99.999999255,
-  "max": 99.999999412
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "Oscillator0.plainParams.kParamUnisonWarp",
   "host": "a_uni_warp",
-  "default": 1.12e-07,
+  "default": 1.06e-07,
   "default_raw": 0.5,
   "default_text": "0",
   "units": null,
   "kind": "linear",
-  "min": -99.999999298,
-  "max": 99.999999522
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "Oscillator0.plainParams.kParamUnisonWarp2",
   "host": "a_uni_warp_2",
-  "default": 1.12e-07,
+  "default": 1.06e-07,
   "default_raw": 0.5,
   "default_text": "0",
   "units": null,
   "kind": "linear",
-  "min": -99.999999298,
-  "max": 99.999999522
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "Oscillator0.plainParams.kParamVolume",
@@ -4191,13 +4197,13 @@
  {
   "field": "Oscillator1.WTOsc1.plainParams.kParamRandomPhase",
   "host": "b_rand_phase",
-  "default": 99.999999706,
+  "default": 99.999999758,
   "default_raw": 1.0,
   "default_text": "100",
   "units": null,
   "kind": "linear",
-  "min": 3.73e-07,
-  "max": 99.999999706
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Oscillator1.WTOsc1.plainParams.kParamTablePos",
@@ -4213,13 +4219,13 @@
  {
   "field": "Oscillator1.WTOsc1.plainParams.kParamUnisonWTPos",
   "host": "b_uni_wt_pos",
-  "default": 1.12e-07,
+  "default": 1.06e-07,
   "default_raw": 0.5,
   "default_text": "0",
   "units": null,
   "kind": "linear",
-  "min": -99.999999298,
-  "max": 99.999999522
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "Oscillator1.WTOsc1.plainParams.kParamWarp",
@@ -4308,24 +4314,24 @@
  {
   "field": "Oscillator1.WTOsc1.plainParams.kParamWarpVar",
   "host": "b_warp_var",
-  "default": 4e-09,
+  "default": 3e-09,
   "default_raw": 0.0,
   "default_text": "0.0000",
   "units": null,
   "kind": "linear",
-  "min": 4e-09,
-  "max": 0.999999997
+  "min": 3e-09,
+  "max": 0.999999998
  },
  {
   "field": "Oscillator1.WTOsc1.plainParams.kParamWarpVar2",
   "host": "b_warp_2_var",
-  "default": 4e-09,
+  "default": 3e-09,
   "default_raw": 0.0,
   "default_text": "0.0000",
   "units": null,
   "kind": "linear",
-  "min": 4e-09,
-  "max": 0.999999997
+  "min": 3e-09,
+  "max": 0.999999998
  },
  {
   "field": "Oscillator1.plainParams.kParamCoarsePit",
@@ -4353,13 +4359,13 @@
  {
   "field": "Oscillator1.plainParams.kParamDetuneWid",
   "host": "b_uni_blend",
-  "default": 74.999999897,
+  "default": 74.999999906,
   "default_raw": 0.75,
   "default_text": "75",
   "units": null,
   "kind": "linear",
-  "min": 3.5e-07,
-  "max": 99.999999747
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Oscillator1.plainParams.kParamEnable",
@@ -4373,57 +4379,57 @@
  {
   "field": "Oscillator1.plainParams.kParamEnd",
   "host": "b_end",
-  "default": 99.999999706,
+  "default": 99.999999758,
   "default_raw": 1.0,
   "default_text": "100",
   "units": "%",
   "kind": "linear",
-  "min": 3.73e-07,
-  "max": 99.999999706
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Oscillator1.plainParams.kParamFine",
   "host": "b_fine_cents",
-  "default": 1.12e-07,
+  "default": 1.06e-07,
   "default_raw": 0.5,
   "default_text": "0",
   "units": "cents",
   "kind": "linear",
-  "min": -99.999999298,
-  "max": 99.999999522
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "Oscillator1.plainParams.kParamHzOffset",
   "host": "b_hz_offset_hz",
-  "default": 1.118e-06,
+  "default": 1.064e-06,
   "default_raw": 0.5,
   "default_text": "0.00",
   "units": "Hz",
   "kind": "linear",
-  "min": -999.99999298,
-  "max": 999.999995215
+  "min": -999.999993033,
+  "max": 999.999995162
  },
  {
   "field": "Oscillator1.plainParams.kParamLoopCrossfade",
   "host": "b_loop_x_fade",
-  "default": 4.24e-07,
+  "default": 3.48e-07,
   "default_raw": 0.0,
   "default_text": "0",
   "units": "%",
   "kind": "linear",
-  "min": 4.24e-07,
-  "max": 99.999999723
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Oscillator1.plainParams.kParamLoopEnd",
   "host": "b_loop_end",
-  "default": 99.999999706,
+  "default": 99.999999758,
   "default_raw": 1.0,
   "default_text": "100",
   "units": "%",
   "kind": "linear",
-  "min": 3.73e-07,
-  "max": 99.999999706
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Oscillator1.plainParams.kParamLoopMode",
@@ -4444,13 +4450,13 @@
  {
   "field": "Oscillator1.plainParams.kParamLoopStart",
   "host": "b_loop_start",
-  "default": 4.24e-07,
+  "default": 3.48e-07,
   "default_raw": 0.0,
   "default_text": "0",
   "units": "%",
   "kind": "linear",
-  "min": 4.24e-07,
-  "max": 99.999999723
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Oscillator1.plainParams.kParamLoopStartLink",
@@ -4508,6 +4514,10 @@
    ],
    [
     0.45,
+    0.0
+   ],
+   [
+    0.5,
     0.0
    ],
    [
@@ -4599,24 +4609,24 @@
  {
   "field": "Oscillator1.plainParams.kParamPosition",
   "host": "b_position",
-  "default": 4.24e-07,
+  "default": 3.48e-07,
   "default_raw": 0.0,
   "default_text": "0",
   "units": "%",
   "kind": "linear",
-  "min": 4.24e-07,
-  "max": 99.999999723
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Oscillator1.plainParams.kParamRandomStart",
   "host": "b_uni_rand_start",
-  "default": 4.24e-07,
+  "default": 3.48e-07,
   "default_raw": 0.0,
   "default_text": "0",
   "units": null,
   "kind": "linear",
-  "min": 4.24e-07,
-  "max": 99.999999723
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Oscillator1.plainParams.kParamReverse",
@@ -4732,13 +4742,13 @@
  {
   "field": "Oscillator1.plainParams.kParamScanRate",
   "host": "b_scan_rate",
-  "default": 99.99999959,
+  "default": 99.999999623,
   "default_raw": 0.75,
   "default_text": "100",
   "units": "%",
   "kind": "linear",
-  "min": -199.9999986,
-  "max": 199.999998986
+  "min": -199.999998607,
+  "max": 199.999999032
  },
  {
   "field": "Oscillator1.plainParams.kParamSlicingPlayToEnd",
@@ -4758,6 +4768,10 @@
   "units": null,
   "kind": "table",
   "points": [
+   [
+    0.0,
+    1.0
+   ],
    [
     0.05,
     6.0
@@ -4839,18 +4853,18 @@
     100.0
    ]
   ],
-  "fit_error": 0.008
+  "fit_error": 0.0079
  },
  {
   "field": "Oscillator1.plainParams.kParamStart",
   "host": "b_start",
-  "default": 4.24e-07,
+  "default": 3.48e-07,
   "default_raw": 0.0,
   "default_text": "0",
   "units": "%",
   "kind": "linear",
-  "min": 4.24e-07,
-  "max": 99.999999723
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Oscillator1.plainParams.kParamUnison",
@@ -4861,6 +4875,10 @@
   "units": null,
   "kind": "steps",
   "points": [
+   [
+    0.0,
+    1.0
+   ],
    [
     0.05,
     1.0
@@ -4948,13 +4966,13 @@
  {
   "field": "Oscillator1.plainParams.kParamUnisonSpan",
   "host": "b_uni_span",
-  "default": 1.12e-07,
+  "default": 1.06e-07,
   "default_raw": 0.5,
   "default_text": "0",
   "units": "%",
   "kind": "linear",
-  "min": -99.999999298,
-  "max": 99.999999522
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "Oscillator1.plainParams.kParamUnisonStack",
@@ -4979,35 +4997,35 @@
  {
   "field": "Oscillator1.plainParams.kParamUnisonStereo",
   "host": "b_uni_width",
-  "default": 99.999999412,
+  "default": 99.999999516,
   "default_raw": 1.0,
   "default_text": "100",
   "units": null,
   "kind": "linear",
-  "min": -99.999999255,
-  "max": 99.999999412
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "Oscillator1.plainParams.kParamUnisonWarp",
   "host": "b_uni_warp",
-  "default": 1.12e-07,
+  "default": 1.06e-07,
   "default_raw": 0.5,
   "default_text": "0",
   "units": null,
   "kind": "linear",
-  "min": -99.999999298,
-  "max": 99.999999522
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "Oscillator1.plainParams.kParamUnisonWarp2",
   "host": "b_uni_warp_2",
-  "default": 1.12e-07,
+  "default": 1.06e-07,
   "default_raw": 0.5,
   "default_text": "0",
   "units": null,
   "kind": "linear",
-  "min": -99.999999298,
-  "max": 99.999999522
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "Oscillator1.plainParams.kParamVolume",
@@ -5035,13 +5053,13 @@
  {
   "field": "Oscillator2.WTOsc2.plainParams.kParamRandomPhase",
   "host": "c_rand_phase",
-  "default": 99.999999706,
+  "default": 99.999999758,
   "default_raw": 1.0,
   "default_text": "100",
   "units": null,
   "kind": "linear",
-  "min": 3.73e-07,
-  "max": 99.999999706
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Oscillator2.WTOsc2.plainParams.kParamTablePos",
@@ -5057,13 +5075,13 @@
  {
   "field": "Oscillator2.WTOsc2.plainParams.kParamUnisonWTPos",
   "host": "c_uni_wt_pos",
-  "default": 1.12e-07,
+  "default": 1.06e-07,
   "default_raw": 0.5,
   "default_text": "0",
   "units": null,
   "kind": "linear",
-  "min": -99.999999298,
-  "max": 99.999999522
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "Oscillator2.WTOsc2.plainParams.kParamWarp",
@@ -5152,24 +5170,24 @@
  {
   "field": "Oscillator2.WTOsc2.plainParams.kParamWarpVar",
   "host": "c_warp_var",
-  "default": 4e-09,
+  "default": 3e-09,
   "default_raw": 0.0,
   "default_text": "0.0000",
   "units": null,
   "kind": "linear",
-  "min": 4e-09,
-  "max": 0.999999997
+  "min": 3e-09,
+  "max": 0.999999998
  },
  {
   "field": "Oscillator2.WTOsc2.plainParams.kParamWarpVar2",
   "host": "c_warp_2_var",
-  "default": 4e-09,
+  "default": 3e-09,
   "default_raw": 0.0,
   "default_text": "0.0000",
   "units": null,
   "kind": "linear",
-  "min": 4e-09,
-  "max": 0.999999997
+  "min": 3e-09,
+  "max": 0.999999998
  },
  {
   "field": "Oscillator2.plainParams.kParamCoarsePit",
@@ -5197,13 +5215,13 @@
  {
   "field": "Oscillator2.plainParams.kParamDetuneWid",
   "host": "c_uni_blend",
-  "default": 74.999999897,
+  "default": 74.999999906,
   "default_raw": 0.75,
   "default_text": "75",
   "units": null,
   "kind": "linear",
-  "min": 3.5e-07,
-  "max": 99.999999747
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Oscillator2.plainParams.kParamEnable",
@@ -5217,57 +5235,57 @@
  {
   "field": "Oscillator2.plainParams.kParamEnd",
   "host": "c_end",
-  "default": 99.999999706,
+  "default": 99.999999758,
   "default_raw": 1.0,
   "default_text": "100",
   "units": "%",
   "kind": "linear",
-  "min": 3.73e-07,
-  "max": 99.999999706
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Oscillator2.plainParams.kParamFine",
   "host": "c_fine_cents",
-  "default": 1.12e-07,
+  "default": 1.06e-07,
   "default_raw": 0.5,
   "default_text": "0",
   "units": "cents",
   "kind": "linear",
-  "min": -99.999999298,
-  "max": 99.999999522
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "Oscillator2.plainParams.kParamHzOffset",
   "host": "c_hz_offset_hz",
-  "default": 1.118e-06,
+  "default": 1.064e-06,
   "default_raw": 0.5,
   "default_text": "0.00",
   "units": "Hz",
   "kind": "linear",
-  "min": -999.99999298,
-  "max": 999.999995215
+  "min": -999.999993033,
+  "max": 999.999995162
  },
  {
   "field": "Oscillator2.plainParams.kParamLoopCrossfade",
   "host": "c_loop_x_fade",
-  "default": 4.24e-07,
+  "default": 3.48e-07,
   "default_raw": 0.0,
   "default_text": "0",
   "units": "%",
   "kind": "linear",
-  "min": 4.24e-07,
-  "max": 99.999999723
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Oscillator2.plainParams.kParamLoopEnd",
   "host": "c_loop_end",
-  "default": 99.999999706,
+  "default": 99.999999758,
   "default_raw": 1.0,
   "default_text": "100",
   "units": "%",
   "kind": "linear",
-  "min": 3.73e-07,
-  "max": 99.999999706
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Oscillator2.plainParams.kParamLoopMode",
@@ -5288,13 +5306,13 @@
  {
   "field": "Oscillator2.plainParams.kParamLoopStart",
   "host": "c_loop_start",
-  "default": 4.24e-07,
+  "default": 3.48e-07,
   "default_raw": 0.0,
   "default_text": "0",
   "units": "%",
   "kind": "linear",
-  "min": 4.24e-07,
-  "max": 99.999999723
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Oscillator2.plainParams.kParamLoopStartLink",
@@ -5352,6 +5370,10 @@
    ],
    [
     0.45,
+    0.0
+   ],
+   [
+    0.5,
     0.0
    ],
    [
@@ -5443,24 +5465,24 @@
  {
   "field": "Oscillator2.plainParams.kParamPosition",
   "host": "c_position",
-  "default": 4.24e-07,
+  "default": 3.48e-07,
   "default_raw": 0.0,
   "default_text": "0",
   "units": "%",
   "kind": "linear",
-  "min": 4.24e-07,
-  "max": 99.999999723
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Oscillator2.plainParams.kParamRandomStart",
   "host": "c_uni_rand_start",
-  "default": 4.24e-07,
+  "default": 3.48e-07,
   "default_raw": 0.0,
   "default_text": "0",
   "units": null,
   "kind": "linear",
-  "min": 4.24e-07,
-  "max": 99.999999723
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Oscillator2.plainParams.kParamReverse",
@@ -5576,13 +5598,13 @@
  {
   "field": "Oscillator2.plainParams.kParamScanRate",
   "host": "c_scan_rate",
-  "default": 99.99999959,
+  "default": 99.999999623,
   "default_raw": 0.75,
   "default_text": "100",
   "units": "%",
   "kind": "linear",
-  "min": -199.9999986,
-  "max": 199.999998986
+  "min": -199.999998607,
+  "max": 199.999999032
  },
  {
   "field": "Oscillator2.plainParams.kParamSlicingPlayToEnd",
@@ -5602,6 +5624,10 @@
   "units": null,
   "kind": "table",
   "points": [
+   [
+    0.0,
+    1.0
+   ],
    [
     0.05,
     6.0
@@ -5683,18 +5709,18 @@
     100.0
    ]
   ],
-  "fit_error": 0.008
+  "fit_error": 0.0079
  },
  {
   "field": "Oscillator2.plainParams.kParamStart",
   "host": "c_start",
-  "default": 4.24e-07,
+  "default": 3.48e-07,
   "default_raw": 0.0,
   "default_text": "0",
   "units": "%",
   "kind": "linear",
-  "min": 4.24e-07,
-  "max": 99.999999723
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Oscillator2.plainParams.kParamUnison",
@@ -5705,6 +5731,10 @@
   "units": null,
   "kind": "steps",
   "points": [
+   [
+    0.0,
+    1.0
+   ],
    [
     0.05,
     1.0
@@ -5792,13 +5822,13 @@
  {
   "field": "Oscillator2.plainParams.kParamUnisonSpan",
   "host": "c_uni_span",
-  "default": 1.12e-07,
+  "default": 1.06e-07,
   "default_raw": 0.5,
   "default_text": "0",
   "units": "%",
   "kind": "linear",
-  "min": -99.999999298,
-  "max": 99.999999522
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "Oscillator2.plainParams.kParamUnisonStack",
@@ -5823,35 +5853,35 @@
  {
   "field": "Oscillator2.plainParams.kParamUnisonStereo",
   "host": "c_uni_width",
-  "default": 99.999999412,
+  "default": 99.999999516,
   "default_raw": 1.0,
   "default_text": "100",
   "units": null,
   "kind": "linear",
-  "min": -99.999999255,
-  "max": 99.999999412
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "Oscillator2.plainParams.kParamUnisonWarp",
   "host": "c_uni_warp",
-  "default": 1.12e-07,
+  "default": 1.06e-07,
   "default_raw": 0.5,
   "default_text": "0",
   "units": null,
   "kind": "linear",
-  "min": -99.999999298,
-  "max": 99.999999522
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "Oscillator2.plainParams.kParamUnisonWarp2",
   "host": "c_uni_warp_2",
-  "default": 1.12e-07,
+  "default": 1.06e-07,
   "default_raw": 0.5,
   "default_text": "0",
   "units": null,
   "kind": "linear",
-  "min": -99.999999298,
-  "max": 99.999999522
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "Oscillator2.plainParams.kParamVolume",
@@ -5890,24 +5920,24 @@
  {
   "field": "Oscillator3.NoiseOsc3.plainParams.kParamInitialPhase",
   "host": "noise_phase",
-  "default": 4.24e-07,
+  "default": 3.48e-07,
   "default_raw": 0.0,
   "default_text": "0",
   "units": "%",
   "kind": "linear",
-  "min": 4.24e-07,
-  "max": 99.999999723
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Oscillator3.NoiseOsc3.plainParams.kParamRandomPhase",
   "host": "noise_rand_phase",
-  "default": 4.24e-07,
+  "default": 3.48e-07,
   "default_raw": 0.0,
   "default_text": "0",
   "units": "%",
   "kind": "linear",
-  "min": 4.24e-07,
-  "max": 99.999999723
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "Oscillator3.plainParams.kParamEnable",
@@ -6054,6 +6084,10 @@
    ],
    [
     0.45,
+    0.0
+   ],
+   [
+    0.5,
     0.0
    ],
    [
@@ -6342,13 +6376,13 @@
  {
   "field": "RoutingSlot0.plainParams.kParamFilterBalance",
   "host": "a_filter_balance",
-  "default": -99.999999153,
+  "default": -99.999999303,
   "default_raw": 0.0,
   "default_text": "-100",
   "units": null,
   "kind": "linear",
-  "min": -99.999999153,
-  "max": 99.999999447
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "RoutingSlot1.plainParams.kParamFXBus1Level",
@@ -6375,13 +6409,13 @@
  {
   "field": "RoutingSlot1.plainParams.kParamFilterBalance",
   "host": "b_filter_balance",
-  "default": -99.999999153,
+  "default": -99.999999303,
   "default_raw": 0.0,
   "default_text": "-100",
   "units": null,
   "kind": "linear",
-  "min": -99.999999153,
-  "max": 99.999999447
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "RoutingSlot2.plainParams.kParamFXBus1Level",
@@ -6408,13 +6442,13 @@
  {
   "field": "RoutingSlot2.plainParams.kParamFilterBalance",
   "host": "c_filter_balance",
-  "default": -99.999999153,
+  "default": -99.999999303,
   "default_raw": 0.0,
   "default_text": "-100",
   "units": null,
   "kind": "linear",
-  "min": -99.999999153,
-  "max": 99.999999447
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "RoutingSlot3.plainParams.kParamFXBus1Level",
@@ -6441,13 +6475,13 @@
  {
   "field": "RoutingSlot3.plainParams.kParamFilterBalance",
   "host": "noise_filter_balance",
-  "default": -99.999999153,
+  "default": -99.999999303,
   "default_raw": 0.0,
   "default_text": "-100",
   "units": null,
   "kind": "linear",
-  "min": -99.999999153,
-  "max": 99.999999447
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "RoutingSlot4.plainParams.kParamFXBus1Level",
@@ -6474,13 +6508,13 @@
  {
   "field": "RoutingSlot4.plainParams.kParamFilterBalance",
   "host": "sub_osc_filter_balance",
-  "default": -99.999999153,
+  "default": -99.999999303,
   "default_raw": 0.0,
   "default_text": "-100",
   "units": null,
   "kind": "linear",
-  "min": -99.999999153,
-  "max": 99.999999447
+  "min": -99.999999303,
+  "max": 99.999999516
  },
  {
   "field": "RoutingSlot5.plainParams.kParamFXBus1Level",
@@ -6529,13 +6563,13 @@
  {
   "field": "VoiceFilter0.plainParams.kParamDrive",
   "host": "filter_1_drive",
-  "default": 4.24e-07,
+  "default": 3.48e-07,
   "default_raw": 0.0,
   "default_text": "0",
   "units": "%",
   "kind": "linear",
-  "min": 4.24e-07,
-  "max": 99.999999723
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "VoiceFilter0.plainParams.kParamEnable",
@@ -6580,13 +6614,13 @@
  {
   "field": "VoiceFilter0.plainParams.kParamStereo",
   "host": "filter_1_stereo",
-  "default": 50.000000056,
+  "default": 50.000000053,
   "default_raw": 0.5,
   "default_text": "50",
   "units": "%",
   "kind": "linear",
-  "min": 3.51e-07,
-  "max": 99.999999761
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "VoiceFilter0.plainParams.kParamType",
@@ -6623,24 +6657,24 @@
  {
   "field": "VoiceFilter0.plainParams.kParamVar",
   "host": "filter_1_var",
-  "default": 4.24e-07,
+  "default": 3.48e-07,
   "default_raw": 0.0,
   "default_text": "0",
   "units": "%",
   "kind": "linear",
-  "min": 4.24e-07,
-  "max": 99.999999723
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "VoiceFilter0.plainParams.kParamWet",
   "host": "filter_1_wet",
-  "default": 99.999999706,
+  "default": 99.999999758,
   "default_raw": 1.0,
   "default_text": "100",
   "units": "%",
   "kind": "linear",
-  "min": 3.73e-07,
-  "max": 99.999999706
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "VoiceFilter0.plainParams.kParamX",
@@ -6667,13 +6701,13 @@
  {
   "field": "VoiceFilter1.plainParams.kParamDrive",
   "host": "filter_2_drive",
-  "default": 4.24e-07,
+  "default": 3.48e-07,
   "default_raw": 0.0,
   "default_text": "0",
   "units": "%",
   "kind": "linear",
-  "min": 4.24e-07,
-  "max": 99.999999723
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "VoiceFilter1.plainParams.kParamEnable",
@@ -6718,13 +6752,13 @@
  {
   "field": "VoiceFilter1.plainParams.kParamStereo",
   "host": "filter_2_stereo",
-  "default": 50.000000056,
+  "default": 50.000000053,
   "default_raw": 0.5,
   "default_text": "50",
   "units": "%",
   "kind": "linear",
-  "min": 3.51e-07,
-  "max": 99.999999761
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "VoiceFilter1.plainParams.kParamType",
@@ -6761,24 +6795,24 @@
  {
   "field": "VoiceFilter1.plainParams.kParamVar",
   "host": "filter_2_var",
-  "default": 4.24e-07,
+  "default": 3.48e-07,
   "default_raw": 0.0,
   "default_text": "0",
   "units": "%",
   "kind": "linear",
-  "min": 4.24e-07,
-  "max": 99.999999723
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "VoiceFilter1.plainParams.kParamWet",
   "host": "filter_2_wet",
-  "default": 99.999999706,
+  "default": 99.999999758,
   "default_raw": 1.0,
   "default_text": "100",
   "units": "%",
   "kind": "linear",
-  "min": 3.73e-07,
-  "max": 99.999999706
+  "min": 3.48e-07,
+  "max": 99.999999758
  },
  {
   "field": "VoiceFilter1.plainParams.kParamX",
