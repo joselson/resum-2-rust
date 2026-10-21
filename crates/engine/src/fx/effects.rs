@@ -220,6 +220,65 @@ struct Distortion {
     mix: [f32; 3],
     held: [f32; 2],
     hold_count: f32,
+    overdrive: Overdrive,
+}
+
+/// Serum's overdrive (fxod-/fxodf- probes, tools/fit_overdrive.py): a 3rd-order
+/// Butterworth high-pass at 33.9 Hz (−2.9 dB and +137° at 33 Hz measured), a flat gain
+/// of −8.6 + 0.39·drive dB, compressed 10.2:1 above a knee of 1.42 + 0.050·drive dB on
+/// the filtered, gained peak, then hard-clipped at ±1.091 (levels inside the rack;
+/// every level and drive within 0.1 dB on C1 sines). The gain recovers from a 26 dB
+/// drop at about 22 dB/s: a peak detector, linked across channels, released over 0.33 s.
+#[derive(Default)]
+struct Overdrive {
+    env: f32,
+    /// Per channel: the first-order section's last input and output, and the Q = 1 biquad.
+    hp1: [(f32, f32); 2],
+    hp2: [Biquad; 2],
+    rate: f32,
+}
+
+impl Overdrive {
+    const HP_HZ: f32 = 33.9;
+    const RATIO: f32 = 10.17;
+    const CLIP: f32 = 1.091;
+    const RELEASE_S: f32 = 0.33;
+
+    fn prepare(&mut self, sample_rate: f32) {
+        if self.rate != sample_rate {
+            self.rate = sample_rate;
+            for b in &mut self.hp2 {
+                b.set(Shape::Highpass, Self::HP_HZ, 1.0, sample_rate);
+            }
+        }
+    }
+
+    /// The high-passed input of one channel.
+    #[inline]
+    fn filter(&mut self, ch: usize, x: f32) -> f32 {
+        // First-order section by the bilinear transform.
+        let k = (std::f32::consts::PI * Self::HP_HZ / self.rate).tan();
+        let (b0, a1) = (1.0 / (1.0 + k), (k - 1.0) / (k + 1.0));
+        let (x1, y1) = &mut self.hp1[ch];
+        let y = b0 * (x - *x1) - a1 * *y1;
+        (*x1, *y1) = (x, y);
+        self.hp2[ch].tick(y)
+    }
+
+    /// The gain for a filtered stereo pair at drive 0–100.
+    #[inline]
+    fn gain(&mut self, l: f32, r: f32, drive: f32, release: f32) -> f32 {
+        self.env = l.abs().max(r.abs()).max(self.env * release);
+        let g0 = -8.6 + 0.3898 * drive;
+        let knee = 1.42 + 0.0503 * drive;
+        let over = (20.0 * self.env.max(1e-9).log10() + g0 - knee).max(0.0);
+        db(g0 - over * (1.0 - 1.0 / Self::RATIO))
+    }
+
+    #[inline]
+    fn shape(x: f32, gain: f32) -> f32 {
+        (x * gain).clamp(-Self::CLIP, Self::CLIP)
+    }
 }
 
 /// The distortion filter's resonance Q against its "BW" control, fitted on low-,
@@ -252,7 +311,7 @@ impl MeasuredCurve {
 
     #[inline]
     fn apply(&self, x: f32) -> f32 {
-        use super::dist_curves::{CURVES, POINTS, V0, W_MAX};
+        use super::dist_curves::{CURVES, POINTS, SCALE, V0, W_MAX};
         // Beyond the measured range (±10.5) the curve holds its end value.
         let w = (x / V0).asinh().clamp(-W_MAX, W_MAX);
         let pos = (w + W_MAX) / (2.0 * W_MAX) * (POINTS - 1) as f32;
@@ -261,7 +320,7 @@ impl MeasuredCurve {
         let at = |c: &[i16; POINTS]| c[j] as f32 + (c[j + 1] as f32 - c[j] as f32) * t;
         let table = &CURVES[self.mode];
         let (a, b) = (at(&table[self.drive]), at(&table[self.drive + 1]));
-        (a + (b - a) * self.frac) / 8192.0
+        (a + (b - a) * self.frac) / SCALE
     }
 }
 
@@ -308,10 +367,22 @@ impl Effect for Distortion {
         let hold = (1.0 + 96.0 * drive * drive).round();
         // Most modes are measured static curves (fxd4 probes); the rest keep the generic shapers.
         let measured = MeasuredCurve::new(p.choice(MODE), p.get(DRIVE));
+        let release = (-1.0 / (Overdrive::RELEASE_S * ctx.sample_rate)).exp();
+        self.overdrive.prepare(ctx.sample_rate);
         for i in 0..l.len() {
+            let od_gain = if shaper == Shaper::Overdrive {
+                // The pre-filter (if any), then the high-pass, feed both detector and shaper.
+                let pre = |ch: usize, x: f32, d: &mut Self| if prepost == 1 { d.filter(ch, x) } else { x };
+                let (a, b) = (pre(0, l[i], self), pre(1, r[i], self));
+                let (a, b) = (self.overdrive.filter(0, a), self.overdrive.filter(1, b));
+                (l[i], r[i]) = (a, b);
+                self.overdrive.gain(a, b, p.get(DRIVE), release)
+            } else {
+                1.0
+            };
             for (ch, s) in [&mut l[i], &mut r[i]].into_iter().enumerate() {
                 let mut x = *s;
-                if prepost == 1 {
+                if prepost == 1 && shaper != Shaper::Overdrive {
                     x = self.filter(ch, x);
                 }
                 x = if shaper == Shaper::Downsample {
@@ -327,6 +398,8 @@ impl Effect for Distortion {
                     self.held[ch]
                 } else if let Some(c) = &measured {
                     c.apply(x)
+                } else if shaper == Shaper::Overdrive {
+                    Overdrive::shape(x, od_gain)
                 } else {
                     shaper::shape(shaper, x * gain) * TRIM
                 };
@@ -340,6 +413,10 @@ impl Effect for Distortion {
 
     fn reset(&mut self) {
         self.pre.iter_mut().flatten().for_each(Biquad::reset);
+        self.overdrive = Overdrive { rate: self.overdrive.rate, hp2: self.overdrive.hp2.map(|mut b| {
+            b.reset();
+            b
+        }), ..Overdrive::default() };
     }
 }
 
@@ -1104,7 +1181,22 @@ impl Effect for Conv {
 
 #[cfg(test)]
 mod dist_tests {
-    use super::MeasuredCurve;
+    use super::{MeasuredCurve, Overdrive};
+
+    #[test]
+    fn overdrive_compresses_into_its_clip() {
+        // Steady sine peaks (dB inside the rack) → the gain of the linear part (fxod probes).
+        let gain_db = |drive: f32, peak_db: f32| {
+            let mut od = Overdrive::default();
+            let a = 10f32.powf(peak_db / 20.0);
+            20.0 * od.gain(a, a, drive, 1.0).log10()
+        };
+        // C1 sines lose 2.9 dB in the high-pass first: probe gains + 2.9 dB at peaks − 2.9 dB.
+        for (drive, peak, want) in [(0.0, -22.9, -8.6), (0.0, 17.6, -15.5), (50.0, -22.9, 10.9), (50.0, 5.6, -0.4), (100.0, -12.6, 20.2)] {
+            let got = gain_db(drive, peak);
+            assert!((got - want).abs() < 0.2, "drive {drive} at {peak} dB: {got}");
+        }
+    }
 
     #[test]
     fn measured_curves_reproduce_probe_points() {

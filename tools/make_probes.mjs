@@ -99,6 +99,7 @@ const CLICK = [["Oscillator0.WTOsc0", "kParamRandomPhase", 0], ["Env0", "kParamA
 const LFO_VOL = [["Oscillator0", "kParamVolume", 0], ["Oscillator0.WTOsc0", "kParamRandomPhase", 0], ["__mod", 0, [6, 0], "Oscillator", 0, "kParamVolume", 1, { kParamAmount: 100 }]];
 // Compressor probe input levels (FX Utility output per stage) and settings.
 const COMP_LEVELS = [0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1].map((l) => [`u${l}`, [l]]).concat([["u1x2", [1, 1]]]);
+const OD_LEVELS = [0.05, 0.1, 0.2, 0.35, 0.5, 0.7, 1].map((l) => [`u${l}`, [l]]).concat([[1, 0.35], [1, 0.7], [1, 1], [1, 1, 0.5], [1, 1, 1]].map((st) => [`u${st.join("x")}`, st]));
 const COMP_SETTINGS = {
   default: {},
   ...Object.fromEntries([0, 0.1, 0.25, 0.5, 0.75, 1].map((t) => [`limit-${t}`, { kParamThresh: t, kParamRatio: 1000000 }])),
@@ -356,6 +357,27 @@ const probes = {
   "fxd4-boost-1": [...SUB_SINE, ...rack(fx("FXUtils", { kParamLevelOut: 1 }))],
   "fxd4-boost-2": [...SUB_SINE, ...rack(fx("FXUtils", { kParamLevelOut: 1 }), fx("FXUtils", { kParamLevelOut: 1 }))],
   ...Object.fromEntries([...DIST_SHAPED, "kDiode1"].flatMap((m) => [0, 10, 25, 40, 50, 60, 75, 90, 100].flatMap((d) => [0, 1, 2].map((n) => [`fxd4-${m.slice(1).toLowerCase()}-${d}-b${n}`, [...SUB_SINE, ...rack(...Array.from({ length: n }, () => fx("FXUtils", { kParamLevelOut: 1 })), fx("FXDistortion", { kParamMode: m, kParamDrive: d }))]])))),
+  // Overdrive and tape sat over 12 input levels (fxod-, tools/fit_overdrive.py): each
+  // level's dry render beside every drive; FX Utility stages set the level.
+  ...Object.fromEntries(OD_LEVELS.flatMap(([lv, stages]) => [["dry", null], ...["kOverdrive", "kTapeSat"].flatMap((m) => [0, 10, 25, 50, 75, 100].map((d) => [`${m.slice(1).toLowerCase()}-${d}`, { kParamMode: m, kParamDrive: d }]))]
+    .map(([n, params]) => [`fxod-${lv}-${n}`, [...SUB_SINE, ...rack(...stages.map((l) => fx("FXUtils", { kParamLevelOut: l })), ...(params ? [fx("FXDistortion", params)] : []))]]))),
+  // Overdrive's polarity (fxodw-): inverted or late? Wet 50 cancels an inverted copy at any pitch.
+  "fxodw-dry": [...SUB_SINE, ...rack(fx("FXUtils", { kParamLevelOut: 0.2 }))],
+  ...Object.fromEntries([100, 50].map((w) => [`fxodw-wet${w}`, [...SUB_SINE, ...rack(fx("FXUtils", { kParamLevelOut: 0.2 }), fx("FXDistortion", { kParamMode: "kOverdrive", kParamDrive: 36, kParamWet: w }))]])),
+  // Overdrive's filter (fxodf-): the Init saw, quiet enough to stay below the knee.
+  "fxodf-dry": [["Oscillator0.WTOsc0", "kParamRandomPhase", 0], ...rack(fx("FXUtils", { kParamLevelOut: 0.1 }))],
+  ...Object.fromEntries([0, 50].map((d) => [`fxodf-d${d}`, [["Oscillator0.WTOsc0", "kParamRandomPhase", 0], ...rack(fx("FXUtils", { kParamLevelOut: 0.1 }), fx("FXDistortion", { kParamMode: "kOverdrive", kParamDrive: d }))]])),
+  // Distortion wet law (fxodm-): tape sat at drive 0 is x/2 with no filter.
+  "fxodm-dry": [...SUB_SINE, ...rack(fx("FXUtils", { kParamLevelOut: 0.2 }))],
+  ...Object.fromEntries([0, 25, 50, 75, 100].map((w) => [`fxodm-wet${w}`, [...SUB_SINE, ...rack(fx("FXUtils", { kParamLevelOut: 0.2 }), fx("FXDistortion", { kParamMode: "kTapeSat", kParamDrive: 0, kParamWet: w }))]])),
+  // Downsample at drive 0 is the identity: with tape sat's x/2 it separates dry and wet weights.
+  ...Object.fromEntries([10, 25, 40, 50, 60, 75, 90].map((w) => [`fxodm-ds-wet${w}`, [...SUB_SINE, ...rack(fx("FXUtils", { kParamLevelOut: 0.2 }), fx("FXDistortion", { kParamMode: "kDownsample", kParamDrive: 0, kParamWet: w }))]])),
+  ...Object.fromEntries([10, 40, 60, 90].map((w) => [`fxodm-wet${w}`, [...SUB_SINE, ...rack(fx("FXUtils", { kParamLevelOut: 0.2 }), fx("FXDistortion", { kParamMode: "kTapeSat", kParamDrive: 0, kParamWet: w }))]])),
+  // Delay wet law (fxodm-delay-): the dry click and its single echo apart in time.
+  ...Object.fromEntries([0, 10, 25, 40, 50, 60, 75, 90, 100].map((w) => [`fxodm-delay-wet${w}`, [...CLICK, ...rack(fx("FXDelay", { kParamFeedback: 0, kParamWet: w }))]])),
+  // Overdrive's level detector (fxodt-): +12 dB, held 0.8 s, then 26 dB down (as fxct-).
+  ...Object.fromEntries([["dry", null], ...[0, 50, 100].map((d) => [`overdrive-${d}`, { kParamMode: "kOverdrive", kParamDrive: d }])].map(([n, params]) => [`fxodt-${n}`,
+    [...SUB_SINE, ["Env0", "kParamAttack", 0], ["Env0", "kParamHold", 0.8], ["Env0", "kParamDecay", 0], ["Env0", "kParamSustain", 0.05], ...rack(fx("FXUtils", { kParamLevelOut: 1 }), ...(params ? [fx("FXDistortion", params)] : []))]])),
   // Delay taps (fxdl-): a click (instant amp envelope) through the delay at 100 % wet.
   "fxdl-dry": CLICK,
   ...Object.fromEntries([

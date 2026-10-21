@@ -73,7 +73,7 @@ slots agree).
 | Behaviour | Measured |
 |---|---|
 | FX output level | 0.5 = unity, squared (0.25 → −12 dB) |
-| Wet/dry | equal-power (partial mixes keep level); the compressor crossfades linearly |
+| Wet/dry | wet (1 − cos πw)/2, dry 1 − wet² (fxodm- probes: delay echoes, distortion at drive 0, exact to 10⁻⁴); the compressor crossfades linearly |
 | Distortion | −11 dB output trim after the shaper |
 | Delay | free time in seconds |
 | Reverb width | 0–100 %, default 20 % |
@@ -88,13 +88,16 @@ multiband static curves of sines and squares at notes 48, 72, 96 — on and eith
 of the crossovers, so band shares and leakage separate the bands — and `fxmbt-`
 multiband level steps; `fxrv6-` reverb impulse responses per type and control through
 `tools/fit_reverb.py`, `fxrv8-` grids of two Abyss or Vintage controls (runs fxrv8–10,
-fxrv12), `fxrv11-` Vintage on a held saw, and `fxrvf-` factory reverb modules read at
-run time):
+fxrv12), `fxrv11-` Vintage on a held saw, `fxrvf-` factory reverb modules read at
+run time; `fxod-` overdrive and tape sat at 12 input levels through
+`tools/fit_overdrive.py`, `fxodt-` an overdrive level step, `fxodf-` a quiet saw for
+overdrive's response, `fxodw-` its 50 % wet at C1 and C2, `fxodm-` wet laws):
 
 | Behaviour | Measured | Fit |
 |---|---|---|
 | EQ | RBJ shelf/peak/cut biquads; Q = 0.1 + 18.8·r⁴ (peak, cut), 0.4 + 1.74·r³ (shelf) for resonance r | 0.02 dB mean over 39 responses |
-| Distortion curves | memoryless for tube, soft/hard clip, diodes, asym, stomp box, soft sat, zero-square: tabled F(mode, drive, x) at 9 drives over ±10.5 inside the rack (output ÷ master gain) | harmonics within 0.1–2 dB |
+| Distortion curves | memoryless for tube, soft/hard clip, diodes, asym, stomp box, tape sat, soft sat, zero-square: tabled F(mode, drive, x) at 9 drives over ±10.5 inside the rack (output ÷ master gain); probes aligned by the quietest one's lag (a few samples off, dense folds trace open loops that looked level-dependent) | harmonics within 0.1–2 dB; tape sat output peaks 0.06 dB over 12 levels |
+| Overdrive | 3rd-order Butterworth high-pass at 33.9 Hz (−2.9 dB, +137° at 33 Hz; its phase made C1 sines look inverted), flat gain −8.6 + 0.39·drive dB, compression 10.2:1 above a knee of 1.42 + 0.050·drive dB on the filtered peak, hard clip at ±1.091 inside the rack; after a 26 dB drop the gain recovers at ≈ 22 dB/s (peak detector, 0.33 s release; the first 100 ms recover faster, not modelled) | gains 0.03 dB (fit), 0.4 dB in Lumen at C1 (the high-pass is 0.6 dB steeper there); response within 0.1 dB, 2° above 65 Hz |
 | Distortion drive 0 | diode 1, stomp box, tape sat pass x/2 unshaped | renders |
 | Downsample | holds 1 + 96·drive² samples | exact |
 | Distortion filter | resonant 2-pole (BW is resonance: Q 1.2, 2.05, 3.9, 20.7 at BW 0.5, 1.95, 4, 7), LP → unnormalised BP → −HP morph, −0.9 dB | 1.2 dB mean (top-octave shape) |
@@ -124,12 +127,11 @@ run time):
 | Sub volume | level ∝ √volume (0.5625 and 1.0 measured) | 0.0 dB |
 | Amp envelope | evaluated per sample (a 2 ms click lost its peak at block rate) | click energy exact |
 
-Open: overdrive (normalises its input by the signal level) and tape sat (level-dependent
-folding) are not static and keep the generic shapers, as do the folders, X-shapers,
-rectify and sine shaper; the distortion filter's top-octave shape; reverb
+Open: the folders, X-shapers, rectify and sine shaper keep the generic shapers;
+overdrive's detector attack and its fast first release; the distortion filter's top-octave shape; reverb
 interactions of three or more controls (Abyss factory modules still 0.6–1.5 octave
 off per band), the input sleep (not emulated), beat-synced predelay, the level on held
-tones (the level term is fitted on clicks: Unnamed at Size 90 is 3.2 dB loud on a saw),
+tones (the level term is fitted on clicks: Unnamed at Size 90 and 50 % wet is 1.4 dB loud on a saw),
 the tail's character beyond these metrics; the compressor's detector on non-sine material (a square measured 0.3 dB off
 a sine at equal peak), ratios between 50 and 100, the limiter's release just after a
 deep drop (a quick partial release, then a slower one); multiband extreme Deadband
@@ -138,8 +140,8 @@ chorus, phaser, flanger, hyper/dimension, Bode,
 convolution levels.
 
 FX probe set (30 single-module probes on Init): within 0.3 dB loudness on
-average (score 0.48). Open: reverb width on sustained input (the default probe is 16 dB
-wider than Serum; likely the early tap, which reads two diffuser stages), chorus at full wet, phaser
+average (score 0.43). Open: reverb width on sustained input (the default probe is 6.4 dB
+wider than Serum, 16 dB before the measured wet law), chorus at full wet, phaser
 brightness, hyper/dimension character, Bode shift scale, EQ shelf frequency and
 Q.
 
@@ -153,6 +155,9 @@ worse; FX probe set 0.49). Nearly all of the loss is "MDL - Slippery Snake" (+1.
 whose Vintage onset moved from 12 to 26 ms: Lumen's level on that held note swings
 between −20 and −24 dB with the onset alone, as the wet and dry interfere per harmonic,
 so the score on presets that mix wet and dry over steady tones partly tracks phase.
+Overdrive and tape sat measured: 6.24 → 6.29; with the measured wet law (replacing
+equal power, for every effect) 6.08 (28 better, 23 worse against 6.24; FX probe set
+0.49 → 0.43, default reverb 2.46 → 0.97, convolution 1.62 → 0.39).
 
 ## Warp and sample findings
 
