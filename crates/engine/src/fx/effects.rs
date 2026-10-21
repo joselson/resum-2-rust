@@ -863,16 +863,16 @@ impl Effect for Comp {
 struct ReverbFx {
     reverb: Reverb,
     /// Control indices for the type last seen.
-    controls: Option<(&'static str, Vec<usize>)>,
+    controls: Option<(&'static str, reverb_model::Indices)>,
 }
 
-/// Lumen's FDN level against a dry click (dB), fitted over the fxrv6-/fxrv7- probes:
-/// a constant plus terms in ln T60 (500 Hz) and ln of the 125 Hz decay ratio (its
-/// normalisation follows the mid band, while a click's energy is mostly low). The
+/// Lumen's FDN level against a dry click (dB), fitted over the fxrv6- to fxrv10-
+/// probes: a constant plus terms in ln T60 (500 Hz) and ln of the 125 Hz decay ratio
+/// (its normalisation follows the mid band, while a click's energy is mostly low). The
 /// measured level is applied relative to it.
-const REVERB_LEVEL_DB: f32 = 2.77;
-const REVERB_LEVEL_PER_LN_T60: f32 = 1.19;
-const REVERB_LEVEL_PER_LN_LOW: f32 = 1.93;
+const REVERB_LEVEL_DB: f32 = 5.63;
+const REVERB_LEVEL_PER_LN_T60: f32 = -0.24;
+const REVERB_LEVEL_PER_LN_LOW: f32 = 2.54;
 
 impl Effect for ReverbFx {
     fn process(&mut self, p: &FxParams, l: &mut [f32], r: &mut [f32], _ctx: &FxContext) {
@@ -881,7 +881,7 @@ impl Effect for ReverbFx {
         let kind = p.choice(TYPE);
         let table = reverb_model::type_table(kind);
         if self.controls.as_ref().is_none_or(|(k, _)| *k != table.kind) {
-            self.controls = Some((table.kind, reverb_model::control_indices(table)));
+            self.controls = Some((table.kind, reverb_model::indices(table)));
         }
         let m = reverb_model::evaluate(table, &self.controls.as_ref().unwrap().1, p);
         let modulation = match kind {

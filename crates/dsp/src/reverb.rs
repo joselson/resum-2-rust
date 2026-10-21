@@ -67,11 +67,14 @@ impl Reverb {
     /// Processes in place; returns the wet signal only.
     pub fn process(&mut self, p: &ReverbParams, left: &mut [f32], right: &mut [f32]) {
         let sr = self.sample_rate;
-        let scale = 0.3 + 2.2 * p.size.clamp(0.0, 1.0);
+        let decay = p.decay.max(0.02);
+        // Lines scale with size, shortened so a short decay still spans several passes
+        // (Serum's Abyss at Mode 100 rings for tens of milliseconds).
+        let mean_base_s = BASE_MS.iter().sum::<f32>() / LINES as f32 / 1000.0;
+        let scale = (0.3 + 2.2 * p.size.clamp(0.0, 1.0)).min(decay / (MIN_PASSES * mean_base_s));
         let lengths: [f32; LINES] = std::array::from_fn(|i| BASE_MS[i] * scale * sr / 1000.0);
         // Per-line gain for a T60: g = 10^(−3·len / (T60·sr)); mid and low bands.
         let gain = |len: f32, t60: f32| 10f32.powf(-3.0 * len / (t60.max(0.02) * sr));
-        let decay = p.decay.max(0.02);
         let gains: [f32; LINES] = std::array::from_fn(|i| gain(lengths[i], decay));
         // Loop gain per band, solved so the summed split response reaches the target
         // decay at 125 Hz, 500 Hz, 2 kHz and 8 kHz; each line scales it by its length.
@@ -81,8 +84,9 @@ impl Reverb {
         let targets = ratios.map(|q| gain(mean_len, decay * q.max(0.02)));
         let band = solve_band_gains(&split_responses(split_coef, sr), targets);
         let band_gains: [[f32; 4]; LINES] = std::array::from_fn(|i| band.map(|g| g.powf(lengths[i] / mean_len)));
-        // Energy grows as 1 / (1 − g²) with recirculation; divide it out.
-        let norm = (1.0 - gains.iter().map(|g| g * g).sum::<f32>() / LINES as f32).max(1e-6).sqrt() * NORM;
+        // Every pass, the first included, scales by g: the tail's energy is g² / (1 − g²).
+        let g2 = (gains.iter().map(|g| g * g).sum::<f32>() / LINES as f32).clamp(1e-6, 1.0 - 1e-6);
+        let norm = ((1.0 - g2) / g2).sqrt() * NORM;
         let hp_coef = (-std::f32::consts::TAU * p.low_cut_hz.clamp(5.0, 2000.0) / sr).exp();
         // Width scales the side signal; keep the total energy (uncorrelated lines).
         let width = p.width.clamp(0.0, 8.0);
@@ -185,6 +189,8 @@ fn solve_band_gains(h: &[[(f32, f32); 4]; 4], targets: [f32; 4]) -> [f32; 4] {
 }
 /// Output scale after normalisation, and the early tap's level.
 const NORM: f32 = 1.0;
+/// The fewest loop passes a decay spans (T60 over the mean line length).
+const MIN_PASSES: f32 = 4.0;
 const EARLY: f32 = 0.25;
 
 #[cfg(test)]

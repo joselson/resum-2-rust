@@ -121,6 +121,16 @@ const MB_SETTINGS = {
   fast: { kParamAttack: 0.1, kParamRelease: 30 }, "att-10": { kParamAttack: 10 }, "rel-10": { kParamRelease: 10 },
   "below-1-fast": { kParamRatioBelow: 1, kParamAttack: 0.1, kParamRelease: 30 }, "wet-50": { kParamWet: 50 }, "makeup-4": { kParamMakeup: 4 },
 };
+/** Short reverb control names in probe ids (tools/fit_reverb.py reads them back). */
+const REVERB_CONTROL = { kParamSize: "size", kParamDelay: "delay", kParamFeedback: "fb", kParamFreqB: "freqb", kParamFreq: "freq", kParamWidth: "width",
+  kParamFreqC: "freqc", kParamMode: "mode", kParamVintageScale: "vscale", kParamVintageScaleB: "vscaleb", kParamPreDelay: "predelay" };
+/** Every combination of the given control values, as [type, params] pairs, plus each
+ * value alone: tools/fit_reverb.py takes a pair's interaction against the single sweeps,
+ * which must hold every grid value (or each pair re-corrects their interpolation). */
+function grid(type, axes) {
+  const singles = Object.entries(axes).flatMap(([k, vs]) => vs.map((v) => [type, { [k]: v }]));
+  return [...singles, ...Object.entries(axes).reduce((acc, [k, vs]) => acc.flatMap((q) => vs.map((v) => ({ ...q, [k]: v }))), [{}]).map((q) => [type, q])];
+}
 /** The three reverb modules per type (by stored type) that set the most controls. */
 function factoryReverbs(dir) {
   if (!dir) return {};
@@ -412,6 +422,34 @@ const probes = {
     ...[25, 75].flatMap((v) => [[`fb${v}`, { kParamFeedback: v }], [`freqb${v}`, { kParamFreqB: v }], [`freq${v}`, { kParamFreq: v }], [`width${v}`, { kParamWidth: v }], [`freqc${v}`, { kParamFreqC: v }], [`mode${v}`, { kParamMode: v }]]),
     ...(t === "kVintage" ? [25, 50, 85].flatMap((v) => [[`vscale${v}`, { kParamVintageScale: v }]]) : []),
   ].map(([n, q]) => [`fxrv6-${t ? t.slice(1).toLowerCase() : "untyped"}-${n}`, [...CLICK, ["Env0", "kParamSustain", 1e-3], ...rack(fx("FXReverb", { kParamWet: 100, ...(t ? { kParamType: t } : {}), ...q }))]]))),
+  // Pairs of Abyss and Vintage controls on a grid (fxrv8-): their effects do not add.
+  ...Object.fromEntries([
+    ...[55, 60, 65, 67, 69, 70, 71, 73, 75, 80, 95].map((v) => ["vintage", { kParamVintageScale: v }]),
+    ...[0.001, 0.01].map((p) => ["vintage", { kParamVintageScale: 70, kParamPreDelay: p }]),
+    ...grid("vintage", { kParamVintageScale: [0, 50, 70, 85, 100], kParamPreDelay: [0.05, 0.15] }),
+    ...grid("vintage", { kParamVintageScale: [25, 70, 100], kParamSize: [0, 50, 90] }),
+    ...grid("vintage", { kParamVintageScale: [25, 70, 100], kParamDelay: [0, 100] }),
+    ...grid("vintage", { kParamSize: [0, 50, 90], kParamPreDelay: [0.1] }),
+    ...grid("vintage", { kParamSize: [0, 50, 90], kParamDelay: [0] }),
+    // Delay matters only near 0: finer steps there.
+    ...[2, 5].map((v) => ["vintage", { kParamDelay: v }]),
+    ...grid("vintage", { kParamVintageScale: [25, 100], kParamDelay: [2, 5, 10] }),
+    ...grid("vintage", { kParamSize: [0, 50, 90], kParamDelay: [2, 5, 10] }),
+    ...grid("vintage", { kParamVintageScale: [0, 10], kParamSize: [0, 50, 90] }),
+    ...grid("vintage", { kParamVintageScale: [0, 25, 50, 85], kParamMode: [0, 50] }),
+    ...grid("abyss", { kParamMode: [0, 25, 50, 75, 100], kParamDelay: [0, 20, 100, 250] }),
+    ...grid("abyss", { kParamMode: [0, 25, 50, 100], kParamSize: [0, 25, 50, 75, 100] }),
+    ...grid("abyss", { kParamDelay: [0, 20, 100], kParamSize: [0, 25, 50, 75, 100] }),
+    ...grid("abyss", { kParamMode: [0, 50, 100], kParamPreDelay: [0.02, 0.1, 0.3] }),
+    ...grid("abyss", { kParamSize: [10, 50, 90], kParamPreDelay: [0.1, 0.3] }),
+    ...grid("abyss", { kParamDelay: [0, 100], kParamPreDelay: [0.1, 0.3] }),
+    ...grid("abyss", { kParamWidth: [0, 50, 100], kParamSize: [25, 50, 75] }),
+    ...grid("abyss", { kParamWidth: [50, 100], kParamMode: [0, 50, 100] }),
+  ].map(([t, q]) => [`fxrv8-${t}-${Object.entries(q).map(([k, v]) => `${REVERB_CONTROL[k]}${v}`).join("-")}`,
+    [...CLICK, ["Env0", "kParamSustain", 1e-3], ...rack(fx("FXReverb", { kParamWet: 100, kParamType: `k${t[0].toUpperCase()}${t.slice(1)}`, ...q }))]])),
+  // Vintage's direct copy on a sustained saw (fxrv11-): output before the tail against the dry.
+  ...Object.fromEntries([["default", {}], ["vscale50", { kParamVintageScale: 50 }], ["vscale67-mode0", { kParamVintageScale: 67, kParamMode: 0 }], ["predelay0_02", { kParamPreDelay: 0.02 }]]
+    .map(([n, q]) => [`fxrv11-vintage-${n}`, rack(fx("FXReverb", { kParamWet: 100, kParamType: "kVintage", ...q }))])),
   // Factory reverb modules on the same click at 100 % wet (fxrvf-): checks how controls combine.
   ...factoryReverbs(process.env.LUMEN_FACTORY_PRESETS),
   // Reverb with every main control set explicitly, as factory presets store them (fxrv2-).

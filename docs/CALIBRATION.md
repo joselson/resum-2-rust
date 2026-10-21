@@ -87,7 +87,9 @@ through `tools/fit_comp.py` and `fxct-`/`fxcr-step-` level steps; `fxmb-`/`fxmbs
 multiband static curves of sines and squares at notes 48, 72, 96 — on and either side
 of the crossovers, so band shares and leakage separate the bands — and `fxmbt-`
 multiband level steps; `fxrv6-` reverb impulse responses per type and control through
-`tools/fit_reverb.py`, and `fxrvf-` factory reverb modules read at run time):
+`tools/fit_reverb.py`, `fxrv8-` grids of two Abyss or Vintage controls (runs fxrv8–10,
+fxrv12), `fxrv11-` Vintage on a held saw, and `fxrvf-` factory reverb modules read at
+run time):
 
 | Behaviour | Measured | Fit |
 |---|---|---|
@@ -115,18 +117,20 @@ multiband level steps; `fxrv6-` reverb impulse responses per type and control th
 | Multiband upward | below threshold − Deadband*b* (+ −1.1 / +0.2 / +0.9 dB), slope RatioBelow·(2·RatioBelow*b* − 1), lift at most 35.2 dB; RatioBelow*b* < 0.5 expands; leakage into the other bands is lifted too (+2.4 dB on a mid-band sine) | 0.2 dB, ≈ 1 dB at Deadband 3/24 |
 | Multiband makeup, output, wet | as single-band; the dry for the wet mix is the band sum (no cancellation at the crossovers) | 0.1 dB |
 | Reverb input sleep | the reverb stops once its input is silent (a −171 dB floor counts, −131 dB does not) before its tail emerges: a lone 2 ms click into Hall above size ≈ 10, Vintage or Space renders nothing after the click; impulse probes sustain the click at −131 dB | renders |
-| Reverb types | an omitted kParamType is a fifth type (Lumen: kUnnamed), not Hall; per type the controls differ: Hall — Delay sets the decay (0 → 1.2 s, default 2.6 s, 100 → 15 s at 500 Hz), Size lengthens it above 50, FreqB damps highs, output from the first sample, decorrelated at any width; Vintage — Size sets the decay (0.5–14.5 s), Delay 0 shortens it, VintageScale moves decay and width, Feedback unused; Abyss — onset ≈ 110 ms, Delay, Mode (0 long, 100 ≈ 0.1 s) and Size set the decay; Space — mono, onset ≈ 6 + 1.85·Size ms, Delay sets the decay; unnamed — onset 40 ms, Size sets the decay, Feedback damps, FreqB 100 silences, Delay unused; Freq is a low cut steeper than one pole | one control at a time |
+| Reverb types | an omitted kParamType is a fifth type (Lumen: kUnnamed), not Hall; per type the controls differ: Hall — Delay sets the decay (0 → 1.2 s, default 2.6 s, 100 → 15 s at 500 Hz), Size lengthens it above 50, FreqB damps highs, an inverted burst (≈ −13 dB) in the first milliseconds, then a gap until the tail (17 ms at Size 0, 42 ms at the default), decorrelated at any width; Vintage — Size sets the decay (0.5–14.5 s) but barely below VintageScale 25, Delay 0 cuts it to 0.5 s at any Size or VintageScale (a step: Delay 2 acts like 10), VintageScale sets the decay and a gap before the tail (8 ms at 0, 13 ms at 50, 70 ms at 60, ≈ 120 ms at 65–71; above ≈ 72 an early part at 10–20 ms and a burst near 200 ms), Mode 0 adds ≈ 40 ms at any VintageScale, Feedback unused; Abyss — swells in over ≈ 200 ms, then falls 20 dB quickly onto a slow plateau; onset ≈ 110 ms, Delay, Mode (0 long, 100 ≈ 0.02–0.3 s) and Size set the decay; predelay lengthens the decay 3–4× and lowers the level ≈ 4 dB except at Mode 100, and from 0.3 s the onset is the predelay alone; Space — mono, onset ≈ 6 + 1.85·Size ms, Delay sets the decay; unnamed — onset 40 ms, Size sets the decay, Feedback damps, FreqB 100 silences, Delay unused; Freq is a low cut steeper than one pole | one control at a time |
 | Reverb predelay | 0.919 × the stored seconds on every type | 0.1 ms |
-| Reverb model | per type the default's T60 at 125 Hz / 500 Hz / 2 kHz / 8 kHz, level against the dry click, onset and tail L/R correlation, plus per-control deltas at 9–16 values (`reverb_table`), combined as independent; Freq as a fitted one-pole low cut plus the level it misses; drives an 8-line FDN with band-split loop gains solved per block, an early tap at the onset, energy normalisation and a fitted level term | sweeps: level 0.49 dB, onset 0.01 ms, T60 0.04–0.16 octave per band, correlation 0.04; 15 factory modules: Hall, Space and unnamed level within 3.6 dB, T60 within 0.3 octave (one 8 kHz band 1 octave); Abyss and Vintage off (below) |
+| Reverb start-up copy | Vintage at VintageScale ≈ 65–71 without predelay (< 10 ms) outputs a copy of its first input (0.62×, 6 samples late) for ≈ 8 ms, then silence until the tail; a held saw shows nothing after it, so it is a start-up transient: separated from the metrics, not emulated | click and held saw |
+| Reverb model | per type the default's T60 at 125 Hz / 500 Hz / 2 kHz / 8 kHz, level against the dry click, onset and tail L/R correlation, plus per-control deltas at 9–16 values (`reverb_table`), and for Abyss and Vintage the measured excess of 13 control pairs on grids over their single deltas (bilinear, zero at a default; every grid value is also swept alone, or overlapping pairs each re-correct the single sweep's interpolation); band ratios clamped to the measured 1st–99th percentiles; Freq as a fitted one-pole low cut plus the level it misses; drives an 8-line FDN with band-split loop gains solved per block, lines shortened so a decay spans at least 4 passes, an early tap at the onset, energy normalised as g²/(1 − g²) and a fitted level term | sweeps and grids: level 0.12–0.44 dB, onset < 0.1 ms, T60 0.01–0.2 octave per band (Abyss grids 0.37 at 8 kHz), correlation < 0.1; 15 factory modules: level within 0.6 (Vintage), 1.3–2.2 (Hall, Space, unnamed), 1.6 dB (Abyss); T60 at 500 Hz within 0.3 octave except Abyss (0.6); Vintage onsets 12 ms, Abyss 22 ms |
 | Sub volume | level ∝ √volume (0.5625 and 1.0 measured) | 0.0 dB |
 | Amp envelope | evaluated per sample (a 2 ms click lost its peak at block rate) | click energy exact |
 
 Open: overdrive (normalises its input by the signal level) and tape sat (level-dependent
 folding) are not static and keep the generic shapers, as do the folders, X-shapers,
-rectify and sine shaper; the distortion filter's top-octave shape; reverb controls that interact (Abyss Mode
-with Delay and Size: factory modules 1–3 octaves off in T60; Vintage onsets up to
-120 ms off), the input sleep (not emulated), beat-synced predelay, the tail's
-character beyond these metrics; the compressor's detector on non-sine material (a square measured 0.3 dB off
+rectify and sine shaper; the distortion filter's top-octave shape; reverb
+interactions of three or more controls (Abyss factory modules still 0.6–1.5 octave
+off per band), the input sleep (not emulated), beat-synced predelay, the level on held
+tones (the level term is fitted on clicks: Unnamed at Size 90 is 3.2 dB loud on a saw),
+the tail's character beyond these metrics; the compressor's detector on non-sine material (a square measured 0.3 dB off
 a sine at equal peak), ratios between 50 and 100, the limiter's release just after a
 deep drop (a quick partial release, then a slower one); multiband extreme Deadband
 values, moved crossovers (0.9 dB at 300 Hz), the expansion limit, stereo linking;
@@ -144,7 +148,11 @@ error 10.7 → 9.7 dB), 6.43 with the multiband (9.4 dB); against single-band on
 presets better and 4 worse (most "BA - Lately Bass 2025", "LD - Grunging Grime" and
 "EP - Time Capsule", whose compressors sit behind long distortion/filter chains).
 The reverb model then 6.43 → 6.23 (19 presets better, 15 worse; FX probe set
-0.53 → 0.48).
+0.53 → 0.48). Reverb pair grids and the short-decay FDN: 6.23 → 6.24 (11 better, 5
+worse; FX probe set 0.49). Nearly all of the loss is "MDL - Slippery Snake" (+1.6),
+whose Vintage onset moved from 12 to 26 ms: Lumen's level on that held note swings
+between −20 and −24 dB with the onset alone, as the wet and dry interfere per harmonic,
+so the score on presets that mix wet and dry over steady tones partly tracks phase.
 
 ## Warp and sample findings
 

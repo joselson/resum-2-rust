@@ -1,8 +1,9 @@
 //! Serum's reverb as measured metrics (`reverb_table`, from impulse responses per type):
-//! each type's default setting plus per-control deltas, one control moved at a time
-//! and combined here as independent. The metrics then drive Lumen's FDN reverb.
+//! each type's default setting plus per-control deltas, one control moved at a time,
+//! and for controls that interact (Abyss, Vintage) the measured excess of pairs on a
+//! grid over the sum of their single deltas. The metrics then drive Lumen's FDN reverb.
 
-use super::reverb_table::TYPES;
+use super::reverb_table::{RATIO_RANGE, TYPES};
 use super::FxParams;
 
 /// Deltas from the type's default at one control value: decay times as natural-log
@@ -24,6 +25,17 @@ pub struct Table {
     pub points: &'static [Point],
 }
 
+/// Interaction of two controls: what a pair on the grid `a_at` × `b_at` measured beyond
+/// the default plus both single-control deltas, row-major in `a` (`Point::at` unused).
+/// Rows and columns at a control's default are zero.
+pub struct Pair {
+    pub a: &'static str,
+    pub b: &'static str,
+    pub a_at: &'static [f32],
+    pub b_at: &'static [f32],
+    pub cells: &'static [Point],
+}
+
 /// Metrics of a type's default setting: T60 at 500 Hz (s), the 125 Hz, 2 kHz and
 /// 8 kHz T60s relative to it, level against the dry click (dB), onset (ms), tail L/R correlation.
 pub struct TypeTable {
@@ -36,6 +48,7 @@ pub struct TypeTable {
     pub onset: f32,
     pub corr: f32,
     pub controls: &'static [Table],
+    pub pairs: &'static [Pair],
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -57,18 +70,25 @@ pub fn type_table(kind: &str) -> &'static TypeTable {
     TYPES.iter().find(|t| t.kind == kind).copied().unwrap_or(TYPES[TYPES.len() - 1])
 }
 
-/// Parameter indices of a type's controls, in table order.
-pub fn control_indices(table: &TypeTable) -> Vec<usize> {
-    let spec = &crate::params::MODULES[crate::params::kind_of("FXReverb").expect("FXReverb")];
-    table.controls.iter().map(|c| spec.index_of(c.key).expect("reverb control")).collect()
+/// Parameter indices of a type's controls and pairs, in table order.
+pub struct Indices {
+    controls: Vec<usize>,
+    pairs: Vec<(usize, usize)>,
 }
 
-pub fn evaluate(table: &TypeTable, indices: &[usize], p: &FxParams) -> Metrics {
+pub fn indices(table: &TypeTable) -> Indices {
+    let spec = &crate::params::MODULES[crate::params::kind_of("FXReverb").expect("FXReverb")];
+    let index = |key| spec.index_of(key).expect("reverb control");
+    Indices {
+        controls: table.controls.iter().map(|c| index(c.key)).collect(),
+        pairs: table.pairs.iter().map(|q| (index(q.a), index(q.b))).collect(),
+    }
+}
+
+pub fn evaluate(table: &TypeTable, indices: &Indices, p: &FxParams) -> Metrics {
     let mut m = Metrics { t60: table.t60, low: table.low, upper: table.upper, high: table.high, level: table.level, onset_ms: table.onset, corr: table.corr, low_cut_hz: 0.0 };
     let (mut t60, mut low, mut upper, mut high) = (0.0, 0.0, 0.0, 0.0);
-    for (control, &index) in table.controls.iter().zip(indices) {
-        let x = p.get(index);
-        let d = interpolate(control.points, x);
+    let mut add = |d: Point| {
         t60 += d.t60;
         low += d.low;
         upper += d.upper;
@@ -77,24 +97,32 @@ pub fn evaluate(table: &TypeTable, indices: &[usize], p: &FxParams) -> Metrics {
         m.onset_ms += d.onset;
         m.corr += d.corr;
         m.low_cut_hz = m.low_cut_hz.max(d.low_cut);
+    };
+    for (control, &index) in table.controls.iter().zip(&indices.controls) {
+        let x = p.get(index);
+        let mut d = interpolate(control.points, x);
         let last = &control.points[control.points.len() - 1];
         if control.key == "kParamPreDelay" && x > last.at {
-            m.onset_ms += PREDELAY_SLOPE_MS * (x - last.at);
+            d.onset += PREDELAY_SLOPE_MS * (x - last.at);
         }
+        add(d);
+    }
+    for (pair, &(a, b)) in table.pairs.iter().zip(&indices.pairs) {
+        add(interpolate_pair(pair, p.get(a), p.get(b)));
     }
     m.t60 *= t60.exp();
-    m.low *= low.exp();
-    m.upper *= upper.exp();
-    m.high *= high.exp();
+    let ratio = |base: f32, d: f32, (lo, hi): (f32, f32)| (base * d.exp()).clamp(lo, hi);
+    m.low = ratio(m.low, low, RATIO_RANGE[0]);
+    m.upper = ratio(m.upper, upper, RATIO_RANGE[1]);
+    m.high = ratio(m.high, high, RATIO_RANGE[2]);
     m.corr = m.corr.clamp(-1.0, 1.0);
     m.onset_ms = m.onset_ms.max(0.0);
     m
 }
 
-/// Linear interpolation between table points, held at the ends.
-fn interpolate(points: &[Point], x: f32) -> Point {
-    let lerp = |a: &Point, b: &Point, u: f32| Point {
-        at: x,
+fn lerp(a: &Point, b: &Point, u: f32) -> Point {
+    Point {
+        at: a.at + (b.at - a.at) * u,
         t60: a.t60 + (b.t60 - a.t60) * u,
         low: a.low + (b.low - a.low) * u,
         upper: a.upper + (b.upper - a.upper) * u,
@@ -103,16 +131,33 @@ fn interpolate(points: &[Point], x: f32) -> Point {
         onset: a.onset + (b.onset - a.onset) * u,
         corr: a.corr + (b.corr - a.corr) * u,
         low_cut: a.low_cut + (b.low_cut - a.low_cut) * u,
-    };
-    let i = points.iter().position(|q| q.at > x).unwrap_or(points.len());
-    if i == 0 {
-        return lerp(&points[0], &points[0], 0.0);
     }
-    if i == points.len() {
-        return lerp(&points[i - 1], &points[i - 1], 0.0);
+}
+
+/// The segment of sorted `at` values around x and the position in it, held at the ends.
+fn locate(at: impl ExactSizeIterator<Item = f32> + Clone, x: f32) -> (usize, usize, f32) {
+    let n = at.len();
+    let i = at.clone().position(|a| a > x).unwrap_or(n);
+    if i == 0 || i == n {
+        let j = i.saturating_sub(1).min(n - 1);
+        return (j, j, 0.0);
     }
-    let (a, b) = (&points[i - 1], &points[i]);
-    lerp(a, b, (x - a.at) / (b.at - a.at))
+    let (a, b) = (at.clone().nth(i - 1).unwrap(), at.clone().nth(i).unwrap());
+    (i - 1, i, (x - a) / (b - a))
+}
+
+/// Linear interpolation between table points, held at the ends.
+fn interpolate(points: &[Point], x: f32) -> Point {
+    let (i, j, u) = locate(points.iter().map(|q| q.at), x);
+    lerp(&points[i], &points[j], u)
+}
+
+/// Bilinear interpolation on a pair's grid, held at the edges.
+fn interpolate_pair(pair: &Pair, a: f32, b: f32) -> Point {
+    let (i0, i1, u) = locate(pair.a_at.iter().copied(), a);
+    let (j0, j1, v) = locate(pair.b_at.iter().copied(), b);
+    let cell = |i: usize, j: usize| &pair.cells[i * pair.b_at.len() + j];
+    lerp(&lerp(cell(i0, j0), cell(i0, j1), v), &lerp(cell(i1, j0), cell(i1, j1), v), u)
 }
 
 #[cfg(test)]
@@ -128,7 +173,7 @@ mod tests {
         let eval = |values: &[f32]| {
             let p = FxParams { spec, values, offsets: &offsets };
             let table = type_table(p.choice(spec.index_of("kParamType").unwrap()));
-            (table.kind, evaluate(table, &control_indices(table), &p))
+            (table.kind, evaluate(table, &indices(table), &p))
         };
         // A preset without kParamType renders as the unnamed type, at its measured defaults.
         let (kind, m) = eval(&values);

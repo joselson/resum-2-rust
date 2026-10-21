@@ -15,13 +15,14 @@ reverb per-type metrics.
 Remaining, roughly by factory usage:
 
 1. **Reverb leftovers** (425 presets). Per-type metrics are fitted (`fxrv6-` sweeps,
-   `tools/fit_reverb.py`): decay per band, level, onset, width, the unnamed fifth
-   type, predelay. Open:
-   - Abyss controls interact (Mode with Delay and Size; factory modules are 1–3
-     octaves off in T60) and Vintage onsets of factory modules are up to 120 ms off:
-     probe pairs of controls, or fit those types from more factory modules (`fxrvf-`).
-   - Serum's reverb stops when its input falls silent before the tail emerges (a
-     lone click into a large Hall renders nothing); not emulated.
+   `fxrv8-` pair grids, `tools/fit_reverb.py`). Open:
+   - Abyss interactions of three or more controls (factory modules 0.6–1.5 octave
+     off per band; predelay changes the whole structure): more factory modules or a
+     structural Abyss model.
+   - Serum's reverb stops when its input falls silent before the tail emerges; not
+     emulated. Vintage's start-up copy of the input (also not emulated).
+   - Level on held tones (Unnamed Size 90: +3.2 dB) and width (default: +16 dB):
+     the level term is fitted on clicks.
    - Beat-synced predelay; the tail's character (Lumen's FDN only matches the
      metrics); Wet 0 modules (238 factory reverbs) rely on modulated wet.
 2. **Overdrive and tape sat distortion**: not static. Overdrive normalises its input
