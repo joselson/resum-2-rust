@@ -187,16 +187,18 @@ struct Slot {
 impl Slot {
     fn new(m: &ModuleSetup, ctx: &FxContext, max_block: usize) -> Slot {
         let spec = MODULES[m.kind];
-        // Wet/dry is applied here for every module except splits.
+        // Wet/dry is applied here for every module except splits and effects that mix their own.
         let is_split = spec.name.starts_with("FXSplit");
+        let effect = effects::build(spec.name, ctx, m.impulse.as_deref());
+        let wet = spec.index_of("kParamWet").filter(|_| !is_split && !effect.owns_wet());
         Slot {
             spec,
             id: m.id,
             offsets: vec![0.0; m.values.len()],
             values: m.values.clone(),
-            effect: effects::build(spec.name, ctx, m.impulse.as_deref()),
+            effect,
             enable: spec.index_of("kParamEnable"),
-            wet: spec.index_of("kParamWet").filter(|_| !is_split),
+            wet,
             level: spec.index_of("kParamLevelOut"),
             dry: [vec![0.0; max_block], vec![0.0; max_block]],
         }
@@ -457,5 +459,39 @@ mod tests {
             }
             assert!(peak < 8.0, "{} peaked at {peak}", spec.name);
         }
+    }
+    #[test]
+    fn multiband_compressor_matches_probe_points() {
+        // 523 Hz sits in the mid band; Serum's steady gain (fxmb probes): unity at
+        // −31.6 dB peak, −14.4 dB at −0.5 dB, and +2.4 dB at −31.6 dB with RatioBelow 1
+        // (the leakage into the other bands is lifted). At 130.8 Hz, on the low
+        // crossover, wet 50 % still keeps a quiet sine's level (the dry is the band sum).
+        let kind = params::kind_of("FXComp").unwrap();
+        let spec = &MODULES[kind];
+        let gain = |hz: f32, amp: f32, below: f32, wet: f32| {
+            let mut values: Vec<f32> = spec.params.iter().map(|p| p.default_for(0)).collect();
+            values[spec.index_of("kParamMultiband").unwrap()] = 1.0;
+            values[spec.index_of("kParamRatioBelow").unwrap()] = below;
+            values[spec.index_of("kParamWet").unwrap()] = wet;
+            let setup = FxSetup { racks: [vec![NodeSetup::Effect(ModuleSetup { kind, id: 0, values, impulse: None })], vec![], vec![]] };
+            let mut racks = FxRacks::new(&setup, 48000.0, 64);
+            let (mut sum_in, mut sum_out) = (0f64, 0f64);
+            for block in 0..412 {
+                let x: Vec<f32> = (0..64).map(|i| (std::f32::consts::TAU * hz * (block * 64 + i) as f32 / 48000.0).sin() * amp).collect();
+                let (mut l, mut r) = (x.clone(), x.clone());
+                racks.process(0, &mut l, &mut r);
+                if block >= 262 {
+                    sum_in += x.iter().map(|&v| (v * v) as f64).sum::<f64>();
+                    sum_out += l.iter().map(|&v| (v * v) as f64).sum::<f64>();
+                }
+            }
+            10.0 * (sum_out / sum_in).log10()
+        };
+        let quiet = 10f32.powf(-31.6 / 20.0);
+        let loud = 10f32.powf(-0.5 / 20.0);
+        assert!(gain(523.25, quiet, 0.0, 100.0).abs() < 0.1, "{}", gain(523.25, quiet, 0.0, 100.0));
+        assert!((gain(523.25, loud, 0.0, 100.0) + 14.36).abs() < 0.5, "{}", gain(523.25, loud, 0.0, 100.0));
+        assert!((gain(523.25, quiet, 1.0, 100.0) - 2.42).abs() < 0.5, "{}", gain(523.25, quiet, 1.0, 100.0));
+        assert!(gain(130.81, quiet, 0.0, 50.0).abs() < 0.2, "{}", gain(130.81, quiet, 0.0, 50.0));
     }
 }

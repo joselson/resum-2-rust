@@ -21,6 +21,10 @@ FX_CHOICES = {
     ("FXDistortion", "kParamMode"): ["kTube", "kSoftClip", "kHardClip", "kDiode1", "kDiode2", "kLinFold", "kSinFold", "kZeroSquare", "kDownsample", "kAsym", "kRectify", "kXShaper", "kXShaperAsym", "kSineShaper", "kStompBox", "kTapeSat", "kOverdrive", "kSoftSat"],
     ("FXReverb", "kParamType"): ["kHall", "kVintage", "kAbyss", "kSpace"],
 }
+# 0–1 parameters with a whole-number default that are continuous, not toggles (factory
+# presets store fractions for the multiband ratios).
+UNIT_CONTINUOUS = {"kParamFreq", "kParamLevelOut", "kParamThresh", "kParamDepth2", "kParamX", "kParamY", "kParamRatioBelow",
+                   "kParamRatio0", "kParamRatio1", "kParamRatio2", "kParamRatioBelow0", "kParamRatioBelow1", "kParamRatioBelow2"}
 # Defaults the readback search could not pin down (no exact float match), from
 # render probes where noted. (module, param): (default, min, max[, evidence])
 FX_ASSUMED = {
@@ -29,12 +33,14 @@ FX_ASSUMED = {
     # The default renders exactly like 0.0625 (a quarter note; delay probes).
     ("FXDelay", "kParamTimeL"): (0.0625, 0.001, 0.501, "measured"),
     ("FXDelay", "kParamTimeR"): (0.0625, 0.001, 0.501, "measured"),
-    # Measured: the default compressor barely changes level, so the default ratio is ~1:1.
-    ("FXComp", "kParamRatio"): (1.0, 1.0, 1000000.0),
-    ("FXComp", "kParamAttack"): (10.0, 0.1, 1000.0),
-    ("FXComp", "kParamRelease"): (100.0, 0.1, 1000.0),
-    ("FXComp", "kParamXoverLow"): (300.0, 20.0, 5000.0),
-    ("FXComp", "kParamXoverHi"): (2500.0, 300.0, 18000.0),
+    # The defaults render like ratio 4 with equal attack and release; the limiter's
+    # lookahead (1 ms + attack/200) puts attack near 90 (compressor probes).
+    ("FXComp", "kParamRatio"): (4.0, 1.0, 1000000.0, "measured"),
+    ("FXComp", "kParamAttack"): (90.0, 0.1, 1000.0, "measured"),
+    ("FXComp", "kParamRelease"): (90.0, 0.1, 1000.0, "measured"),
+    # Multiband crossovers: LR4 band shares of sines at three notes (fxmb probes).
+    ("FXComp", "kParamXoverLow"): (128.0, 20.0, 5000.0, "measured"),
+    ("FXComp", "kParamXoverHi"): (2500.0, 300.0, 18000.0, "measured"),
     ("FXComp", "kParamDeadband1"): (11.6, 3.0, 24.0),
     ("FXComp", "kParamDeadband2"): (5.3, 3.0, 24.0),
     ("FXEQ", "kParamFreq1"): (200.0, 21.5332, 20000.0),
@@ -296,7 +302,7 @@ def main():
             if lo is None or hi is None or default is None:
                 lo, hi, default, evidence = 0.0, 1.0, 0.0, "assumed"
             lo, hi = min(lo, hi, default), max(lo, hi, default)
-            if lo == 0 and hi == 1 and float(default).is_integer() and name not in ("kParamFreq", "kParamLevelOut", "kParamThresh", "kParamDepth2", "kParamX", "kParamY"):
+            if lo == 0 and hi == 1 and float(default).is_integer() and name not in UNIT_CONTINUOUS:
                 curve = ("toggle",)
             elif r.get("default_curve") == "power2" or name == "kParamPreDelay":
                 curve = ("power", clean(lo), clean(hi), 2.0)

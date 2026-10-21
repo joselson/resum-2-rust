@@ -1,11 +1,11 @@
 //! Effect implementations. Each `process` produces the fully wet signal; the
-//! rack applies enable, wet/dry and output level. Parameter scales marked
+//! rack applies enable, wet/dry (unless the effect owns it) and output level. Parameter scales marked
 //! "assumed" await calibration against render probes (docs/CALIBRATION.md).
 
 use super::{FxContext, FxParams};
 use crate::filters::{self, cutoff_hz};
 use crate::params::index;
-use lumen_dsp::biquad::{Biquad, Shape};
+use lumen_dsp::biquad::{Biquad, Crossover, Shape};
 use lumen_dsp::convolver::Convolver;
 use lumen_dsp::delay::DelayLine;
 use lumen_dsp::filter::{Filter, FilterKind};
@@ -18,6 +18,10 @@ use std::f32::consts::TAU;
 pub trait Effect: Send {
     fn process(&mut self, p: &FxParams, l: &mut [f32], r: &mut [f32], ctx: &FxContext);
     fn reset(&mut self) {}
+    /// True when the effect applies kParamWet itself (the rack then leaves it alone).
+    fn owns_wet(&self) -> bool {
+        false
+    }
 }
 
 pub fn build(name: &str, ctx: &FxContext, impulse: Option<&SampleData>) -> Box<dyn Effect> {
@@ -31,7 +35,7 @@ pub fn build(name: &str, ctx: &FxContext, impulse: Option<&SampleData>) -> Box<d
         "FXChorus" => Box::new(Chorus::new(sr)),
         "FXFlanger" => Box::new(Flanger::new(sr)),
         "FXPhaser" => Box::new(Phaser::default()),
-        "FXComp" => Box::new(Comp::default()),
+        "FXComp" => Box::new(Comp::new(sr)),
         "FXReverb" => Box::new(ReverbFx { reverb: Reverb::new(sr) }),
         "FXHyperD" => Box::new(Hyper::new(sr)),
         "FXBode" => Box::new(Bode::new(sr)),
@@ -580,40 +584,276 @@ impl Effect for Phaser {
 
 // ---------------------------------------------------------------- Compressor
 
-#[derive(Default)]
+/// Compressor (measured with sines and squares at stepped levels and level steps;
+/// docs/CALIBRATION.md). Single-band: ratios below 100 compress from a smoothed
+/// overshoot; higher ratios switch to a lookahead brickwall limiter. Multiband: three
+/// LR4 bands, each with downward and upward compression. Both paths end in a hard clip
+/// and a 12 Hz DC blocker, and the module mixes its own wet signal (linear crossfade
+/// against the dry path: delayed by the limiter's lookahead, or the band sum).
 struct Comp {
-    env: f32,
+    /// Smoothed overshoot above the threshold (dB).
+    over: f32,
+    lookahead: [DelayLine; 2],
+    /// Lookahead window maximum: (sample index, level), levels decreasing.
+    peaks: std::collections::VecDeque<(u64, f32)>,
+    clock: u64,
+    dc: [(f32, f32); 2],
+    /// Multiband split per channel: low crossover, the allpass that keeps the low
+    /// band in phase with the upper crossover, upper crossover.
+    split: [[Crossover; 3]; 2],
+    /// Multiband detector per band (stereo-linked): smoothed |x|, then its follower.
+    level: [f32; 3],
+    env: [f32; 3],
+}
+
+/// Multiband detector coefficients for one block.
+struct MbTimes {
+    level: f32,
+    att: f32,
+    rel: f32,
+}
+
+/// Per-band multiband settings for one block.
+struct MbBand {
+    /// Downward threshold (dB, on the detector level) and slope.
+    td: f32,
+    kd: f32,
+    /// Upward threshold and slope (negative: expansion below the threshold).
+    tu: f32,
+    ku: f32,
+    gain: f32,
+}
+
+/// Multiband detector: |x| smoothed with a 0.43 ms one-pole, then a follower with a
+/// fixed 1.5 ms attack (kParamAttack has no effect) and 0.97 × release, at least 10 ms.
+const MB_LEVEL_MS: f32 = 0.43;
+const MB_ATTACK_MS: f32 = 1.52;
+const MB_RELEASE_SCALE: f32 = 0.969;
+const MB_MIN_RELEASE_MS: f32 = 10.0;
+/// Multiband thresholds at kParamThresh 0.5 on the detector level; low/mid/high differ.
+const MB_THRESH_DB: [f32; 3] = [-23.35, -22.48, -30.01];
+/// Mid-band threshold shift (dB) from kParamThresh 0.5, measured at these values; the
+/// low and high bands move about 1.1× and 1.2× as far.
+const MB_THRESH_SHIFT: [(f32, f32); 9] = [
+    (0.25, 22.68),
+    (0.3, 19.35),
+    (0.4, 10.88),
+    (0.45, 5.74),
+    (0.5, 0.0),
+    (0.55, -6.38),
+    (0.6, -13.37),
+    (0.75, -37.82),
+    (0.9, -67.5),
+];
+const MB_THRESH_BAND_SCALE: [f32; 3] = [1.1, 1.0, 1.2];
+/// dB per kParamThreshUD unit away from 100.
+const MB_THRESH_UD_DB: f32 = 0.24;
+const MB_MAX_DOWN_DB: f32 = 40.0;
+const MB_MAX_UP_DB: f32 = 35.2;
+/// Upward thresholds sit Deadband below the downward ones, plus these per band.
+const MB_UP_OFFSET_DB: [f32; 3] = [-1.08, 0.17, 0.89];
+
+/// Mid-band threshold shift for kParamThresh `t`: the measured table, interpolated in
+/// t and extended past both ends along the end segment in log10(1 − t).
+fn mb_thresh_shift(t: f32) -> f32 {
+    let n = MB_THRESH_SHIFT.len();
+    let i = MB_THRESH_SHIFT.iter().position(|&(at, _)| at > t).unwrap_or(n).clamp(1, n - 1);
+    let ((t0, s0), (t1, s1)) = (MB_THRESH_SHIFT[i - 1], MB_THRESH_SHIFT[i]);
+    if (t0..=t1).contains(&t) {
+        return s0 + (s1 - s0) * (t - t0) / (t1 - t0);
+    }
+    let x = |t: f32| (1.0 - t).max(1e-6).log10();
+    let (ta, sa) = if t < t0 { (t0, s0) } else { (t1, s1) };
+    sa + (s1 - s0) / (x(t1) - x(t0)) * (x(t) - x(ta))
+}
+
+/// Threshold at kParamThresh 0 (dB inside the rack); it falls as 60·log10(1 − t),
+/// floored 120 dB down.
+const COMP_THRESH_TOP_DB: f32 = 10.51;
+/// Ratios at or above this act as a limiter (50 still compresses; 100 limits).
+const COMP_LIMIT_RATIO: f32 = 100.0;
+const COMP_CLIP: f32 = 3.3126;
+const COMP_DC_HZ: f32 = 11.985;
+const COMP_MAX_LOOKAHEAD_S: f32 = 0.0065;
+
+impl Comp {
+    fn new(sr: f32) -> Self {
+        let n = (COMP_MAX_LOOKAHEAD_S * sr).ceil() as usize + 2;
+        Comp {
+            over: 0.0,
+            lookahead: [DelayLine::new(n), DelayLine::new(n)],
+            peaks: std::collections::VecDeque::with_capacity(n + 1),
+            clock: 0,
+            dc: [(0.0, 0.0); 2],
+            split: Default::default(),
+            level: [0.0; 3],
+            env: [0.0; 3],
+        }
+    }
+
+    /// Output clip and DC blocker, shared by both paths.
+    fn output(&mut self, ch: usize, y: f32, dc: f32) -> f32 {
+        let y = y.clamp(-COMP_CLIP, COMP_CLIP);
+        let (x1, y1) = self.dc[ch];
+        let hp = 0.5 * (1.0 + dc) * (y - x1) + dc * y1;
+        self.dc[ch] = (y, hp);
+        hp
+    }
+
+    /// Splits one stereo sample into three bands, compresses each and sums them.
+    /// Returns (compressed, dry band sum): wet/dry mixes against the band sum, which
+    /// carries the crossovers' phase.
+    fn multiband(&mut self, bands: &[MbBand; 3], times: &MbTimes, x: [f32; 2]) -> ([f32; 2], [f32; 2]) {
+        let mut split = [[0.0; 3]; 2];
+        for (ch, s) in split.iter_mut().enumerate() {
+            let [low_xo, allpass, high_xo] = &mut self.split[ch];
+            let (low, rest) = low_xo.split(x[ch]);
+            let (a, b) = allpass.split(low);
+            let (mid, high) = high_xo.split(rest);
+            *s = [a + b, mid, high];
+        }
+        let dry = split.map(|s| s.iter().sum());
+        let mut y = [0.0; 2];
+        for (b, band) in bands.iter().enumerate() {
+            let rect = split[0][b].abs().max(split[1][b].abs());
+            self.level[b] = rect + times.level * (self.level[b] - rect);
+            let level = self.level[b];
+            let k = if level > self.env[b] { times.att } else { times.rel };
+            self.env[b] = level + k * (self.env[b] - level);
+            let e = 20.0 * self.env[b].max(1e-12).log10();
+            let down = (band.kd * (e - band.td)).clamp(0.0, MB_MAX_DOWN_DB);
+            let up = (band.ku * (band.tu - e).max(0.0)).clamp(-MB_MAX_UP_DB, MB_MAX_UP_DB);
+            let g = db(up - down) * band.gain;
+            y[0] += split[0][b] * g;
+            y[1] += split[1][b] * g;
+        }
+        (y, dry)
+    }
 }
 
 impl Effect for Comp {
+    fn owns_wet(&self) -> bool {
+        true
+    }
+
     fn process(&mut self, p: &FxParams, l: &mut [f32], r: &mut [f32], ctx: &FxContext) {
+        const WET: usize = index("FXComp", "kParamWet");
         const THRESH: usize = index("FXComp", "kParamThresh");
         const RATIO: usize = index("FXComp", "kParamRatio");
         const ATTACK: usize = index("FXComp", "kParamAttack");
         const RELEASE: usize = index("FXComp", "kParamRelease");
         const MAKEUP: usize = index("FXComp", "kParamMakeup");
+        const MULTIBAND: usize = index("FXComp", "kParamMultiband");
+        const XOVER_LOW: usize = index("FXComp", "kParamXoverLow");
+        const XOVER_HIGH: usize = index("FXComp", "kParamXoverHi");
+        const RATIO_BELOW: usize = index("FXComp", "kParamRatioBelow");
+        const THRESH_UD: [usize; 3] =
+            [index("FXComp", "kParamThreshUD0"), index("FXComp", "kParamThreshUD1"), index("FXComp", "kParamThreshUD2")];
+        const RATIO_B: [usize; 3] =
+            [index("FXComp", "kParamRatio0"), index("FXComp", "kParamRatio1"), index("FXComp", "kParamRatio2")];
+        const RATIO_BELOW_B: [usize; 3] = [
+            index("FXComp", "kParamRatioBelow0"),
+            index("FXComp", "kParamRatioBelow1"),
+            index("FXComp", "kParamRatioBelow2"),
+        ];
+        const DEADBAND: [usize; 3] =
+            [index("FXComp", "kParamDeadband0"), index("FXComp", "kParamDeadband1"), index("FXComp", "kParamDeadband2")];
+        const GAIN: [usize; 3] = [index("FXComp", "kParamGain0"), index("FXComp", "kParamGain1"), index("FXComp", "kParamGain2")];
         let sr = ctx.sample_rate;
-        // Threshold is a depth below 0 dB: −32·t dB (measured with a limiter ratio:
-        // t ≤ 0.25 leaves a −10.7 dB peak untouched, t = 0.5 holds it near −16 dB).
-        let thresh_db = -32.0 * p.get(THRESH);
+        let wet = (p.get(WET) / 100.0).clamp(0.0, 1.0);
+        let t = p.get(THRESH).clamp(0.0, 1.0);
+        let thresh_db = COMP_THRESH_TOP_DB + 20.0 * (1.0 - t).powi(3).max(1e-6).log10();
         let ratio = p.get(RATIO).max(1.0);
-        let att = (-1.0 / (p.get(ATTACK).max(0.05) * 0.001 * sr)).exp();
-        let rel = (-1.0 / (p.get(RELEASE).max(0.05) * 0.001 * sr)).exp();
-        let makeup = db(p.get(MAKEUP));
+        let multiband = p.get(MULTIBAND) >= 0.5;
+        let limiter = !multiband && ratio >= COMP_LIMIT_RATIO;
+        let slope = 1.0 - 1.0 / ratio;
+        let attack_ms = p.get(ATTACK).max(0.1);
+        let release_ms = p.get(RELEASE).max(0.1);
+        // Attack reaches 90 % of a step in the set time; release is one time constant
+        // (0.96×; the limiter releases about three times faster).
+        let att = (-std::f32::consts::LN_10 / (attack_ms * 0.001 * sr)).exp();
+        let rel = (-1.0 / ((if limiter { 0.35 } else { 0.963 }) * release_ms * 0.001 * sr)).exp();
+        // Makeup is a linear gain: values up to 1 leave the level, then 1.033 per unit.
+        let makeup = 1.0 + 1.033 * (p.get(MAKEUP) - 1.0).max(0.0);
+        // The limiter looks ahead 1 ms + attack/200 (output and dry delayed alike).
+        let ahead = if limiter { ((0.001 + attack_ms * 0.000005) * sr).round() as usize } else { 0 };
+        let ahead = ahead.min(self.lookahead[0].capacity() - 1);
+        let dc = (-TAU * COMP_DC_HZ / sr).exp();
+        let bands = multiband.then(|| {
+            let (low_hz, high_hz) = (p.get(XOVER_LOW), p.get(XOVER_HIGH));
+            for [low_xo, allpass, high_xo] in &mut self.split {
+                low_xo.set(low_hz, sr);
+                allpass.set(high_hz, sr);
+                high_xo.set(high_hz, sr);
+            }
+            let coef = |ms: f32| (-1.0 / (ms * 0.001 * sr)).exp();
+            let times = MbTimes {
+                level: coef(MB_LEVEL_MS),
+                att: coef(MB_ATTACK_MS),
+                rel: coef(MB_RELEASE_SCALE * release_ms.max(MB_MIN_RELEASE_MS)),
+            };
+            let shift = mb_thresh_shift(t);
+            let bands: [MbBand; 3] = std::array::from_fn(|b| {
+                let td = MB_THRESH_DB[b] + MB_THRESH_BAND_SCALE[b] * shift + MB_THRESH_UD_DB * (p.get(THRESH_UD[b]) - 100.0);
+                MbBand {
+                    td,
+                    kd: slope * p.get(RATIO_B[b]).max(0.0),
+                    tu: td - p.get(DEADBAND[b]) + MB_UP_OFFSET_DB[b],
+                    // Band RatioBelow 0.5 is flat; below it expands.
+                    ku: p.get(RATIO_BELOW) * (2.0 * p.get(RATIO_BELOW_B[b]) - 1.0),
+                    gain: db(p.get(GAIN[b])),
+                }
+            });
+            (bands, times)
+        });
         for i in 0..l.len() {
-            let level = l[i].abs().max(r[i].abs());
-            let coef = if level > self.env { att } else { rel };
-            self.env = level + coef * (self.env - level);
-            let env_db = 20.0 * self.env.max(1e-6).log10();
-            let over = env_db - thresh_db;
-            let gain = if over > 0.0 { db(-over * (1.0 - 1.0 / ratio)) } else { 1.0 };
-            l[i] *= gain * makeup;
-            r[i] *= gain * makeup;
+            let (x_l, x_r) = (l[i], r[i]);
+            if let Some((bands, times)) = &bands {
+                let (y, dry) = self.multiband(bands, times, [x_l, x_r]);
+                for (ch, out) in [&mut l[i], &mut r[i]].into_iter().enumerate() {
+                    *out = dry[ch] + wet * (self.output(ch, y[ch] * makeup, dc) - dry[ch]);
+                }
+                continue;
+            }
+            self.lookahead[0].push(x_l);
+            self.lookahead[1].push(x_r);
+            let level = x_l.abs().max(x_r.abs());
+            let over_now = if limiter {
+                while self.peaks.back().is_some_and(|&(_, v)| v <= level) {
+                    self.peaks.pop_back();
+                }
+                self.peaks.push_back((self.clock, level));
+                while self.peaks.front().is_some_and(|&(at, _)| at + (ahead as u64) < self.clock) {
+                    self.peaks.pop_front();
+                }
+                let peak = self.peaks.front().map_or(0.0, |&(_, v)| v);
+                (20.0 * peak.max(1e-9).log10() - thresh_db).max(0.0)
+            } else {
+                (20.0 * level.max(1e-9).log10() - thresh_db).max(0.0)
+            };
+            self.clock += 1;
+            if over_now > self.over {
+                self.over = if limiter { over_now } else { over_now + att * (self.over - over_now) };
+            } else {
+                self.over = over_now + rel * (self.over - over_now);
+            }
+            let reduction = if limiter { self.over } else { slope * self.over };
+            let gain = db(-reduction.min(200.0)) * makeup;
+            let dry = [self.lookahead[0].read(ahead as f32), self.lookahead[1].read(ahead as f32)];
+            for (ch, out) in [&mut l[i], &mut r[i]].into_iter().enumerate() {
+                *out = dry[ch] + wet * (self.output(ch, dry[ch] * gain, dc) - dry[ch]);
+            }
         }
     }
 
     fn reset(&mut self) {
-        self.env = 0.0;
+        self.over = 0.0;
+        self.lookahead.iter_mut().for_each(DelayLine::clear);
+        self.peaks.clear();
+        self.dc = [(0.0, 0.0); 2];
+        self.split = Default::default();
+        self.level = [0.0; 3];
+        self.env = [0.0; 3];
     }
 }
 

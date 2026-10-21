@@ -7,19 +7,13 @@ for the method and what is already fitted, [PARITY.md](PARITY.md) for feature st
 ## 4. FX character (in progress)
 
 Done: EQ, delay (times, feedback, ping-pong, reverse, filter), FX filter, distortion
-(9 static modes, downsample, pre/post filter).
+(9 static modes, downsample, pre/post filter), compressor: single-band (threshold,
+ratio and limiter paths, attack/release, makeup, output clip, wet) and multiband
+(crossovers, detector, per-band thresholds, ratios, upward compression, gains).
 
 Remaining, roughly by factory usage:
 
-1. **Compressor** (540 instances in factory presets, 205 of them multiband).
-   - Single band: static curve (threshold, ratio, knee, makeup) from a sine at
-     stepped input levels (sub sine plus FX Utility boost stages, as the
-     distortion probes do); attack/release from level steps.
-   - Known gaps: ~3 dB over-compression at limiter settings; default ratio ≈ 1:1.
-   - Multiband: crossovers (`kParamXoverLow/Hi`), per-band upward/downward
-     thresholds (`kParamThreshUD0–2`), ratios above/below, gains, deadband.
-     Serum is −8.6 dB at defaults; Lumen does not model it.
-2. **Reverb** (425 presets).
+1. **Reverb** (425 presets).
    - The type stored when none is set is a fifth, unnamed type (101 presets);
      Hall/Vintage/Abyss/Space are stored explicitly. Lumen maps "default" to Hall.
    - Feedback does not set the decay for Hall, Abyss or the default type; size does.
@@ -28,16 +22,22 @@ Remaining, roughly by factory usage:
      those types do not. Find a probe setup that renders like the factory presets
      (e.g. start from a factory reverb module and change one control) before fitting.
    - Then fit decay per octave band, predelay, early level, width per type.
-3. **Overdrive and tape sat distortion**: not static. Overdrive normalises its input
+2. **Overdrive and tape sat distortion**: not static. Overdrive normalises its input
    by the signal level (curves coincide once x is divided by the input amplitude);
    tape sat folds level-dependently. Model the level detector, then refit.
-4. **Rarer distortion modes**: linear/sine fold, X-shaper (asym), rectify, sine
+3. **Rarer distortion modes**: linear/sine fold, X-shaper (asym), rectify, sine
    shaper (show filtering/hysteresis in the transfer curves).
-5. **Modulation effects**: chorus (+3.3 dB, −6.7 dB width at 100 % wet),
+4. **Modulation effects**: chorus (+3.3 dB, −6.7 dB width at 100 % wet),
    flanger, phaser (brightness), hyper/dimension (width −9.5 dB), Bode shift scale.
-6. **Convolution** level and IR handling; **FX Utility** remaining controls.
-7. Distortion filter top-octave shape (Serum falls more gently than an RBJ biquad);
+5. **Convolution** level and IR handling; **FX Utility** remaining controls.
+6. Distortion filter top-octave shape (Serum falls more gently than an RBJ biquad);
    FX filter top-octave differences by type.
+7. **Compressor leftovers**: single-band ratios between 50 and 100, its detector on
+   non-sine material and the limiter release after deep drops; multiband extreme
+   Deadband values (≈ 1 dB off at 3 and 24), moved crossovers (0.9 dB at 300 Hz), the
+   multiband expansion limit (band RatioBelow < 0.5; capped like the upward lift,
+   unmeasured), stereo linking. Factory presets that still differ through long
+   chains: BA - Lately Bass 2025, LD - Grunging Grime, EP - Time Capsule.
 
 ## 5. Arpeggiator and clip player
 

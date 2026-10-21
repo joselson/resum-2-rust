@@ -73,9 +73,8 @@ slots agree).
 | Behaviour | Measured |
 |---|---|
 | FX output level | 0.5 = unity, squared (0.25 → −12 dB) |
-| Wet/dry | equal-power (partial mixes keep level) |
+| Wet/dry | equal-power (partial mixes keep level); the compressor crossfades linearly |
 | Distortion | −11 dB output trim after the shaper |
-| Compressor threshold | depth below 0 dB, ≈ −32·t dB; default ratio ≈ 1:1 |
 | Delay | free time in seconds |
 | Reverb width | 0–100 %, default 20 % |
 | Bode width | spreads up-shift left, down-shift right |
@@ -83,7 +82,11 @@ slots agree).
 
 Step 4 measurements (`fxr-` responses through `tools/filter_response.py --prefix fxr`,
 `fxd*` distortion transfer curves through `tools/fit_distortion.py`, `fxdl*` delay
-taps from a click, `fxrv*` reverb impulses):
+taps from a click, `fxrv*` reverb impulses, `fxc-`/`fxcr-` compressor static curves
+through `tools/fit_comp.py` and `fxct-`/`fxcr-step-` level steps; `fxmb-`/`fxmbsq-`
+multiband static curves of sines and squares at notes 48, 72, 96 — on and either side
+of the crossovers, so band shares and leakage separate the bands — and `fxmbt-`
+multiband level steps):
 
 | Behaviour | Measured | Fit |
 |---|---|---|
@@ -97,6 +100,19 @@ taps from a click, `fxrv*` reverb impulses):
 | Delay filter | 2-pole band-pass, 0 dB peak, 1/Q ≈ 2^(BW − 1.2) | ≈ 1 dB |
 | Delay mode 2 | reverse: each chunk plays the one two back reversed, ×2 output, 5 ms edge fades | ≈ 1 dB envelope |
 | FX filter | the voice-filter models, best at 2× oversampling | 0.67 dB mean |
+| Compressor threshold | 3.354·(1 − t)³ in amplitude inside the rack (+10.5 dB at 0, −7.55 dB at the default 0.5), floored 120 dB down | 0.1 dB |
+| Compressor defaults | ratio 4, attack ≈ 90, release ≈ 90 (equal attack and release render alike; the limiter's lookahead pins attack) | 0.05 dB |
+| Compressor (ratio < 100) | per-sample overshoot 20·log10(max \|L\|,\|R\|) − threshold, floored at 0, smoothed in dB: attack τ = attack/ln 10 (90 % in the set time), release τ = 0.96·release; gain −(1 − 1/ratio)·overshoot; no knee | 0.1 dB static and steps |
+| Compressor (ratio ≥ 100) | brickwall limiter: lookahead 1 ms + attack/200 (output and dry delayed), window peak, instant attack, release τ ≈ 0.35·release; 50 still compresses | 0.1 dB static, ≈ 1 dB release |
+| Compressor makeup | linear gain 1 + 1.033·(m − 1), none up to 1 | 0.03 dB |
+| Compressor output | hard clip at ±3.313 inside the rack, then a one-pole 12.0 Hz high-pass (wet path) | 2·10⁻⁸ relative error |
+| Compressor wet | linear crossfade with the aligned dry, compensated or not | 0.03 dB |
+| Multiband split | LR4 crossovers, defaults 128 Hz and 2.5 kHz; the low band passes an allpass at the upper crossover; band gains (±24 dB) apply after detection | 0.03 dB |
+| Multiband detector | per band (stereo link assumed): \|x\| through a 0.43 ms one-pole, then a follower with a fixed 1.5 ms attack (kParamAttack unused) and release τ = 0.97·max(release, 10 ms) | onset 0.4 dB, release ramps 0.2 dB |
+| Multiband downward | hard knee at −23.35 / −22.48 / −30.01 dB (low/mid/high) on the detector level at Thresh 0.5; ThreshUD 0.24 dB per unit from 100; slope (1 − 1/ratio)·Ratio*b*, no limiter path; reduction at most 40 dB | 0.13 dB mean over 1463 points |
+| Multiband threshold | mid-band shift +22.7, +19.4, +10.9, +5.7, 0, −6.4, −13.4, −37.8, −67.5 dB at Thresh 0.25–0.9 (not a single log law); low and high bands move ≈ 1.1× and 1.2× as far | 0.05–0.2 dB per point |
+| Multiband upward | below threshold − Deadband*b* (+ −1.1 / +0.2 / +0.9 dB), slope RatioBelow·(2·RatioBelow*b* − 1), lift at most 35.2 dB; RatioBelow*b* < 0.5 expands; leakage into the other bands is lifted too (+2.4 dB on a mid-band sine) | 0.2 dB, ≈ 1 dB at Deadband 3/24 |
+| Multiband makeup, output, wet | as single-band; the dry for the wet mix is the band sum (no cancellation at the crossovers) | 0.1 dB |
 | Sub volume | level ∝ √volume (0.5625 and 1.0 measured) | 0.0 dB |
 | Amp envelope | evaluated per sample (a 2 ms click lost its peak at block rate) | click energy exact |
 
@@ -105,14 +121,22 @@ folding) are not static and keep the generic shapers, as do the folders, X-shape
 rectify and sine shaper; the distortion filter's top-octave shape; reverb (the omitted
 type is a fifth, unnamed type; feedback does not set decay for Hall, Abyss or it;
 several isolated probes render silence in the headless rig while factory presets do
-not); compressor and multiband compressor (205 of 540 factory compressors); chorus,
-phaser, flanger, hyper/dimension, Bode, convolution levels.
+not); the compressor's detector on non-sine material (a square measured 0.3 dB off
+a sine at equal peak), ratios between 50 and 100, the limiter's release just after a
+deep drop (a quick partial release, then a slower one); multiband extreme Deadband
+values, moved crossovers (0.9 dB at 300 Hz), the expansion limit, stereo linking;
+chorus, phaser, flanger, hyper/dimension, Bode,
+convolution levels.
 
-FX probe set (30 single-module probes on Init): within 1.3 dB loudness on
-average. Open: reverb decay and width at large sizes, chorus at full wet, phaser
+FX probe set (30 single-module probes on Init): within 0.3 dB loudness on
+average (score 0.53). Open: reverb decay and width at large sizes, chorus at full wet, phaser
 brightness, hyper/dimension character, Bode shift scale, EQ shelf frequency and
-Q, compressor detector (3 dB over-compression at limiter settings), multiband
-compression (Serum −8.6 dB at defaults; not modelled).
+Q.
+
+Factory set (60 presets): 6.79 → 6.54 with the single-band compressor (loudness
+error 10.7 → 9.7 dB), 6.43 with the multiband (9.4 dB); against single-band only, 11
+presets better and 4 worse (most "BA - Lately Bass 2025", "LD - Grunging Grime" and
+"EP - Time Capsule", whose compressors sit behind long distortion/filter chains).
 
 ## Warp and sample findings
 

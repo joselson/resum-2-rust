@@ -94,6 +94,30 @@ const DIST_SHAPED = ["kTube", "kSoftClip", "kHardClip", "kDiode1", "kDiode2", "k
 // A click: OSC A at C5 with an instant amp envelope (decay and release at minimum, sustain 0).
 const CLICK = [["Oscillator0.WTOsc0", "kParamRandomPhase", 0], ["Env0", "kParamAttack", 0], ["Env0", "kParamDecay", 0.002], ["Env0", "kParamSustain", 0], ["Env0", "kParamRelease", 0.002]];
 const LFO_VOL = [["Oscillator0", "kParamVolume", 0], ["Oscillator0.WTOsc0", "kParamRandomPhase", 0], ["__mod", 0, [6, 0], "Oscillator", 0, "kParamVolume", 1, { kParamAmount: 100 }]];
+// Compressor probe input levels (FX Utility output per stage) and settings.
+const COMP_LEVELS = [0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1].map((l) => [`u${l}`, [l]]).concat([["u1x2", [1, 1]]]);
+const COMP_SETTINGS = {
+  default: {},
+  ...Object.fromEntries([0, 0.1, 0.25, 0.5, 0.75, 1].map((t) => [`limit-${t}`, { kParamThresh: t, kParamRatio: 1000000 }])),
+  ...Object.fromEntries([1, 1.5, 2, 4, 10].map((r) => [`ratio-${r}`, { kParamThresh: 0.5, kParamRatio: r }])),
+  ...Object.fromEntries([6, 31].map((m) => [`makeup-${m}`, { kParamThresh: 0.5, kParamRatio: 4, kParamMakeup: m }])),
+  ...Object.fromEntries([0.25, 0.75].map((o) => [`out-${o}`, { kParamThresh: 0.5, kParamRatio: 4, kParamLevelOut: o }])),
+  "wet-50": { kParamThresh: 0.5, kParamRatio: 1000000, kParamWet: 50 },
+};
+const MB_SETTINGS = {
+  default: {},
+  xover: { kParamXoverLow: 300, kParamXoverHi: 2500 },
+  ...Object.fromEntries([0, 1, 2].flatMap((b) => [[`thud${b}-50`, { [`kParamThreshUD${b}`]: 50 }], [`thud${b}-150`, { [`kParamThreshUD${b}`]: 150 }], [`gain${b}-12`, { [`kParamGain${b}`]: 12 }]])),
+  "ratio0-0": { kParamRatio0: 0 }, "below0-0": { kParamRatioBelow0: 0 }, "below-1": { kParamRatioBelow: 1 },
+  "deadband0-24": { kParamDeadband0: 24 }, "deadband0-3": { kParamDeadband0: 3 },
+  "thresh-0.75": { kParamThresh: 0.75 }, "ratio-1e6": { kParamRatio: 1000000 },
+  ...Object.fromEntries([0.25, 0.3, 0.4, 0.45, 0.55, 0.6, 0.9].map((t) => [`thresh-${t}`, { kParamThresh: t }])),
+  ...Object.fromEntries([0, 1, 2].flatMap((b) => [3, 24].map((d) => [`below-1-db${b}-${d}`, { kParamRatioBelow: 1, [`kParamDeadband${b}`]: d }]))),
+  "below-0.5": { kParamRatioBelow: 0.5 }, ...Object.fromEntries([0.25, 0.5, 0.75, 0.9].map((v) => [`below-1-below1-${v}`, { kParamRatioBelow: 1, kParamRatioBelow1: v }])),
+  "ratio1-0.5": { kParamRatio1: 0.5 }, "ratio-2": { kParamRatio: 2 }, "ratio-10": { kParamRatio: 10 },
+  fast: { kParamAttack: 0.1, kParamRelease: 30 }, "att-10": { kParamAttack: 10 }, "rel-10": { kParamRelease: 10 },
+  "below-1-fast": { kParamRatioBelow: 1, kParamAttack: 0.1, kParamRelease: 30 }, "wet-50": { kParamWet: 50 }, "makeup-4": { kParamMakeup: 4 },
+};
 const probes = {
   "init": [],
   "osc-octave-up": [["Oscillator0", "kParamOctave", 1]],
@@ -347,6 +371,29 @@ const probes = {
     ["ff-L12-level1", { kParamType: "L12", kParamFreq: 0.5, kParamLevelOut: 1 }],
     ["ff-default", {}],
   ].map(([n, params]) => [`fxr-${n}`, rack(fx("FXFilter", params))])),
+  // Compressor static curve (fxc-): a sine at 12 input levels (FX Utility stages set the
+  // level; `-dry` renders are the same chain without the compressor) through each setting.
+  ...Object.fromEntries(["sine", "square"].flatMap((shape) => COMP_LEVELS.flatMap(([lv, stages]) => [["dry", null], ...Object.entries(shape === "sine" ? COMP_SETTINGS : { limit: COMP_SETTINGS["limit-0.5"] })].map(([n, params]) => [`fxc-${shape}-${lv}-${n}`, [...SUB_SINE, ...(shape === "square" ? [["Oscillator4.SubOsc4", "kParamShape", "kSquare"]] : []), ...rack(...stages.map((l) => fx("FXUtils", { kParamLevelOut: l })), ...(params ? [fx("FXComp", params)] : []))]])))),
+  // Compressor time constants (fxct-): the sub, +12 dB, steps up at note on and down to
+  // sustain 0.05 after 0.8 s (amp envelope hold); `-dry` has no compressor.
+  ...Object.fromEntries([["dry", null], ...[0.1, 1, 10, 50, 200, 1000].map((a) => [`attack-${a}`, { kParamAttack: a, kParamRelease: 100 }]), ...[5, 50, 100, 300, 1000].map((r) => [`release-${r}`, { kParamAttack: 0.1, kParamRelease: r }])].map(([n, times]) => [`fxct-${n}`, [...SUB_SINE, ["Env0", "kParamAttack", 0], ["Env0", "kParamHold", 0.8], ["Env0", "kParamDecay", 0], ["Env0", "kParamSustain", 0.05], ...rack(fx("FXUtils", { kParamLevelOut: 1 }), ...(times ? [fx("FXComp", { kParamThresh: 0.5, kParamRatio: 1000000, ...times })] : []))]])),
+  // The same steps through the ratio path (ratio 4), plus makeup and ratio-switch points (fxcr-).
+  ...Object.fromEntries([["dry", null], ...[0.1, 1, 10, 100, 1000].map((a) => [`attack-${a}`, { kParamAttack: a, kParamRelease: 100 }]), ...[1, 10, 100, 1000].map((r) => [`release-${r}`, { kParamAttack: 1, kParamRelease: r }])].map(([n, times]) => [`fxcr-step-${n}`, [...SUB_SINE, ["Env0", "kParamAttack", 0], ["Env0", "kParamHold", 0.8], ["Env0", "kParamDecay", 0], ["Env0", "kParamSustain", 0.05], ...rack(fx("FXUtils", { kParamLevelOut: 1 }), ...(times ? [fx("FXComp", { kParamThresh: 0.5, kParamRatio: 4, ...times })] : []))]])),
+  // Multiband detector on a square (its harmonics spread over the bands).
+  ...Object.fromEntries(COMP_LEVELS.flatMap(([lv, stages]) => [["dry", null], ["default", {}], ["fast", MB_SETTINGS.fast]].map(([n, params]) => [`fxmbsq-${lv}-${n}`, [...SUB_SINE, ["Oscillator4.SubOsc4", "kParamShape", "kSquare"], ...rack(...stages.map((l) => fx("FXUtils", { kParamLevelOut: l })), ...(params ? [fx("FXComp", { kParamMultiband: 1, ...params })] : []))]]))),
+  // The same steps through the multiband compressor at its defaults.
+  ...Object.fromEntries([["dry", null], ...[0.1, 1, 10, 100, 1000].map((a) => [`attack-${a}`, { kParamAttack: a, kParamRelease: 100 }]), ...[1, 10, 100, 1000].map((r) => [`release-${r}`, { kParamAttack: 1, kParamRelease: r }])].map(([n, times]) => [`fxmbt-${n}`, [...SUB_SINE, ["Env0", "kParamAttack", 0], ["Env0", "kParamHold", 0.8], ["Env0", "kParamDecay", 0], ["Env0", "kParamSustain", 0.05], ...rack(fx("FXUtils", { kParamLevelOut: 1 }), ...(times ? [fx("FXComp", { kParamMultiband: 1, ...times })] : []))]])),
+  "fxcr-quiet-dry": [...SUB_SINE, ...rack(fx("FXUtils", { kParamLevelOut: 0.05 }))],
+  ...Object.fromEntries([0.5, 1, 1.58, 2.56, 3, 6, 12, 20, 31].map((m) => [`fxcr-quiet-makeup-${m}`, [...SUB_SINE, ...rack(fx("FXUtils", { kParamLevelOut: 0.05 }), fx("FXComp", { kParamMakeup: m }))]])),
+  "fxcr-loud-dry": [...SUB_SINE, ...rack(fx("FXUtils", { kParamLevelOut: 1 }))],
+  ...Object.fromEntries([20, 50, 100, 1000, 10000, 100000, 999999].map((r) => [`fxcr-loud-ratio-${r}`, [...SUB_SINE, ...rack(fx("FXUtils", { kParamLevelOut: 1 }), fx("FXComp", { kParamThresh: 0.5, kParamRatio: r }))]])),
+  ...Object.fromEntries([[0.1, 10], [1, 100], [10, 1000], [50, 500]].map(([a, r]) => [`fxcr-loud-times-${a}-${r}`, [...SUB_SINE, ...rack(fx("FXUtils", { kParamLevelOut: 1 }), fx("FXComp", { kParamThresh: 0.5, kParamRatio: 4, kParamAttack: a, kParamRelease: r }))]])),
+  "fxcr-loud-wet-50-uncomp": [...SUB_SINE, ...rack(fx("FXUtils", { kParamLevelOut: 1 }), fx("FXComp", { kParamThresh: 0.5, kParamRatio: 1000000, kParamWet: 50, kParamCompensatedWetDry: 0 }))],
+  "fxcr-loud-square-ratio-4": [...SUB_SINE, ["Oscillator4.SubOsc4", "kParamShape", "kSquare"], ...rack(fx("FXUtils", { kParamLevelOut: 1 }), fx("FXComp", { kParamThresh: 0.5, kParamRatio: 4 }))],
+  "fxcr-loud-square-dry": [...SUB_SINE, ["Oscillator4.SubOsc4", "kParamShape", "kSquare"], ...rack(fx("FXUtils", { kParamLevelOut: 1 }))],
+  // Multiband compressor static curves (fxmb-): the fxc- levels through each multiband
+  // setting; rendered at several notes so the sine falls in each band.
+  ...Object.fromEntries(COMP_LEVELS.flatMap(([lv, stages]) => [["dry", null], ...Object.entries(MB_SETTINGS)].map(([n, params]) => [`fxmb-${lv}-${n}`, [...SUB_SINE, ...rack(...stages.map((l) => fx("FXUtils", { kParamLevelOut: l })), ...(params ? [fx("FXComp", { kParamMultiband: 1, ...params })] : []))]]))),
   "fx-split-dist-high": rack(fx("FXSplit", { kParamFreq: 1000, kParamModuleCount1: 0, kParamModuleCount2: 1 }), fx("FXDistortion", { kParamDrive: 80 })),
 };
 
