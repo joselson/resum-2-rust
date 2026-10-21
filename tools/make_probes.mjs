@@ -1,11 +1,14 @@
 // Generates calibration probe presets: Serum 2's Init state with one change each.
 // usage: node tools/make_probes.mjs INIT_PROCESSOR_STATE OUT_DIR [NAME_REGEX]
+// LUMEN_FACTORY_PRESETS=DIR adds `fxrvf-` probes: reverb modules read from the factory
+// presets at run time (no factory settings are stored here).
 //
 // INIT_PROCESSOR_STATE is the decoded IComponent block of a fresh Serum 2
 // instance (an XferJson container). Each probe isolates one behaviour so a
 // render comparison points at a single mapping.
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, unlinkSync } from "node:fs";
 import { join } from "node:path";
+import { execFileSync } from "node:child_process";
 
 const { decodePreset, encodePreset } = await import(new URL("../../serumpreset.mjs", import.meta.url));
 const [stateFile, outDir, only] = process.argv.slice(2);
@@ -118,6 +121,29 @@ const MB_SETTINGS = {
   fast: { kParamAttack: 0.1, kParamRelease: 30 }, "att-10": { kParamAttack: 10 }, "rel-10": { kParamRelease: 10 },
   "below-1-fast": { kParamRatioBelow: 1, kParamAttack: 0.1, kParamRelease: 30 }, "wet-50": { kParamWet: 50 }, "makeup-4": { kParamMakeup: 4 },
 };
+/** The three reverb modules per type (by stored type) that set the most controls. */
+function factoryReverbs(dir) {
+  if (!dir) return {};
+  const files = execFileSync("find", [dir, "-iname", "*.SerumPreset"], { encoding: "utf8" }).trim().split("\n").sort();
+  const byType = {};
+  for (const file of files) {
+    const payload = decodePreset(readFileSync(file)).payload;
+    for (const rack of ["FXRack0", "FXRack1", "FXRack2"]) for (const m of payload[rack]?.FX ?? []) {
+      const pp = m.FXReverb?.plainParams;
+      if (!pp || typeof pp !== "object" || pp.kParamPreDelayBeatSync) continue;
+      (byType[pp.kParamType ?? "unnamed"] ??= []).push(pp);
+    }
+  }
+  const out = {};
+  for (const [type, list] of Object.entries(byType)) {
+    list.sort((a, b) => Object.keys(b).length - Object.keys(a).length).slice(0, 3).forEach((pp, i) => {
+      const params = Object.fromEntries(Object.entries(pp).filter(([k]) => !["kParamWet", "kParamLevelOut", "kParamEnable"].includes(k)).map(([k, v]) => [k, typeof v === "object" ? v.$float : v]));
+      out[`fxrvf-${type.replace(/^k/, "").toLowerCase()}-${i}`] = [...CLICK, ["Env0", "kParamSustain", 1e-3], ...rack(fx("FXReverb", { ...params, kParamWet: 100 }))];
+    });
+  }
+  return out;
+}
+
 const probes = {
   "init": [],
   "osc-octave-up": [["Oscillator0", "kParamOctave", 1]],
@@ -359,6 +385,35 @@ const probes = {
     ...[["freq100", { kParamFreq: 100 }], ["freq50", { kParamFreq: 50 }], ["delay0", { kParamDelay: 0 }], ["delay250", { kParamDelay: 250 }], ["predelay0.25", { kParamPreDelay: 0.25 }], ["width0", { kParamWidth: 0 }], ["width100", { kParamWidth: 100 }], ["freqc0", { kParamFreqC: 0 }], ["freqc100", { kParamFreqC: 100 }], ["mode0", { kParamMode: 0 }], ["mode100", { kParamMode: 100 }]].map(([n, q]) => [`hall-${n}`, q]),
     ...[["vscale0", { kParamVintageScale: 0 }], ["vscale100", { kParamVintageScale: 100 }], ["vscaleb0", { kParamVintageScaleB: 0 }], ["vscaleb100", { kParamVintageScaleB: 100 }]].map(([n, q]) => [`vintage-${n}`, { kParamType: "kVintage", ...q }]),
   ].map(([n, params]) => [`fxrv-${n}`, [...CLICK, ...rack(fx("FXReverb", { kParamWet: 100, ...params }))]])),
+  // Which stored reverb settings render silence in the headless rig (fxrv3-).
+  ...Object.fromEntries([
+    ["hall-wet50", { kParamType: "kHall", kParamWet: 50 }], ["hall-wet99", { kParamType: "kHall", kParamWet: 99 }],
+    ["hall-bell", { kParamType: "kHall", kParamDelay: 28.345, kParamFreqB: 49.325, kParamSize: 58.34, kParamWet: 38.779 }],
+    ["hall-bell-wet100", { kParamType: "kHall", kParamDelay: 28.345, kParamFreqB: 49.325, kParamSize: 58.34, kParamWet: 100 }],
+    ["hall-size35", { kParamType: "kHall", kParamSize: 35, kParamWet: 100 }], ["hall-size10", { kParamType: "kHall", kParamSize: 10, kParamWet: 100 }],
+    ["space-pianet", { kParamType: "kSpace", kParamDelay: 56.58, kParamFeedback: 4.427, kParamFreq: 66.927, kParamFreqB: 0, kParamPreDelay: 0.193, kParamSize: 9.854, kParamWet: 100, kParamWidth: 49.427 }],
+    ["space-wet50", { kParamType: "kSpace", kParamWet: 50 }],
+    ["vintage-altar", { kParamType: "kVintage", kParamDelay: 109.364, kParamFreq: 59.766, kParamFreqB: 36.719, kParamSize: 55.614, kParamVintageScale: 73.07, kParamWet: 100 }],
+    ["vintage-wet50", { kParamType: "kVintage", kParamWet: 50 }],
+  ].map(([n, params]) => [`fxrv3-${n}`, [...CLICK, ...rack(fx("FXReverb", params))]])),
+  // The same on a sustained tone (Init's saw): is the whole output muted? (fxrv4-)
+  ...Object.fromEntries([["hall-wet50", { kParamType: "kHall", kParamWet: 50 }], ["hall-size10-wet50", { kParamType: "kHall", kParamSize: 10, kParamWet: 50 }], ["space-wet50", { kParamType: "kSpace", kParamWet: 50 }], ["untyped-wet50", { kParamWet: 50 }]].map(([n, params]) => [`fxrv4-${n}`, rack(fx("FXReverb", params))])),
+  // A click whose envelope then sustains very quietly, so the reverb input never falls silent (fxrv5-).
+  ...Object.fromEntries([1e-4, 1e-3].flatMap((sus) => [["hall-size35", { kParamType: "kHall", kParamSize: 35, kParamWet: 100 }], ["space", { kParamType: "kSpace", kParamWet: 100 }], ["vintage", { kParamType: "kVintage", kParamWet: 100 }], ["dry", null]].map(([n, params]) => [`fxrv5-sus${sus}-${n}`, [...CLICK, ["Env0", "kParamSustain", sus], ...(params ? rack(fx("FXReverb", params)) : [])]]))),
+  // Reverb sweeps per type on the quiet-sustain click (fxrv6-; tools/fit_reverb.py).
+  "fxrv6-dry": [...CLICK, ["Env0", "kParamSustain", 1e-3]],
+  ...Object.fromEntries(["kHall", "kVintage", "kAbyss", "kSpace", null].flatMap((t) => [
+    ["default", {}], ...[0, 25, 50, 75, 100].map((v) => [`size${v}`, { kParamSize: v }]), ...[0, 50, 100].map((v) => [`fb${v}`, { kParamFeedback: v }]),
+    ...[0, 50, 100].map((v) => [`freqb${v}`, { kParamFreqB: v }]), ...[50, 100].map((v) => [`freq${v}`, { kParamFreq: v }]), ...[0, 100, 250].map((v) => [`delay${v}`, { kParamDelay: v }]),
+    ...[0.1, 0.5].map((v) => [`predelay${v}`, { kParamPreDelay: v }]), ...[0, 100].map((v) => [`width${v}`, { kParamWidth: v }]), ...[0, 100].map((v) => [`freqc${v}`, { kParamFreqC: v }]), ...[0, 100].map((v) => [`mode${v}`, { kParamMode: v }]),
+    ...(t === "kVintage" ? [0, 100].flatMap((v) => [[`vscale${v}`, { kParamVintageScale: v }], [`vscaleb${v}`, { kParamVintageScaleB: v }]]) : []),
+    // Finer steps for the controls that set the decay.
+    ...[10, 15, 20, 40, 45, 60, 65, 85, 90].map((v) => [`size${v}`, { kParamSize: v }]), ...[10, 20, 45, 60, 80, 150, 200].map((v) => [`delay${v}`, { kParamDelay: v }]),
+    ...[25, 75].flatMap((v) => [[`fb${v}`, { kParamFeedback: v }], [`freqb${v}`, { kParamFreqB: v }], [`freq${v}`, { kParamFreq: v }], [`width${v}`, { kParamWidth: v }], [`freqc${v}`, { kParamFreqC: v }], [`mode${v}`, { kParamMode: v }]]),
+    ...(t === "kVintage" ? [25, 50, 85].flatMap((v) => [[`vscale${v}`, { kParamVintageScale: v }]]) : []),
+  ].map(([n, q]) => [`fxrv6-${t ? t.slice(1).toLowerCase() : "untyped"}-${n}`, [...CLICK, ["Env0", "kParamSustain", 1e-3], ...rack(fx("FXReverb", { kParamWet: 100, ...(t ? { kParamType: t } : {}), ...q }))]]))),
+  // Factory reverb modules on the same click at 100 % wet (fxrvf-): checks how controls combine.
+  ...factoryReverbs(process.env.LUMEN_FACTORY_PRESETS),
   // Reverb with every main control set explicitly, as factory presets store them (fxrv2-).
   "fxrv2-dry": CLICK,
   ...Object.fromEntries(["kHall", "kVintage", "kAbyss", "kSpace", null].flatMap((t) => [[30, 35], [60, 35], [30, 80]].map(([size, decay]) => [`fxrv2-${t ? t.slice(1).toLowerCase() : "untyped"}-s${size}-d${decay}`, [...CLICK, ...rack(fx("FXReverb", { kParamWet: 100, kParamSize: size, kParamFeedback: decay, kParamDelay: 20, kParamFreqB: 50, kParamFreq: 10, ...(t ? { kParamType: t } : {}) }))]]))),

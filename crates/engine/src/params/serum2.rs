@@ -686,7 +686,7 @@ pub const FX_REVERB: ModuleSpec = ModuleSpec {
         ParamSpec { name: "kParamVintageScaleB", host: None, curve: Curve::Linear { min: 0.0, max: 100.0, integer: false }, defaults: &[70.0], options: &[], displays: &[], evidence: Evidence::Measured },
         ParamSpec { name: "kParamPreDelay", host: None, curve: Curve::Power { min: 0.0, max: 2.5, k: 2.0 }, defaults: &[0.0], options: &[], displays: &[], evidence: Evidence::Measured },
         ParamSpec { name: "kParamPreDelayBeatSync", host: None, curve: Curve::Toggle, defaults: &[0.0], options: &[], displays: &[], evidence: Evidence::Measured },
-        ParamSpec { name: "kParamType", host: None, curve: Curve::Choice, defaults: &[0.0], options: &["kHall", "kVintage", "kAbyss", "kSpace"], displays: &["kHall", "kVintage", "kAbyss", "kSpace"], evidence: Evidence::Measured },
+        ParamSpec { name: "kParamType", host: None, curve: Curve::Choice, defaults: &[4.0], options: &["kHall", "kVintage", "kAbyss", "kSpace", "kUnnamed"], displays: &["kHall", "kVintage", "kAbyss", "kSpace", "kUnnamed"], evidence: Evidence::Measured },
     ],
 };
 

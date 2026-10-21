@@ -7,6 +7,8 @@
 
 mod dist_curves;
 mod effects;
+mod reverb_model;
+mod reverb_table;
 
 use crate::params::{self, ModuleSpec, MODULES};
 use crate::tables::TableStore;

@@ -9,19 +9,21 @@ for the method and what is already fitted, [PARITY.md](PARITY.md) for feature st
 Done: EQ, delay (times, feedback, ping-pong, reverse, filter), FX filter, distortion
 (9 static modes, downsample, pre/post filter), compressor: single-band (threshold,
 ratio and limiter paths, attack/release, makeup, output clip, wet) and multiband
-(crossovers, detector, per-band thresholds, ratios, upward compression, gains).
+(crossovers, detector, per-band thresholds, ratios, upward compression, gains);
+reverb per-type metrics.
 
 Remaining, roughly by factory usage:
 
-1. **Reverb** (425 presets).
-   - The type stored when none is set is a fifth, unnamed type (101 presets);
-     Hall/Vintage/Abyss/Space are stored explicitly. Lumen maps "default" to Hall.
-   - Feedback does not set the decay for Hall, Abyss or the default type; size does.
-   - Several isolated `fxrv` probes render silence after a few ms in the headless
-     rig (Vintage and Space always, Hall at some sizes) while factory presets with
-     those types do not. Find a probe setup that renders like the factory presets
-     (e.g. start from a factory reverb module and change one control) before fitting.
-   - Then fit decay per octave band, predelay, early level, width per type.
+1. **Reverb leftovers** (425 presets). Per-type metrics are fitted (`fxrv6-` sweeps,
+   `tools/fit_reverb.py`): decay per band, level, onset, width, the unnamed fifth
+   type, predelay. Open:
+   - Abyss controls interact (Mode with Delay and Size; factory modules are 1–3
+     octaves off in T60) and Vintage onsets of factory modules are up to 120 ms off:
+     probe pairs of controls, or fit those types from more factory modules (`fxrvf-`).
+   - Serum's reverb stops when its input falls silent before the tail emerges (a
+     lone click into a large Hall renders nothing); not emulated.
+   - Beat-synced predelay; the tail's character (Lumen's FDN only matches the
+     metrics); Wet 0 modules (238 factory reverbs) rely on modulated wet.
 2. **Overdrive and tape sat distortion**: not static. Overdrive normalises its input
    by the signal level (curves coincide once x is divided by the input amplitude);
    tape sat folds level-dependently. Model the level detector, then refit.

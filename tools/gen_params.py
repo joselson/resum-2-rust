@@ -19,8 +19,11 @@ FX = json.load(open("data/serum2-fx-params.json"))
 FILTER_TYPES = None  # filled from VoiceFilter.kParamType options
 FX_CHOICES = {
     ("FXDistortion", "kParamMode"): ["kTube", "kSoftClip", "kHardClip", "kDiode1", "kDiode2", "kLinFold", "kSinFold", "kZeroSquare", "kDownsample", "kAsym", "kRectify", "kXShaper", "kXShaperAsym", "kSineShaper", "kStompBox", "kTapeSat", "kOverdrive", "kSoftSat"],
-    ("FXReverb", "kParamType"): ["kHall", "kVintage", "kAbyss", "kSpace"],
+    # kUnnamed is Lumen's name for the type a reverb renders as when the preset stores
+    # none: a fifth type, unlike any named one (fxrv6- probes); no preset names it.
+    ("FXReverb", "kParamType"): ["kHall", "kVintage", "kAbyss", "kSpace", "kUnnamed"],
 }
+FX_CHOICE_DEFAULT = {("FXReverb", "kParamType"): "kUnnamed"}
 # 0–1 parameters with a whole-number default that are continuous, not toggles (factory
 # presets store fractions for the multiband ratios).
 UNIT_CONTINUOUS = {"kParamFreq", "kParamLevelOut", "kParamThresh", "kParamDepth2", "kParamX", "kParamY", "kParamRatioBelow",
@@ -292,6 +295,8 @@ def main():
             choice = FX_CHOICES.get((module, name)) or (filter_types if (module, name) == ("FXFilter", "kParamType") else None)
             if choice:
                 idx = int(default) if isinstance(default, (int, float)) else (choice.index(default) if default in choice else 0)
+                if (module, name) in FX_CHOICE_DEFAULT:
+                    idx = choice.index(FX_CHOICE_DEFAULT[(module, name)])
                 slots[name] = {"curve": ("choice", choice), "options": choice, "displays": choice, "default_all": [float(idx)], "evidence": evidence}
                 continue
             if name.startswith("kParamModuleCount"):

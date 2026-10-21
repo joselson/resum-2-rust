@@ -259,8 +259,10 @@ impl Patch {
     }
 }
 
-/// FX modules whose model is fitted to measurements (docs/CALIBRATION.md).
-const MEASURED_FX: &[&str] = &["FXEQ", "FXDelay"];
+/// FX modules whose model is fitted to measurements (docs/CALIBRATION.md). The
+/// reverb's metrics are fitted too, but on a different network and with controls
+/// combined as independent; distortion still has unmeasured modes.
+const MEASURED_FX: &[&str] = &["FXEQ", "FXDelay", "FXFilter", "FXComp"];
 
 /// Reports each FX module type used whose model is not yet calibrated.
 fn note_fx(fx: &FxSetup, cov: &mut Coverage) {

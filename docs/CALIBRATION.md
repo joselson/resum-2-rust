@@ -86,7 +86,8 @@ taps from a click, `fxrv*` reverb impulses, `fxc-`/`fxcr-` compressor static cur
 through `tools/fit_comp.py` and `fxct-`/`fxcr-step-` level steps; `fxmb-`/`fxmbsq-`
 multiband static curves of sines and squares at notes 48, 72, 96 — on and either side
 of the crossovers, so band shares and leakage separate the bands — and `fxmbt-`
-multiband level steps):
+multiband level steps; `fxrv6-` reverb impulse responses per type and control through
+`tools/fit_reverb.py`, and `fxrvf-` factory reverb modules read at run time):
 
 | Behaviour | Measured | Fit |
 |---|---|---|
@@ -113,15 +114,19 @@ multiband level steps):
 | Multiband threshold | mid-band shift +22.7, +19.4, +10.9, +5.7, 0, −6.4, −13.4, −37.8, −67.5 dB at Thresh 0.25–0.9 (not a single log law); low and high bands move ≈ 1.1× and 1.2× as far | 0.05–0.2 dB per point |
 | Multiband upward | below threshold − Deadband*b* (+ −1.1 / +0.2 / +0.9 dB), slope RatioBelow·(2·RatioBelow*b* − 1), lift at most 35.2 dB; RatioBelow*b* < 0.5 expands; leakage into the other bands is lifted too (+2.4 dB on a mid-band sine) | 0.2 dB, ≈ 1 dB at Deadband 3/24 |
 | Multiband makeup, output, wet | as single-band; the dry for the wet mix is the band sum (no cancellation at the crossovers) | 0.1 dB |
+| Reverb input sleep | the reverb stops once its input is silent (a −171 dB floor counts, −131 dB does not) before its tail emerges: a lone 2 ms click into Hall above size ≈ 10, Vintage or Space renders nothing after the click; impulse probes sustain the click at −131 dB | renders |
+| Reverb types | an omitted kParamType is a fifth type (Lumen: kUnnamed), not Hall; per type the controls differ: Hall — Delay sets the decay (0 → 1.2 s, default 2.6 s, 100 → 15 s at 500 Hz), Size lengthens it above 50, FreqB damps highs, output from the first sample, decorrelated at any width; Vintage — Size sets the decay (0.5–14.5 s), Delay 0 shortens it, VintageScale moves decay and width, Feedback unused; Abyss — onset ≈ 110 ms, Delay, Mode (0 long, 100 ≈ 0.1 s) and Size set the decay; Space — mono, onset ≈ 6 + 1.85·Size ms, Delay sets the decay; unnamed — onset 40 ms, Size sets the decay, Feedback damps, FreqB 100 silences, Delay unused; Freq is a low cut steeper than one pole | one control at a time |
+| Reverb predelay | 0.919 × the stored seconds on every type | 0.1 ms |
+| Reverb model | per type the default's T60 at 125 Hz / 500 Hz / 2 kHz / 8 kHz, level against the dry click, onset and tail L/R correlation, plus per-control deltas at 9–16 values (`reverb_table`), combined as independent; Freq as a fitted one-pole low cut plus the level it misses; drives an 8-line FDN with band-split loop gains solved per block, an early tap at the onset, energy normalisation and a fitted level term | sweeps: level 0.49 dB, onset 0.01 ms, T60 0.04–0.16 octave per band, correlation 0.04; 15 factory modules: Hall, Space and unnamed level within 3.6 dB, T60 within 0.3 octave (one 8 kHz band 1 octave); Abyss and Vintage off (below) |
 | Sub volume | level ∝ √volume (0.5625 and 1.0 measured) | 0.0 dB |
 | Amp envelope | evaluated per sample (a 2 ms click lost its peak at block rate) | click energy exact |
 
 Open: overdrive (normalises its input by the signal level) and tape sat (level-dependent
 folding) are not static and keep the generic shapers, as do the folders, X-shapers,
-rectify and sine shaper; the distortion filter's top-octave shape; reverb (the omitted
-type is a fifth, unnamed type; feedback does not set decay for Hall, Abyss or it;
-several isolated probes render silence in the headless rig while factory presets do
-not); the compressor's detector on non-sine material (a square measured 0.3 dB off
+rectify and sine shaper; the distortion filter's top-octave shape; reverb controls that interact (Abyss Mode
+with Delay and Size: factory modules 1–3 octaves off in T60; Vintage onsets up to
+120 ms off), the input sleep (not emulated), beat-synced predelay, the tail's
+character beyond these metrics; the compressor's detector on non-sine material (a square measured 0.3 dB off
 a sine at equal peak), ratios between 50 and 100, the limiter's release just after a
 deep drop (a quick partial release, then a slower one); multiband extreme Deadband
 values, moved crossovers (0.9 dB at 300 Hz), the expansion limit, stereo linking;
@@ -129,7 +134,8 @@ chorus, phaser, flanger, hyper/dimension, Bode,
 convolution levels.
 
 FX probe set (30 single-module probes on Init): within 0.3 dB loudness on
-average (score 0.53). Open: reverb decay and width at large sizes, chorus at full wet, phaser
+average (score 0.48). Open: reverb width on sustained input (the default probe is 16 dB
+wider than Serum; likely the early tap, which reads two diffuser stages), chorus at full wet, phaser
 brightness, hyper/dimension character, Bode shift scale, EQ shelf frequency and
 Q.
 
@@ -137,6 +143,8 @@ Factory set (60 presets): 6.79 → 6.54 with the single-band compressor (loudnes
 error 10.7 → 9.7 dB), 6.43 with the multiband (9.4 dB); against single-band only, 11
 presets better and 4 worse (most "BA - Lately Bass 2025", "LD - Grunging Grime" and
 "EP - Time Capsule", whose compressors sit behind long distortion/filter chains).
+The reverb model then 6.43 → 6.23 (19 presets better, 15 worse; FX probe set
+0.53 → 0.48).
 
 ## Warp and sample findings
 

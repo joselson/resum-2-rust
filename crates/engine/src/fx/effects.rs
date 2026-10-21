@@ -2,7 +2,7 @@
 //! rack applies enable, wet/dry (unless the effect owns it) and output level. Parameter scales marked
 //! "assumed" await calibration against render probes (docs/CALIBRATION.md).
 
-use super::{FxContext, FxParams};
+use super::{reverb_model, FxContext, FxParams};
 use crate::filters::{self, cutoff_hz};
 use crate::params::index;
 use lumen_dsp::biquad::{Biquad, Crossover, Shape};
@@ -36,7 +36,7 @@ pub fn build(name: &str, ctx: &FxContext, impulse: Option<&SampleData>) -> Box<d
         "FXFlanger" => Box::new(Flanger::new(sr)),
         "FXPhaser" => Box::new(Phaser::default()),
         "FXComp" => Box::new(Comp::new(sr)),
-        "FXReverb" => Box::new(ReverbFx { reverb: Reverb::new(sr) }),
+        "FXReverb" => Box::new(ReverbFx { reverb: Reverb::new(sr), controls: None }),
         "FXHyperD" => Box::new(Hyper::new(sr)),
         "FXBode" => Box::new(Bode::new(sr)),
         "FXConv" => Box::new(Conv::new(impulse, sr)),
@@ -859,42 +859,55 @@ impl Effect for Comp {
 
 // ---------------------------------------------------------------- Reverb
 
+/// Serum's reverb types as measured metrics (`reverb_model`) driving the FDN.
 struct ReverbFx {
     reverb: Reverb,
+    /// Control indices for the type last seen.
+    controls: Option<(&'static str, Vec<usize>)>,
 }
+
+/// Lumen's FDN level against a dry click (dB), fitted over the fxrv6-/fxrv7- probes:
+/// a constant plus terms in ln T60 (500 Hz) and ln of the 125 Hz decay ratio (its
+/// normalisation follows the mid band, while a click's energy is mostly low). The
+/// measured level is applied relative to it.
+const REVERB_LEVEL_DB: f32 = 2.77;
+const REVERB_LEVEL_PER_LN_T60: f32 = 1.19;
+const REVERB_LEVEL_PER_LN_LOW: f32 = 1.93;
 
 impl Effect for ReverbFx {
     fn process(&mut self, p: &FxParams, l: &mut [f32], r: &mut [f32], _ctx: &FxContext) {
         const SIZE: usize = index("FXReverb", "kParamSize");
-        const DELAY: usize = index("FXReverb", "kParamDelay");
-        const FREQ: usize = index("FXReverb", "kParamFreq");
-        const FEEDBACK: usize = index("FXReverb", "kParamFeedback");
-        const FREQ_B: usize = index("FXReverb", "kParamFreqB");
         const TYPE: usize = index("FXReverb", "kParamType");
-        const WIDTH: usize = index("FXReverb", "kParamWidth");
         let kind = p.choice(TYPE);
-        let fb = p.get(FEEDBACK) / 100.0;
-        // Decay 0–100 → 0.3–20 s (assumed, squared for resolution at short times).
-        let mut decay = 0.3 + fb * fb * 19.7;
-        let mut modulation = 0.2;
-        if kind == "kAbyss" {
-            decay *= 2.5;
-            modulation = 0.6;
-        } else if kind == "kSpace" {
-            modulation = 0.8;
+        let table = reverb_model::type_table(kind);
+        if self.controls.as_ref().is_none_or(|(k, _)| *k != table.kind) {
+            self.controls = Some((table.kind, reverb_model::control_indices(table)));
         }
+        let m = reverb_model::evaluate(table, &self.controls.as_ref().unwrap().1, p);
+        let modulation = match kind {
+            "kAbyss" => 0.6,
+            "kSpace" => 0.8,
+            _ => 0.2,
+        };
+        let c = m.corr.clamp(-0.95, 1.0);
         let params = ReverbParams {
             size: p.get(SIZE) / 100.0,
-            decay,
-            predelay_s: p.get(DELAY) * 0.001,
-            // Damping 0–100 → 1–20 kHz; low cut 0–100 → 20 Hz–1 kHz (assumed).
-            damping_hz: 1000.0 * 20f32.powf(p.get(FREQ_B) / 100.0),
-            low_cut_hz: 20.0 * 50f32.powf(p.get(FREQ) / 100.0),
+            decay: m.t60,
+            decay_low: m.low,
+            decay_upper: m.upper,
+            decay_high: m.high,
+            predelay_s: m.onset_ms * 0.001,
+            low_cut_hz: m.low_cut_hz.max(5.0),
             modulation,
-            // Width 0–100 % (measured: the default 20 is much narrower than full width).
-            width: p.get(WIDTH) / 100.0,
+            // Lumen's tail correlation is (1 − w²)/(1 + w²) for width w.
+            width: ((1.0 - c) / (1.0 + c)).sqrt(),
         };
         self.reverb.process(&params, l, r);
+        let fdn_db = REVERB_LEVEL_DB + REVERB_LEVEL_PER_LN_T60 * m.t60.max(0.02).ln() + REVERB_LEVEL_PER_LN_LOW * m.low.max(0.05).ln();
+        let gain = db(m.level - fdn_db);
+        for x in l.iter_mut().chain(r.iter_mut()) {
+            *x *= gain;
+        }
     }
 
     fn reset(&mut self) {
