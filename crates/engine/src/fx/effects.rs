@@ -696,17 +696,37 @@ impl Effect for Delay {
 
 // ---------------------------------------------------------------- Chorus / Flanger / Phaser
 
+/// Serum's chorus (`fxch-`/`fxch2-` probes: each edge of a C0 saw comes out once per
+/// voice, at that voice's delay and gain). Per channel two taps at half level,
+/// Delay + D·(1 + w) and Delay2 + D·(1 − w) ms, with D = 1.202 ms per Depth unit up to
+/// 31.25 ms (depth above 26 sounds alike) and w a triangle LFO at Rate Hz, the right
+/// channel a quarter cycle ahead; it starts with the left voice 1 at its shortest
+/// (delays within 0.05 ms over 4 s at 0.25 Hz). Feedback sends the taps' mix back into the
+/// line at Feedback %, 0.12 ms later than the taps. Filt is a resonant low- or high-pass
+/// (FiltMode) on the output; its exact shape is not an RBJ biquad (cutoff scale and Q
+/// fitted on low-pass magnitudes, within 0.5 dB below 10 kHz).
 struct Chorus {
     lines: [DelayLine; 2],
     phase: f32,
     filt: [Biquad; 2],
-    fb: [f32; 2],
 }
 
 impl Chorus {
+    /// Depth to the triangle's amplitude (ms), and its limit.
+    const MS_PER_DEPTH: f32 = 1.202;
+    const MAX_SWING_MS: f32 = 31.25;
+    const LOOP_MS: f32 = 0.12;
+
     fn new(sr: f32) -> Self {
-        Chorus { lines: [DelayLine::new((sr * 0.06) as usize), DelayLine::new((sr * 0.06) as usize)], phase: 0.0, filt: Default::default(), fb: [0.0; 2] }
+        let n = (sr * 0.1) as usize;
+        Chorus { lines: [DelayLine::new(n), DelayLine::new(n)], phase: 0.0, filt: Default::default() }
     }
+}
+
+/// Reads a delay line at `d` samples (0 = most recent), Hermite above one sample.
+#[inline]
+fn read_mod(line: &DelayLine, d: f32) -> f32 {
+    if d < 1.0 { line.read(d) } else { line.read_cubic(d) }
 }
 
 impl Effect for Chorus {
@@ -719,31 +739,39 @@ impl Effect for Chorus {
         const FILT: usize = index("FXChorus", "kParamFilt");
         const FILT_MODE: usize = index("FXChorus", "kParamFiltMode");
         let sr = ctx.sample_rate;
-        let base = [p.get(DELAY), if p.get(DELAY2) > 0.0 { p.get(DELAY2) } else { p.get(DELAY) }];
-        // Depth (ms of sweep) assumed; rate in Hz.
-        let depth = p.get(DEPTH) / 100.0 * 4.0;
+        let ms = 0.001 * sr;
+        let (d1, d2) = (p.get(DELAY).max(0.0) * ms, p.get(DELAY2).max(0.0) * ms);
+        let swing = (Self::MS_PER_DEPTH * p.get(DEPTH).max(0.0)).min(Self::MAX_SWING_MS) * ms;
         let fb = (p.get(FEEDBACK) / 100.0).clamp(0.0, 0.95);
+        let lag = Self::LOOP_MS * ms;
         let shape = if p.flag(FILT_MODE) { Shape::Highpass } else { Shape::Lowpass };
+        // Cutoff ≈ 0.94, 0.91, 0.89 of the setting at 200 Hz, 1 kHz, 5 kHz; Q 1.41 → 1.26.
+        let hz = p.get(FILT).clamp(50.0, 20000.0);
+        let hz = (hz * (0.94 - 0.012 * (hz / 200.0).log2())).min(0.45 * sr);
         for f in &mut self.filt {
-            f.set(shape, p.get(FILT), 0.707, sr);
+            f.set(shape, hz, 1.35, sr);
         }
-        let inc = p.get(RATE) / sr;
+        let inc = p.get(RATE).max(0.0) / sr;
         for i in 0..l.len() {
-            self.phase = (self.phase + inc).fract();
             for (ch, s) in [&mut l[i], &mut r[i]].into_iter().enumerate() {
-                let lfo = (TAU * (self.phase + ch as f32 * 0.25)).sin();
-                let d = ((base[ch] + depth * (0.5 + 0.5 * lfo)) * 0.001 * sr).max(2.0);
-                let y = self.lines[ch].read_cubic(d);
-                self.lines[ch].push(*s + self.fb[ch] * fb);
-                self.fb[ch] = y;
+                let u = (self.phase + 0.25 * ch as f32).fract();
+                let w = 1.0 - 4.0 * (u - 0.5).abs();
+                let (a, b) = (d1 + swing * (1.0 + w), d2 + swing * (1.0 - w));
+                let line = &mut self.lines[ch];
+                // Before the push the line's newest sample is one step older.
+                let back = 0.5 * (read_mod(line, a + lag - 1.0) + read_mod(line, b + lag - 1.0));
+                line.push(*s + fb * back);
+                let y = 0.5 * (read_mod(line, a) + read_mod(line, b));
                 *s = self.filt[ch].tick(y);
             }
+            self.phase = (self.phase + inc).fract();
         }
     }
 
     fn reset(&mut self) {
         self.lines.iter_mut().for_each(DelayLine::clear);
-        self.fb = [0.0; 2];
+        self.filt.iter_mut().for_each(Biquad::reset);
+        self.phase = 0.0;
     }
 }
 

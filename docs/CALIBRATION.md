@@ -104,6 +104,7 @@ overdrive's response, `fxodw-` its 50 % wet at C1 and C2, `fxodm-` wet laws):
 | Distortion drive 0 | diode 1, stomp box, tape sat pass x/2 unshaped | renders |
 | Downsample | holds 1 + 96·drive² samples | exact |
 | Distortion filter | resonant 2-pole (BW is resonance: Q 1.2, 2.05, 3.9, 20.7 at BW 0.5, 1.95, 4, 7), LP → unnormalised BP → −HP morph, −0.9 dB | 1.2 dB mean (top-octave shape) |
+| Chorus | per channel two taps at half level, Delay + D·(1 + w) and Delay2 + D·(1 − w) ms; D = 1.202 ms per Depth unit, at most 31.25 ms (depth ≥ 26 alike); w a triangle (a sine fits 10× worse) at Rate Hz, the right channel a quarter cycle ahead, the left voice 1 at its shortest when the plugin starts; the delay is read at output time; feedback: the taps' mix × Feedback % back into the line, 0.12 ms after the taps; Filt: a resonant 12 dB/oct low- or high-pass on the output, peak ≈ +3.5 dB (RBJ fit: cutoff 0.94/0.91/0.89 of 200 Hz/1 kHz/5 kHz, Q 1.41–1.26; the high-pass flattens to 6 dB/oct below its cutoff, 20 kHz high-pass is a 6 dB/oct tilt); synced rate 0.25 is a 6 s period at the rig's tempo (`fxch-` saw-edge echoes at C0 and C-1, `fxch2-` laws) | delays within 0.05 ms over 4 s; feedback repeats within 2 %; low-pass 0.1–0.5 dB below 10 kHz |
 | Delay times | synced: straight divisions 1/512–4 bars by threshold table; free: value − 1 ms; link uses the right time | sweep at 0.0005 |
 | Delay feedback / ping-pong | each repeat × feedback; ping-pong hands L → R at full level, R → L × feedback | taps |
 | Delay filter | 2-pole band-pass, 0 dB peak, 1/Q ≈ 2^(BW − 1.2) | ≈ 1 dB |
@@ -139,12 +140,12 @@ the tail's character beyond these metrics; the compressor's detector on non-sine
 a sine at equal peak), ratios between 50 and 100, the limiter's release just after a
 deep drop (a quick partial release, then a slower one); multiband extreme Deadband
 values, moved crossovers (0.9 dB at 300 Hz), the expansion limit, stereo linking;
-chorus, phaser, flanger, hyper/dimension, Bode,
+the chorus high-pass's shape and beat-synced rate; phaser, flanger, hyper/dimension, Bode,
 convolution levels.
 
 FX probe set (30 single-module probes on Init): within 0.3 dB loudness on
-average (score 0.43). Open: reverb width on sustained input (the default probe is 6.4 dB
-wider than Serum, 16 dB before the measured wet law), chorus at full wet, phaser
+average (score 0.38; chorus probes 1.59/2.68 → 0.60/0.53 with the measured chorus). Open: reverb width on sustained input (the default probe is 6.4 dB
+wider than Serum, 16 dB before the measured wet law), phaser
 brightness, hyper/dimension character, Bode shift scale, EQ shelf frequency and
 Q.
 
@@ -162,7 +163,9 @@ Overdrive and tape sat measured: 6.24 → 6.29; with the measured wet law (repla
 equal power, for every effect) 6.08 (28 better, 23 worse against 6.24; FX probe set
 0.49 → 0.43, default reverb 2.46 → 0.97, convolution 1.62 → 0.39). Folds, rectify, sine shaper and X-shaper
 measured: 6.08 → 6.04 (3 better, none worse: "PL - Noisy Glass" 7.0 → 5.0); the older
-single-level fxd probe set 1.67 → 0.27.
+single-level fxd probe set 1.67 → 0.27. Measured chorus: 6.04 → 5.99 (9 better, 4
+worse: partly-wet slow choruses whose comb pattern follows the LFO phase, which the
+rig's 0.25 s warm-up advances in Serum's renders).
 
 ## Warp and sample findings
 

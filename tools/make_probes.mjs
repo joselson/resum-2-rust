@@ -378,6 +378,28 @@ const probes = {
   // Overdrive's level detector (fxodt-): +12 dB, held 0.8 s, then 26 dB down (as fxct-).
   ...Object.fromEntries([["dry", null], ...[0, 50, 100].map((d) => [`overdrive-${d}`, { kParamMode: "kOverdrive", kParamDrive: d }])].map(([n, params]) => [`fxodt-${n}`,
     [...SUB_SINE, ["Env0", "kParamAttack", 0], ["Env0", "kParamHold", 0.8], ["Env0", "kParamDecay", 0], ["Env0", "kParamSustain", 0.05], ...rack(fx("FXUtils", { kParamLevelOut: 1 }), ...(params ? [fx("FXDistortion", params)] : []))]])),
+  // Chorus (fxch-): a C0 saw (one edge per 61 ms) at 100 % wet; each edge comes out once per
+  // voice, at that voice's delay and gain (render at note 0 too: echoes reach 67 ms).
+  // Feedback 0 unless swept.
+  "fxch-dry": [["Oscillator0.WTOsc0", "kParamRandomPhase", 0]],
+  ...Object.fromEntries([
+    ["dflt", {}],
+    ...[0, 1, 2, 5, 10, 15, 20].map((d) => [`static-d${d}`, { kParamDepth: 0, kParamDelay: d }]),
+    ...[1, 5, 10, 20].map((d) => [`static-d5-b${d}`, { kParamDepth: 0, kParamDelay: 5, kParamDelay2: d }]),
+    ...[10, 30, 60, 100].map((d) => [`depth${d}`, { kParamDepth: d, kParamRate: 1 }]),
+    ...[0.25, 0.5, 2, 4].map((r) => [`rate${r}`, { kParamDepth: 50, kParamRate: r }]),
+    ...[25, 50, 95].map((f) => [`fb${f}`, { kParamDepth: 0, kParamFeedback: f }]),
+    ["sync", { kParamDepth: 50, kParamBeatSync: 1, kParamRate: 0.25 }],
+  ].map(([n, q]) => [`fxch-${n}`, [["Oscillator0.WTOsc0", "kParamRandomPhase", 0], ...rack(fx("FXChorus", { kParamWet: 100, ...(n === "dflt" ? {} : { kParamFeedback: 0 }), ...q }))]])),
+  // Chorus laws (fxch2-, rendered at note 0): the filter open unless swept, feedback 0.
+  "fxch2-dry": [["Oscillator0.WTOsc0", "kParamRandomPhase", 0]],
+  ...Object.fromEntries([
+    ...[0, 1, 2, 5, 10, 15, 20, 25, 30].map((d) => [`depth${d}`, { kParamDepth: d }]),
+    ...[0, 2, 10, 20].map((d) => [`delay${d}`, { kParamDepth: 10, kParamDelay: d }]),
+    ...[2, 10, 20].map((d) => [`delay2-${d}`, { kParamDepth: 10, kParamDelay2: d }]),
+    ...[25, 50, 95].map((f) => [`fb${f}`, { kParamDepth: 0, kParamDelay: 10, kParamDelay2: 10, kParamFeedback: f }]),
+    ...[200, 1000, 5000, 20000].flatMap((hz) => [0, 1].map((m) => [`filt${hz}-m${m}`, { kParamDepth: 0, kParamDelay2: 5, kParamFilt: hz, kParamFiltMode: m }])),
+  ].map(([n, q]) => [`fxch2-${n}`, [["Oscillator0.WTOsc0", "kParamRandomPhase", 0], ...rack(fx("FXChorus", { kParamWet: 100, kParamFeedback: 0, kParamRate: 0.25, kParamFilt: 20000, ...q }))]])),
   // Delay taps (fxdl-): a click (instant amp envelope) through the delay at 100 % wet.
   "fxdl-dry": CLICK,
   ...Object.fromEntries([
