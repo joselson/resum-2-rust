@@ -1199,61 +1199,118 @@ impl Effect for ReverbFx {
 
 // ---------------------------------------------------------------- Hyper/Dimension
 
-const HYPER_VOICES: usize = 7;
-
+/// Serum's hyper/dimension (`fxhy-`/`fxhy2-`/`fxhy3-` probes: saw-edge echoes, band
+/// levels and time-domain fits).
+///
+/// Hyper: with Unison N ≥ 2, per channel the input at 0.45 plus 1, 2, 3, 5, 5, 7 voices for
+/// N = 2…7 (treble power and frozen-voice probes; 6 renders as 5), each the input
+/// through a high-pass (RBJ, 215 Hz, Q 0.63; below it the voices vanish, so the low end sits
+/// at −7.1 dB) at 0.97, read A·(1 + w) ms late: A = 0.1·(1 + Detune), w a triangle at
+/// 0.98·(Rate/100)² Hz on the left and 1.04 times that on the right (delays within 0.01 ms).
+/// N ≤ 1 passes the input. Serum's voice phases look arbitrary (they differ between detune
+/// settings and channels); Lumen spreads them by golden-ratio steps. Its wet mixes the
+/// hyper part only: the rack's raised cosine for the wet, but dry 1 − wet.
+///
+/// Dimension, after it: the hyper mix plus a side signal (added left, subtracted right) from
+/// four taps at (15 + Size)·1.18^k ms: a pair of neighbours crossfaded equal-power at half
+/// level, rotating one turn in 2.21 s whatever the rate, minus the pair half a turn on;
+/// DimEWet scales the taps, DimELevelOut the whole (0.5 unity, squared).
 struct Hyper {
-    lines: [DelayLine; 2],
-    phases: [f32; HYPER_VOICES],
-    dim: [DelayLine; 2],
+    /// Per channel: the high-passed input for the hyper voices, and the hyper mix for the taps.
+    voices: [DelayLine; 2],
+    taps: [DelayLine; 2],
+    hp: [Biquad; 2],
+    /// Hyper's triangle phase (left; the right runs 4 % faster) and dimension's turn.
+    phase: [f32; 2],
+    turn: f32,
 }
 
 impl Hyper {
+    /// Detuned voices per channel by Unison 0–7.
+    const VOICES: [usize; 8] = [0, 0, 1, 2, 3, 5, 5, 7];
+    const DIM_HZ: f32 = 0.4527;
+    const DIM_RATIO: f32 = 1.18;
+    // No voice starts at delay 0, on top of the input (Serum's start phases look arbitrary).
+    const START: [f32; 2] = [0.3, 0.67];
+
     fn new(sr: f32) -> Self {
-        let n = (sr * 0.05) as usize;
-        Hyper { lines: [DelayLine::new(n), DelayLine::new(n)], phases: std::array::from_fn(|i| i as f32 / HYPER_VOICES as f32), dim: [DelayLine::new(n), DelayLine::new(n)] }
+        let mut hp: [Biquad; 2] = Default::default();
+        for b in &mut hp {
+            b.set(Shape::Highpass, 215.0, 0.63, sr);
+        }
+        let n = (sr * 0.03) as usize;
+        let m = (sr * 0.2) as usize;
+        Hyper { voices: [DelayLine::new(n), DelayLine::new(n)], taps: [DelayLine::new(m), DelayLine::new(m)], hp, phase: Self::START, turn: 0.677 }
     }
 }
 
 impl Effect for Hyper {
+    fn owns_wet(&self) -> bool {
+        true
+    }
+
     fn process(&mut self, p: &FxParams, l: &mut [f32], r: &mut [f32], ctx: &FxContext) {
+        const WET: usize = index("FXHyperD", "kParamWet");
         const RATE: usize = index("FXHyperD", "kParamRate");
         const DETUNE: usize = index("FXHyperD", "kParamDetune");
         const UNISON: usize = index("FXHyperD", "kParamUnison");
         const DIM_SIZE: usize = index("FXHyperD", "kParamDimESize");
         const DIM_WET: usize = index("FXHyperD", "kParamDimEWet");
+        const DIM_LEVEL: usize = index("FXHyperD", "kParamDimELevelOut");
         let sr = ctx.sample_rate;
-        let voices = (p.get(UNISON).round() as usize).clamp(1, HYPER_VOICES);
-        // Detune → modulation depth (ms); rate 0–100 → 0.1–5 Hz (assumed).
-        let depth = p.get(DETUNE) / 100.0 * 3.0;
-        let rate = 0.1 * 50f32.powf(p.get(RATE) / 100.0);
-        let dim_wet = p.get(DIM_WET) / 100.0;
-        let dim_ms = 5.0 + p.get(DIM_SIZE) / 100.0 * 20.0;
-        let norm = 1.0 / (voices as f32).sqrt();
+        let ms = 0.001 * sr;
+        let voices = Self::VOICES[(p.get(UNISON).round().max(0.0) as usize).min(7)];
+        let swing = 0.1 * (1.0 + p.get(DETUNE).clamp(0.0, 100.0)) * ms;
+        let rate = 0.98 * (p.get(RATE).clamp(0.0, 100.0) / 100.0).powi(2);
+        let inc = [rate / sr, 1.04 * rate / sr];
+        // Hyper's dry is 1 − wet, not the rack's 1 − wet² (fxhy3-wet probes: 0.84/0.49/0.14
+        // dry and 0.16/0.50/0.86 wet at 25/50/75 %).
+        let wet = super::wet_gains(p.get(WET) / 100.0).1;
+        let dry = 1.0 - wet;
+        let tap_gain = 0.5 * super::wet_gains(p.get(DIM_WET) / 100.0).1;
+        let dim_level = (p.get(DIM_LEVEL) / 0.5).powi(2);
+        let first = (15.0 + p.get(DIM_SIZE).clamp(0.0, 100.0)) * ms;
+        let taps: [f32; 4] = std::array::from_fn(|k| first * Self::DIM_RATIO.powi(k as i32));
         for i in 0..l.len() {
-            self.lines[0].push(l[i]);
-            self.lines[1].push(r[i]);
-            let (mut wl, mut wr) = (0.0, 0.0);
-            for v in 0..voices {
-                let ph = &mut self.phases[v];
-                *ph = (*ph + rate * (1.0 + 0.13 * v as f32) / sr).fract();
-                let d = ((8.0 + depth * (0.5 + 0.5 * (TAU * *ph).sin())) * 0.001 * sr).max(2.0);
-                let pan = if v % 2 == 0 { 0 } else { 1 };
-                let y = self.lines[pan].read_cubic(d);
-                if pan == 0 { wl += y } else { wr += y }
+            let pos = 4.0 * self.turn;
+            for (ch, s) in [&mut l[i], &mut r[i]].into_iter().enumerate() {
+                let x = *s;
+                let h = if voices > 0 {
+                    self.voices[ch].push(self.hp[ch].tick(x));
+                    let mut sum = 0.0;
+                    for k in 0..voices {
+                        // Golden-ratio steps: an even spread pairs voices on equal delays
+                        // (the triangle repeats each value) and combs the low mids.
+                        let u = (self.phase[ch] + 0.618 * k as f32).fract();
+                        let w = 1.0 - 4.0 * (u - 0.5).abs();
+                        sum += read_mod(&self.voices[ch], swing * (1.0 + w));
+                    }
+                    0.45 * x + 0.97 * sum
+                } else {
+                    x
+                };
+                let y = dry * x + wet * h;
+                // Dimension: the two taps either side of the turn's position (sin/cos), minus
+                // the pair half a turn on; the right channel the opposite way round.
+                self.taps[ch].push(y);
+                let at = (pos + 2.0 * ch as f32) % 4.0;
+                let (k, frac) = (at as usize % 4, at.fract());
+                let (c, s2) = ((0.5 * PI * frac).cos(), (0.5 * PI * frac).sin());
+                let pair = |j: usize| c * read_mod(&self.taps[ch], taps[j % 4]) + s2 * read_mod(&self.taps[ch], taps[(j + 1) % 4]);
+                let z = pair(k) - pair(k + 2);
+                *s = (y + tap_gain * z) * dim_level;
             }
-            let (hl, hr) = (wl * norm, wr * norm);
-            // Dimension: cross-fed short delays widen the image.
-            self.dim[0].push(hl);
-            self.dim[1].push(hr);
-            let d = dim_ms * 0.001 * sr;
-            let (xl, xr) = (self.dim[1].read(d), self.dim[0].read(d * 1.17));
-            l[i] = hl + (xl - hl * 0.5) * dim_wet;
-            r[i] = hr + (xr - hr * 0.5) * dim_wet;
+            for (ph, d) in self.phase.iter_mut().zip(inc) {
+                *ph = (*ph + d).fract();
+            }
+            self.turn = (self.turn + Self::DIM_HZ / sr).fract();
         }
     }
 
     fn reset(&mut self) {
-        self.lines.iter_mut().chain(self.dim.iter_mut()).for_each(DelayLine::clear);
+        self.voices.iter_mut().chain(self.taps.iter_mut()).for_each(DelayLine::clear);
+        self.hp.iter_mut().for_each(Biquad::reset);
+        (self.phase, self.turn) = (Self::START, 0.677);
     }
 }
 

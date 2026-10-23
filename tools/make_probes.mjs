@@ -400,6 +400,37 @@ const probes = {
     ...[25, 50, 95].map((f) => [`fb${f}`, { kParamDepth: 0, kParamDelay: 10, kParamDelay2: 10, kParamFeedback: f }]),
     ...[200, 1000, 5000, 20000].flatMap((hz) => [0, 1].map((m) => [`filt${hz}-m${m}`, { kParamDepth: 0, kParamDelay2: 5, kParamFilt: hz, kParamFiltMode: m }])),
   ].map(([n, q]) => [`fxch2-${n}`, [["Oscillator0.WTOsc0", "kParamRandomPhase", 0], ...rack(fx("FXChorus", { kParamWet: 100, kParamFeedback: 0, kParamRate: 0.25, kParamFilt: 20000, ...q }))]])),
+  // Hyper/Dimension (fxhy-, rendered at note 0): saw-edge echoes as for the chorus; hyper
+  // alone at 100 % wet, or dimension alone (hyper wet 0, dimension wet 100).
+  "fxhy-dry": [["Oscillator0.WTOsc0", "kParamRandomPhase", 0]],
+  ...Object.fromEntries([
+    ["dflt", {}],
+    ...[0, 1, 2, 3, 5, 7].map((u) => [`unison${u}`, { kParamUnison: u }]),
+    ...[0, 10, 50, 100].map((d) => [`detune${d}`, { kParamDetune: d }]),
+    ...[0, 10, 25, 70, 100].map((r) => [`rate${r}`, { kParamRate: r }]),
+    ["retrig", { kParamRetrig: 1 }],
+    ...[0, 25, 50, 100].map((z) => [`dim${z}`, { kParamWet: 0, kParamDimEWet: 100, kParamDimESize: z }]),
+  ].map(([n, q]) => [`fxhy-${n}`, [["Oscillator0.WTOsc0", "kParamRandomPhase", 0], ...rack(fx("FXHyperD", { kParamWet: 100, ...q }))]])),
+  // Hyper laws (fxhy2-): frozen voices (rate 0) per unison count; the rate and detune laws
+  // on unison 2 (one swept voice); render at C1 (32.7 edges/s) for the rates.
+  "fxhy2-dry": [["Oscillator0.WTOsc0", "kParamRandomPhase", 0]],
+  ...Object.fromEntries([
+    ...[2, 3, 4, 5, 6, 7].flatMap((u) => [25, 100].map((d) => [`static-u${u}-d${d}`, { kParamUnison: u, kParamRate: 0, kParamDetune: d }])),
+    ...[0, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map((r) => [`rate${r}`, { kParamUnison: 2, kParamRate: r, kParamDetune: 100 }]),
+    ...[0, 10, 25, 50, 75, 100].map((d) => [`detune${d}`, { kParamUnison: 2, kParamDetune: d }]),
+  ].map(([n, q]) => [`fxhy2-${n}`, [["Oscillator0.WTOsc0", "kParamRandomPhase", 0], ...rack(fx("FXHyperD", { kParamWet: 100, ...q }))]])),
+  // Dimension laws (fxhy3-, note 0): its cycle against hyper's rate, its wet and level, and
+  // hyper feeding it.
+  "fxhy3-dry": [["Oscillator0.WTOsc0", "kParamRandomPhase", 0]],
+  ...Object.fromEntries([
+    ["rate0", { kParamWet: 0, kParamDimEWet: 100, kParamDimESize: 0, kParamRate: 0 }],
+    ["rate100", { kParamWet: 0, kParamDimEWet: 100, kParamDimESize: 0, kParamRate: 100 }],
+    ["wet50", { kParamWet: 0, kParamDimEWet: 50, kParamDimESize: 0 }],
+    ["level", { kParamWet: 0, kParamDimEWet: 100, kParamDimESize: 0, kParamDimELevelOut: 0.25 }],
+    ["hyper-level", { kParamLevelOut: 0.25 }],
+    ["both", { kParamDimEWet: 100, kParamDimESize: 0, kParamUnison: 2, kParamRate: 0 }],
+    ...[25, 50, 75].map((w) => [`wet${w}`, { kParamWet: w }]),
+  ].map(([n, q]) => [`fxhy3-${n}`, [["Oscillator0.WTOsc0", "kParamRandomPhase", 0], ...rack(fx("FXHyperD", { kParamWet: 100, ...q }))]])),
   // Delay taps (fxdl-): a click (instant amp envelope) through the delay at 100 % wet.
   "fxdl-dry": CLICK,
   ...Object.fromEntries([

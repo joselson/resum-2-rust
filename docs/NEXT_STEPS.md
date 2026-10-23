@@ -13,7 +13,7 @@ compression and clip), the FX wet law, compressor: single-band
 (threshold, ratio and limiter paths, attack/release, makeup, output clip, wet) and
 multiband (crossovers, detector, per-band thresholds, ratios, upward compression,
 gains); reverb per-type metrics and Abyss/Vintage pair interactions; chorus (voices,
-LFO, depth, feedback, filter).
+LFO, depth, feedback, filter), hyper/dimension.
 
 Remaining, roughly by factory usage:
 
@@ -28,8 +28,8 @@ Remaining, roughly by factory usage:
      fitted on clicks.
    - Beat-synced predelay; the tail's character (Lumen's FDN only matches the
      metrics); Wet 0 modules (238 factory reverbs) rely on modulated wet.
-2. **Modulation effects**: flanger, phaser (brightness), hyper/dimension (width
-   −9.5 dB), Bode shift scale; the chorus's high-pass shape and synced rates.
+2. **Modulation effects**: flanger, phaser (brightness), Bode shift scale; the
+   chorus's high-pass shape and synced rates; hyper's voice phases and retrigger.
 3. **Convolution** level and IR handling; **FX Utility** remaining controls.
 4. Distortion filter top-octave shape (Serum falls more gently than an RBJ biquad);
    FX filter top-octave differences by type. X-shaper drawn curves (module `flex`

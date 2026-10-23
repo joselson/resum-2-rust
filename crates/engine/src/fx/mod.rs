@@ -230,10 +230,7 @@ impl Slot {
         let gain = self.level.map(|i| (p.get(i) / 0.5).powi(2)).unwrap_or(1.0);
         match wet {
             Some(w) => {
-                // Wet follows a raised cosine and dry is 1 − wet² (fxodm- probes: delay
-                // echoes and distortion at drive 0, exact to 10⁻⁴); 50 % is 0.75 dry, 0.5 wet.
-                let wg = 0.5 - 0.5 * (w * std::f32::consts::PI).cos();
-                let dg = 1.0 - wg * wg;
+                let (dg, wg) = wet_gains(w);
                 for i in 0..n {
                     l[i] = (self.dry[0][i] * dg + l[i] * wg) * gain;
                     r[i] = (self.dry[1][i] * dg + r[i] * wg) * gain;
@@ -245,6 +242,14 @@ impl Slot {
             None => {}
         }
     }
+}
+
+/// Dry and wet gains for a wet amount 0–1: wet follows a raised cosine and dry is
+/// 1 − wet² (fxodm- probes: delay echoes and distortion at drive 0, exact to 10⁻⁴); 50 %
+/// is 0.75 dry, 0.5 wet.
+pub(crate) fn wet_gains(w: f32) -> (f32, f32) {
+    let wg = 0.5 - 0.5 * (w * std::f32::consts::PI).cos();
+    (1.0 - wg * wg, wg)
 }
 
 enum Node {

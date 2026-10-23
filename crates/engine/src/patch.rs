@@ -260,10 +260,11 @@ impl Patch {
 }
 
 /// FX modules whose model is fitted to measurements (docs/CALIBRATION.md; distortion
-/// without X-shaper drawn curves, chorus without its exact high-pass and beat sync). The
+/// without X-shaper drawn curves, chorus without its exact high-pass and beat sync,
+/// hyper with its voice phases chosen, not measured). The
 /// reverb's metrics are fitted too, but on a different network and with controls
 /// combined as independent.
-const MEASURED_FX: &[&str] = &["FXEQ", "FXDelay", "FXFilter", "FXComp", "FXDistortion", "FXChorus"];
+const MEASURED_FX: &[&str] = &["FXEQ", "FXDelay", "FXFilter", "FXComp", "FXDistortion", "FXChorus", "FXHyperD"];
 
 /// Reports each FX module type used whose model is not yet calibrated.
 fn note_fx(fx: &FxSetup, cov: &mut Coverage) {
