@@ -74,14 +74,14 @@ slots agree).
 |---|---|
 | FX output level | 0.5 = unity, squared (0.25 → −12 dB) |
 | Wet/dry | wet (1 − cos πw)/2, dry 1 − wet² (fxodm- probes: delay echoes, distortion at drive 0, exact to 10⁻⁴); the compressor crossfades linearly |
-| Distortion | −11 dB output trim after the shaper |
 | Delay | free time in seconds |
 | Reverb width | 0–100 %, default 20 % |
 | Bode width | spreads up-shift left, down-shift right |
 | Routing slots 5, 6 | filter 1/2 outputs (destination and bus sends) |
 
 Step 4 measurements (`fxr-` responses through `tools/filter_response.py --prefix fxr`,
-`fxd*` distortion transfer curves through `tools/fit_distortion.py`, `fxdl*` delay
+`fxd*` distortion transfer curves through `tools/fit_distortion.py` (runs fxd4 and,
+for folds, rectify, X-shapers and sine shaper, fxd5 with `tools/fit_folds.py`), `fxdl*` delay
 taps from a click, `fxrv*` reverb impulses, `fxc-`/`fxcr-` compressor static curves
 through `tools/fit_comp.py` and `fxct-`/`fxcr-step-` level steps; `fxmb-`/`fxmbsq-`
 multiband static curves of sines and squares at notes 48, 72, 96 — on and either side
@@ -96,7 +96,10 @@ overdrive's response, `fxodw-` its 50 % wet at C1 and C2, `fxodm-` wet laws):
 | Behaviour | Measured | Fit |
 |---|---|---|
 | EQ | RBJ shelf/peak/cut biquads; Q = 0.1 + 18.8·r⁴ (peak, cut), 0.4 + 1.74·r³ (shelf) for resonance r | 0.02 dB mean over 39 responses |
-| Distortion curves | memoryless for tube, soft/hard clip, diodes, asym, stomp box, tape sat, soft sat, zero-square: tabled F(mode, drive, x) at 9 drives over ±10.5 inside the rack (output ÷ master gain); probes aligned by the quietest one's lag (a few samples off, dense folds trace open loops that looked level-dependent) | harmonics within 0.1–2 dB; tape sat output peaks 0.06 dB over 12 levels |
+| Distortion curves | memoryless for tube, soft/hard clip, diodes, asym, rectify, stomp box, tape sat, soft sat, zero-square: tabled F(mode, drive, x) at 9 drives over ±10.5 inside the rack (output ÷ master gain); probes aligned by the chain's 6-sample latency, which every tabled mode's quietest probe shows (a few samples off, dense folds trace open loops that looked level-dependent; rectified output barely correlates with its input) | harmonics within 0.1–2 dB; tape sat output peaks 0.06 dB over 12 levels |
+| Folds | static: 0.83·P(φ), φ = ln(1 + G·\|x\|)/ln r signed, G = G0·(1 + 2130·(drive/100)³); linear fold r = 1.081, G0 = 0.0235, P a triangle (zeros at integers, ±1 at ±½); sine fold r = 1.25, G0 = 0.0671, P = 2φ up to ±½ and sin(πφ) beyond; both pass x/2 at drive 0 below the first fold; where folds are dense Serum's output is smeared toward zero (Lumen: first-order antiderivative anti-aliasing in φ). The negative half folds with G 0.15–0.3 % higher (not modelled) | every zero crossing within 0.1 % (9 drives × 3 ranges); fxd5 probe score 4.9/6.1 → 0.51/0.43 |
+| Sine shaper | F(sin(ω·x)) then a one-pole high-pass at 11.95 Hz; ω = 0.738·(1 + 11.83·(drive/100)²), F odd, tabled per drive on \|sin\| (no closed form found: A·sin(k·sin) and a tanh-warped inner sine fit only below drive 50) | ω within 0.3 %; fxd5 5.9 → 0.43 (the loudest range, densely folded, keeps 4–6 dB spectral errors) |
+| X-shaper (both) | the default drawn curve is x/2 clipped at ±0.83, then the same 11.95 Hz high-pass; drive does nothing and asym is identical with the default curve; the curves are stored per module (`flex`: points, values, tensions, two curves) and not read yet | high-pass fit 4·10⁻⁵ of peak; fxd5 4.4 → 0.10 |
 | Overdrive | 3rd-order Butterworth high-pass at 33.9 Hz (−2.9 dB, +137° at 33 Hz; its phase made C1 sines look inverted), flat gain −8.6 + 0.39·drive dB, compression 10.2:1 above a knee of 1.42 + 0.050·drive dB on the filtered peak, hard clip at ±1.091 inside the rack; after a 26 dB drop the gain recovers at ≈ 22 dB/s (peak detector, 0.33 s release; the first 100 ms recover faster, not modelled) | gains 0.03 dB (fit), 0.4 dB in Lumen at C1 (the high-pass is 0.6 dB steeper there); response within 0.1 dB, 2° above 65 Hz |
 | Distortion drive 0 | diode 1, stomp box, tape sat pass x/2 unshaped | renders |
 | Downsample | holds 1 + 96·drive² samples | exact |
@@ -127,7 +130,7 @@ overdrive's response, `fxodw-` its 50 % wet at C1 and C2, `fxodm-` wet laws):
 | Sub volume | level ∝ √volume (0.5625 and 1.0 measured) | 0.0 dB |
 | Amp envelope | evaluated per sample (a 2 ms click lost its peak at block rate) | click energy exact |
 
-Open: the folders, X-shapers, rectify and sine shaper keep the generic shapers;
+Open: X-shaper drawn curves (5 factory presets), the folds' small asymmetry;
 overdrive's detector attack and its fast first release; the distortion filter's top-octave shape; reverb
 interactions of three or more controls (Abyss factory modules still 0.6–1.5 octave
 off per band), the input sleep (not emulated), beat-synced predelay, the level on held
@@ -157,7 +160,9 @@ between −20 and −24 dB with the onset alone, as the wet and dry interfere pe
 so the score on presets that mix wet and dry over steady tones partly tracks phase.
 Overdrive and tape sat measured: 6.24 → 6.29; with the measured wet law (replacing
 equal power, for every effect) 6.08 (28 better, 23 worse against 6.24; FX probe set
-0.49 → 0.43, default reverb 2.46 → 0.97, convolution 1.62 → 0.39).
+0.49 → 0.43, default reverb 2.46 → 0.97, convolution 1.62 → 0.39). Folds, rectify, sine shaper and X-shaper
+measured: 6.08 → 6.04 (3 better, none worse: "PL - Noisy Glass" 7.0 → 5.0); the older
+single-level fxd probe set 1.67 → 0.27.
 
 ## Warp and sample findings
 

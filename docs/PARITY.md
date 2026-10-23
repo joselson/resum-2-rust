@@ -40,7 +40,7 @@ the option onto a generic implementation; nothing is sound-matched yet.
 | LFO timing | sync with dotted/triplet/×10, delay, rise, smooth, anchored, direction, mono | measured sync divisions, dotted, triplet, ×10, direction, delay, rise, smooth; anchored and mono open |
 | Mod sources | 58 | 36 (LFO Y added; audio-rate, MPE, discrete random open) |
 | Mod slot options | amount, aux, bipolar, curves in/out, aux curve, out, smoothing, delay, bypass | amount, aux, bipolar (measured), drawn and input curves, aux curves, out, bypass; smoothing, curve-out, delay open |
-| Distortion modes | 18 | measured static curves for 9 modes, measured downsample and pre/post filter; overdrive, tape sat, folders, X-shapers, rectify, sine shaper generic |
+| Distortion modes | 18 | all measured: static curves for 11 modes, overdrive's dynamics, fold and sine-shaper laws, downsample and the pre/post filter; X-shaper drawn curves not read (default curve only) |
 | Reverb types | Hall, Vintage, Abyss, Space | one FDN reverb with per-type decay/modulation |
 | FX modules | Distortion, Flanger, Phaser, Chorus, Delay, Comp, Reverb, EQ, Filter, HyperDimension, Bode, Convolve, Utility + Split, Split3, SplitMS | all 16; EQ, delay, FX filter, compressor (single-band and multiband), the wet law and most distortion (overdrive and tape sat included) measured; reverb fitted per type as decay, level, onset and width metrics, with pair interactions for Abyss and Vintage; modulation effects still first implementations |
 | Arp / Clip player | yes | none |

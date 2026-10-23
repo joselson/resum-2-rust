@@ -12,8 +12,8 @@ use lumen_dsp::filter::{Filter, FilterKind};
 use lumen_dsp::hilbert::FrequencyShifter;
 use lumen_dsp::reverb::{Reverb, ReverbParams};
 use lumen_dsp::sampler::SampleData;
-use lumen_dsp::shaper::{self, Shaper};
-use std::f32::consts::TAU;
+use lumen_dsp::shaper::Shaper;
+use std::f32::consts::{PI, TAU};
 
 pub trait Effect: Send {
     fn process(&mut self, p: &FxParams, l: &mut [f32], r: &mut [f32], ctx: &FxContext);
@@ -221,6 +221,7 @@ struct Distortion {
     held: [f32; 2],
     hold_count: f32,
     overdrive: Overdrive,
+    folder: Folder,
 }
 
 /// Serum's overdrive (fxod-/fxodf- probes, tools/fit_overdrive.py): a 3rd-order
@@ -324,6 +325,178 @@ impl MeasuredCurve {
     }
 }
 
+#[derive(Clone, Copy, PartialEq, Default)]
+enum Fold {
+    #[default]
+    Linear,
+    Sine,
+    SineShaper,
+    XShaper,
+}
+
+/// Serum's folds, sine shaper and X-shaper (`fxd4-` probes on these modes,
+/// tools/fit_folds.py), static curves at levels inside the rack:
+/// - linear and sine fold: PEAK·P(φ), φ = ln(1 + G·|x|)/ln r signed, with
+///   G = G0·(1 + 2130·(drive/100)³), which passes x/2 at drive 0 below the first fold; P is
+///   a triangle with zeros at the integers and ±1 at ±½, for the sine fold linear up to ±½
+///   and sin(πφ) beyond (every zero within 0.1 % over 9 drives and 3 ranges);
+/// - sine shaper: F(sin(ω·x)), ω = 0.738·(1 + 11.83·(drive/100)²), F tabled per drive,
+///   then a one-pole high-pass at 11.95 Hz;
+/// - X-shaper and X-shaper (asym): their default drawn curve, x/2 clipped at ±PEAK, then
+///   the same high-pass; drive does nothing (drawn curves are not read yet).
+///
+/// Where the folds get dense Serum's output is smeared toward zero; Lumen averages the
+/// shape over the argument's span each sample (first-order antiderivative anti-aliasing).
+struct Folder {
+    kind: Fold,
+    /// G and ln r of a fold, or ω of the sine shaper.
+    scale: f32,
+    log_r: f32,
+    /// Per channel: the last input, and the high-pass's last input and output.
+    last: [f32; 2],
+    hp: [(f32, f32); 2],
+    hp_pole: f32,
+    /// The sine shaper's F by |sin| at `drive`, and the antiderivative of F(sin θ) over
+    /// one period of θ.
+    f: [f32; super::dist_curves::S_POINTS],
+    q: Vec<f32>,
+    drive: f32,
+}
+
+impl Default for Folder {
+    fn default() -> Self {
+        Folder {
+            kind: Fold::Linear,
+            scale: 1.0,
+            log_r: 1.0,
+            last: [0.0; 2],
+            hp: [(0.0, 0.0); 2],
+            hp_pole: 0.0,
+            f: [0.0; super::dist_curves::S_POINTS],
+            q: vec![0.0; Folder::Q_CELLS + 1],
+            drive: f32::NAN,
+        }
+    }
+}
+
+impl Folder {
+    const Q_CELLS: usize = 1024;
+
+    fn kind(shaper: Shaper) -> Option<Fold> {
+        Some(match shaper {
+            Shaper::LinearFold => Fold::Linear,
+            Shaper::SineFold => Fold::Sine,
+            Shaper::SineShaper => Fold::SineShaper,
+            Shaper::XShaper | Shaper::XShaperAsym => Fold::XShaper,
+            _ => return None,
+        })
+    }
+
+    fn prepare(&mut self, kind: Fold, drive: f32, sample_rate: f32) {
+        use super::dist_curves::{DRIVES, FOLD_DRIVE, HP_HZ, LIN_FOLD, SCALE, SINE_SHAPER, SINE_W, SIN_FOLD};
+        let d = (drive / 100.0).clamp(0.0, 1.0);
+        self.kind = kind;
+        (self.scale, self.log_r) = match kind {
+            Fold::Linear => (LIN_FOLD.0 * (1.0 + FOLD_DRIVE * d * d * d), LIN_FOLD.1.ln()),
+            Fold::Sine => (SIN_FOLD.0 * (1.0 + FOLD_DRIVE * d * d * d), SIN_FOLD.1.ln()),
+            Fold::SineShaper => (SINE_W.0 * (1.0 + SINE_W.1 * d * d), 1.0),
+            Fold::XShaper => (1.0, 1.0),
+        };
+        self.hp_pole = (-TAU * HP_HZ / sample_rate).exp();
+        if kind == Fold::SineShaper && drive != self.drive {
+            self.drive = drive;
+            let dp = d * 100.0;
+            let i = DRIVES.partition_point(|&x| x <= dp).clamp(1, DRIVES.len() - 1) - 1;
+            let t = ((dp - DRIVES[i]) / (DRIVES[i + 1] - DRIVES[i])).clamp(0.0, 1.0);
+            for ((f, &a), &b) in self.f.iter_mut().zip(&SINE_SHAPER[i]).zip(&SINE_SHAPER[i + 1]) {
+                *f = (a as f32 + (b - a) as f32 * t) / SCALE;
+            }
+            // Trapezoids over one period; F(sin θ) is odd about π, so q ends at zero.
+            let step = TAU / Self::Q_CELLS as f32;
+            let mut prev = 0.0;
+            self.q[0] = 0.0;
+            for k in 1..=Self::Q_CELLS {
+                let v = self.sine_shape((k as f32 * step).sin());
+                self.q[k] = self.q[k - 1] + 0.5 * (prev + v) * step;
+                prev = v;
+            }
+        }
+    }
+
+    #[inline]
+    fn sine_shape(&self, s: f32) -> f32 {
+        let pos = s.abs() * (self.f.len() - 1) as f32;
+        let j = (pos as usize).min(self.f.len() - 2);
+        let v = self.f[j] + (self.f[j + 1] - self.f[j]) * (pos - j as f32);
+        v.copysign(s)
+    }
+
+    #[inline]
+    fn sine_integral(&self, theta: f32) -> f32 {
+        let pos = theta.rem_euclid(TAU) / TAU * Self::Q_CELLS as f32;
+        let j = (pos as usize).min(Self::Q_CELLS - 1);
+        self.q[j] + (self.q[j + 1] - self.q[j]) * (pos - j as f32)
+    }
+
+    /// The fold or sine-shaper argument of an input.
+    #[inline]
+    fn arg(&self, x: f32) -> f32 {
+        match self.kind {
+            Fold::Linear | Fold::Sine => (self.scale * x.abs()).ln_1p().copysign(x) / self.log_r,
+            _ => self.scale * x,
+        }
+    }
+
+    /// The fold shapes P (for the sine shaper F(sin θ)) and their antiderivatives.
+    #[inline]
+    fn shape(&self, t: f32) -> f32 {
+        match self.kind {
+            Fold::Linear => {
+                let u = (t + 0.5).rem_euclid(2.0) - 0.5;
+                if u <= 0.5 { 2.0 * u } else { 2.0 - 2.0 * u }
+            }
+            Fold::Sine => if t.abs() <= 0.5 { 2.0 * t } else { (PI * t).sin() },
+            _ => self.sine_shape(t.sin()),
+        }
+    }
+
+    #[inline]
+    fn integral(&self, t: f32) -> f32 {
+        match self.kind {
+            Fold::Linear => {
+                let u = (t + 0.5).rem_euclid(2.0) - 0.5;
+                if u <= 0.5 { u * u } else { 2.0 * u - u * u - 0.5 }
+            }
+            Fold::Sine => if t.abs() <= 0.5 { t * t } else { 0.25 - (PI * t).cos() / PI },
+            _ => self.sine_integral(t),
+        }
+    }
+
+    #[inline]
+    fn apply(&mut self, ch: usize, x: f32) -> f32 {
+        use super::dist_curves::PEAK;
+        let y = if self.kind == Fold::XShaper {
+            (0.5 * x).clamp(-PEAK, PEAK)
+        } else {
+            // The previous input's argument under the current drive, so drive changes don't jump.
+            let (a, b) = (self.arg(self.last[ch]), self.arg(x));
+            // Below a few table cells the difference quotient is noise: evaluate directly.
+            let eps = if self.kind == Fold::SineShaper { 2.0 * TAU / Self::Q_CELLS as f32 } else { 1e-3 };
+            let mean = if (b - a).abs() > eps { (self.integral(b) - self.integral(a)) / (b - a) } else { self.shape(0.5 * (a + b)) };
+            if self.kind == Fold::SineShaper { mean } else { PEAK * mean }
+        };
+        self.last[ch] = x;
+        if matches!(self.kind, Fold::SineShaper | Fold::XShaper) {
+            let (x1, y1) = &mut self.hp[ch];
+            let out = 0.5 * (1.0 + self.hp_pole) * (y - *x1) + self.hp_pole * *y1;
+            (*x1, *y1) = (y, out);
+            out
+        } else {
+            y
+        }
+    }
+}
+
 impl Distortion {
     #[inline]
     fn filter(&mut self, ch: usize, x: f32) -> f32 {
@@ -341,11 +514,10 @@ impl Effect for Distortion {
         const BW: usize = index("FXDistortion", "kParamBW");
         const PREPOST: usize = index("FXDistortion", "kParamPrePost");
         let drive = p.get(DRIVE) / 100.0;
-        let shaper = Shaper::from_name(p.choice(MODE)).unwrap_or(Shaper::Tube);
-        // Drive 0–100 % → 0–36 dB of input gain (assumed); −11 dB output trim (measured:
-        // Lumen was 10–12 dB louder than Serum across default, drive 80 and soft clip).
-        let gain = db(36.0 * drive);
-        const TRIM: f32 = 0.282;
+        let (mode, shaper) = match Shaper::from_name(p.choice(MODE)) {
+            Some(s) => (p.choice(MODE), s),
+            None => ("kTube", Shaper::Tube),
+        };
         let prepost = p.get(PREPOST).round() as i32;
         if prepost != 0 {
             // A resonant two-pole filter (BW is its resonance) on the voice-filter cutoff
@@ -365,8 +537,12 @@ impl Effect for Distortion {
         // Downsample holds each sample for 1 + 96·drive² samples (7, 25 and 97 measured
         // at drive 25, 50 and 100, at 48 kHz).
         let hold = (1.0 + 96.0 * drive * drive).round();
-        // Most modes are measured static curves (fxd4 probes); the rest keep the generic shapers.
-        let measured = MeasuredCurve::new(p.choice(MODE), p.get(DRIVE));
+        // Most modes are measured static curves (fxd4 probes); the folds, sine shaper and
+        // X-shapers are modelled (`Folder`), overdrive and downsample below.
+        let measured = MeasuredCurve::new(mode, p.get(DRIVE));
+        if let Some(kind) = Folder::kind(shaper) {
+            self.folder.prepare(kind, p.get(DRIVE), ctx.sample_rate);
+        }
         let release = (-1.0 / (Overdrive::RELEASE_S * ctx.sample_rate)).exp();
         self.overdrive.prepare(ctx.sample_rate);
         for i in 0..l.len() {
@@ -401,7 +577,7 @@ impl Effect for Distortion {
                 } else if shaper == Shaper::Overdrive {
                     Overdrive::shape(x, od_gain)
                 } else {
-                    shaper::shape(shaper, x * gain) * TRIM
+                    self.folder.apply(ch, x)
                 };
                 if prepost == 2 {
                     x = self.filter(ch, x);
@@ -417,6 +593,7 @@ impl Effect for Distortion {
             b.reset();
             b
         }), ..Overdrive::default() };
+        (self.folder.last, self.folder.hp) = Default::default();
     }
 }
 
@@ -1181,7 +1358,7 @@ impl Effect for Conv {
 
 #[cfg(test)]
 mod dist_tests {
-    use super::{MeasuredCurve, Overdrive};
+    use super::{Fold, Folder, MeasuredCurve, Overdrive};
 
     #[test]
     fn overdrive_compresses_into_its_clip() {
@@ -1207,5 +1384,42 @@ mod dist_tests {
         assert!((c.apply(-2.5) + 0.829).abs() < 0.02);
         // Drive 0 passes small inputs at half level.
         assert!((MeasuredCurve::new("kSoftClip", 0.0).unwrap().apply(0.1) - 0.05).abs() < 0.003);
+    }
+
+    #[test]
+    fn folds_cross_zero_where_measured() {
+        // A slow ramp (static curve); output zeros at input levels from the fxd4 probes.
+        let ramp = |kind: Fold, drive: f32, to: f32| {
+            let mut f = Folder::default();
+            f.prepare(kind, drive, 48000.0);
+            let n = 200_000;
+            let ys: Vec<(f32, f32)> = (0..=n).map(|i| to * i as f32 / n as f32).map(|x| (x, f.apply(0, x))).collect();
+            let zeros: Vec<f32> = ys.windows(2).filter(|w| (w[0].1 > 0.0) != (w[1].1 > 0.0) && w[0].0 > 0.0).map(|w| w[1].0).collect();
+            (ys, zeros)
+        };
+        let (ys, zeros) = ramp(Fold::Linear, 0.0, 4.0);
+        assert!((ys[10_000].1 - 0.1).abs() < 0.002, "drive 0 passes x/2: {:?}", ys[10_000]);
+        assert!((zeros[0] - 3.446).abs() < 0.02, "{zeros:?}");
+        let (_, zeros) = ramp(Fold::Linear, 25.0, 1.0);
+        for (z, want) in zeros.iter().zip([0.101, 0.209, 0.327, 0.454, 0.591, 0.739, 0.900]) {
+            assert!((z - want).abs() < 0.004, "{zeros:?}");
+        }
+        let (ys, zeros) = ramp(Fold::Sine, 10.0, 7.0);
+        for (z, want) in zeros.iter().zip([1.190, 2.678, 4.538, 6.862]) {
+            assert!((z - want).abs() < 0.02, "{zeros:?}");
+        }
+        assert!(ys.iter().all(|&(_, y)| y.abs() <= 0.831));
+    }
+
+    #[test]
+    fn sine_shaper_and_x_shaper_are_high_passed() {
+        // Held DC settles to zero through the 11.95 Hz high-pass.
+        for kind in [Fold::SineShaper, Fold::XShaper] {
+            let mut f = Folder::default();
+            f.prepare(kind, 30.0, 48000.0);
+            let first = f.apply(0, 0.5);
+            let last = (0..48000).map(|_| f.apply(0, 0.5)).last().unwrap();
+            assert!(first.abs() > 0.2 && last.abs() < 1e-3, "{first} {last}");
+        }
     }
 }

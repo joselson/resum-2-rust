@@ -7,8 +7,9 @@ for the method and what is already fitted, [PARITY.md](PARITY.md) for feature st
 ## 4. FX character (in progress)
 
 Done: EQ, delay (times, feedback, ping-pong, reverse, filter), FX filter, distortion
-(10 static modes with tape sat, downsample, pre/post filter, overdrive's high-pass,
-gain, 10:1 compression and clip), the FX wet law, compressor: single-band
+(11 static modes with tape sat and rectify, the folds and sine shaper, the X-shapers'
+default curve, downsample, pre/post filter, overdrive's high-pass, gain, 10:1
+compression and clip), the FX wet law, compressor: single-band
 (threshold, ratio and limiter paths, attack/release, makeup, output clip, wet) and
 multiband (crossovers, detector, per-band thresholds, ratios, upward compression,
 gains); reverb per-type metrics and Abyss/Vintage pair interactions.
@@ -26,16 +27,13 @@ Remaining, roughly by factory usage:
      fitted on clicks.
    - Beat-synced predelay; the tail's character (Lumen's FDN only matches the
      metrics); Wet 0 modules (238 factory reverbs) rely on modulated wet.
-2. **Rarer distortion modes**: linear/sine fold, X-shaper (asym), rectify, sine
-   shaper. Their transfer curves looked filtered or hysteretic, as tape sat's did
-   before probes were aligned by the quietest one's lag (`tools/fit_distortion.py`):
-   re-check them that way first.
-3. **Modulation effects**: chorus (+3.3 dB, −6.7 dB width at 100 % wet),
+2. **Modulation effects**: chorus (+3.3 dB, −6.7 dB width at 100 % wet),
    flanger, phaser (brightness), hyper/dimension (width −9.5 dB), Bode shift scale.
-4. **Convolution** level and IR handling; **FX Utility** remaining controls.
-5. Distortion filter top-octave shape (Serum falls more gently than an RBJ biquad);
-   FX filter top-octave differences by type.
-6. **Compressor leftovers**: single-band ratios between 50 and 100, its detector on
+3. **Convolution** level and IR handling; **FX Utility** remaining controls.
+4. Distortion filter top-octave shape (Serum falls more gently than an RBJ biquad);
+   FX filter top-octave differences by type. X-shaper drawn curves (module `flex`
+   data; 5 factory presets): probe a few drawn shapes against the default.
+5. **Compressor leftovers**: single-band ratios between 50 and 100, its detector on
    non-sine material and the limiter release after deep drops; multiband extreme
    Deadband values (≈ 1 dB off at 3 and 24), moved crossovers (0.9 dB at 300 Hz), the
    multiband expansion limit (band RatioBelow < 0.5; capped like the upward lift,

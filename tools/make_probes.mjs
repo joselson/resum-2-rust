@@ -352,11 +352,11 @@ const probes = {
   "fxd3-boost-1": [...SUB_SINE, ...rack(fx("FXUtils", { kParamLevelOut: 1 }))],
   "fxd3-boost-2": [...SUB_SINE, ...rack(fx("FXUtils", { kParamLevelOut: 1 }), fx("FXUtils", { kParamLevelOut: 1 }))],
   ...Object.fromEntries([...DIST_SHAPED, "kDiode1"].flatMap((m) => [[1, 100], [2, 100], [2, 0], [2, 50]].map(([n, d]) => [`fxd3-${m.slice(1).toLowerCase()}-${d}-boost-${n}`, [...SUB_SINE, ...rack(...Array.from({ length: n }, () => fx("FXUtils", { kParamLevelOut: 1 })), fx("FXDistortion", { kParamMode: m, kParamDrive: d }))]]))),
-  // Distortion curve tables (fxd4-): every static mode × 9 drives × 3 input ranges.
+  // Distortion curve tables (fxd4-): every mode but downsample × 9 drives × 3 input ranges.
   "fxd4-off": SUB_SINE,
   "fxd4-boost-1": [...SUB_SINE, ...rack(fx("FXUtils", { kParamLevelOut: 1 }))],
   "fxd4-boost-2": [...SUB_SINE, ...rack(fx("FXUtils", { kParamLevelOut: 1 }), fx("FXUtils", { kParamLevelOut: 1 }))],
-  ...Object.fromEntries([...DIST_SHAPED, "kDiode1"].flatMap((m) => [0, 10, 25, 40, 50, 60, 75, 90, 100].flatMap((d) => [0, 1, 2].map((n) => [`fxd4-${m.slice(1).toLowerCase()}-${d}-b${n}`, [...SUB_SINE, ...rack(...Array.from({ length: n }, () => fx("FXUtils", { kParamLevelOut: 1 })), fx("FXDistortion", { kParamMode: m, kParamDrive: d }))]])))),
+  ...Object.fromEntries(DIST_MODES.filter((m) => m !== "kDownsample").flatMap((m) => [0, 10, 25, 40, 50, 60, 75, 90, 100].flatMap((d) => [0, 1, 2].map((n) => [`fxd4-${m.slice(1).toLowerCase()}-${d}-b${n}`, [...SUB_SINE, ...rack(...Array.from({ length: n }, () => fx("FXUtils", { kParamLevelOut: 1 })), fx("FXDistortion", { kParamMode: m, kParamDrive: d }))]])))),
   // Overdrive and tape sat over 12 input levels (fxod-, tools/fit_overdrive.py): each
   // level's dry render beside every drive; FX Utility stages set the level.
   ...Object.fromEntries(OD_LEVELS.flatMap(([lv, stages]) => [["dry", null], ...["kOverdrive", "kTapeSat"].flatMap((m) => [0, 10, 25, 50, 75, 100].map((d) => [`${m.slice(1).toLowerCase()}-${d}`, { kParamMode: m, kParamDrive: d }]))]
